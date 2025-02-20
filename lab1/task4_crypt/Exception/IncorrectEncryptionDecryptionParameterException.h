@@ -1,10 +1,8 @@
 #include <iostream>
 
-class IncorrectEncryptionDecryptionParameterException : public std::exception
+class IncorrectEncryptionDecryptionParameterException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "Incorrect encryption - decryption parameter";
-	}
+	IncorrectEncryptionDecryptionParameterException()
+		: std::runtime_error("Incorrect encryption - decryption parameter"){};
 };

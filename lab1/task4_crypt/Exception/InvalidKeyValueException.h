@@ -1,10 +1,8 @@
 #include <iostream>
 
-class InvalidKeyValueException : public std::exception
+class InvalidKeyValueException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "Invalid key value";
-	}
+	InvalidKeyValueException()
+		: std::runtime_error("Invalid key value"){};
 };

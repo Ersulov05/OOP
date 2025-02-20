@@ -1,10 +1,8 @@
 #include <iostream>
 
-class KeyValueOutOfRangeException : public std::exception
+class KeyValueOutOfRangeException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "The value is out of range 0 - 255";
-	}
+	KeyValueOutOfRangeException()
+		: std::runtime_error("The value is out of range 0 - 255"){};
 };
