@@ -78,9 +78,11 @@ if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt" $OUTPUT_PATH/error.txt; t
 fi
 
 TEST_COUNT=$((TEST_COUNT + 1))
-if run_test_case "$PROGRAMM $INPUT_PATH/inputArg6NotEnoughRules.txt" $OUTPUT_PATH/outputArg6.txt; then
+chmod 000 $INPUT_PATH/inputArg6NotEnoughRules.txt
+if run_test_case "$PROGRAMM $INPUT_PATH/inputArg6NotEnoughRules.txt $OUTPUT_FILE 123 456" $OUTPUT_PATH/outputArg6.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
+chmod 644 $INPUT_PATH/inputArg6NotEnoughRules.txt
 
 echo ""
 echo "----------------------------"
