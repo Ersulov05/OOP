@@ -1,10 +1,8 @@
 #include <iostream>
 
-class InvalidArgumentCountException : public std::exception
+class InvalidArgumentCountException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "The number of arguments passed is incorrect";
-	}
+	InvalidArgumentCountException()
+		: std::runtime_error("The number of arguments passed is incorrect"){};
 };

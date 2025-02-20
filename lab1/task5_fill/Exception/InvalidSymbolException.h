@@ -1,10 +1,8 @@
 #include <iostream>
 
-class InvalidSymbolException : public std::exception
+class InvalidSymbolException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "Invalid symbol";
-	}
+	InvalidSymbolException()
+		: std::runtime_error("Invalid symbol"){};
 };
