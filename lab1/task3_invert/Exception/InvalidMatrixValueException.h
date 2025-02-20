@@ -1,10 +1,8 @@
 #include <iostream>
 
-class InvalidMatrixValueException : public std::exception
+class InvalidMatrixValueException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "Invalid matrix";
-	}
+	InvalidMatrixValueException()
+		: std::runtime_error("Invalid matrix"){};
 };

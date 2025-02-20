@@ -1,10 +1,8 @@
 #include <iostream>
 
-class DeterminantEqualsZeroException : public std::exception
+class DeterminantEqualsZeroException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "Non-invertible"; //"Determinant matrix equals zero";
-	}
+	DeterminantEqualsZeroException()
+		: std::runtime_error("Non-invertible"){};
 };

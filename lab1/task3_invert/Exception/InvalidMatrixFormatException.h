@@ -1,10 +1,8 @@
 #include <iostream>
 
-class InvalidMatrixFormatException : public std::exception
+class InvalidMatrixFormatException : public std::runtime_error
 {
 public:
-	const char* what() const noexcept override
-	{
-		return "Invalid matrix format";
-	}
+	InvalidMatrixFormatException()
+		: std::runtime_error("Invalid matrix format"){};
 };
