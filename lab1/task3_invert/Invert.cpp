@@ -231,18 +231,19 @@ std::optional<Arg> ParseArgs(int argc, char* argv[])
 	if (argc == 1)
 		return std::nullopt;
 
-	Arg arg = { "", false };
-	if (argc == 2)
+	if (argc != 2)
 	{
-		std::string firstArg = argv[1];
-		arg.isHelp = firstArg == "-h";
-		if (!arg.isHelp)
-		{
-			arg.inputFileName = firstArg;
-		}
-		return arg;
+		throw InvalidArgumentsException();
 	}
-	throw InvalidArgumentsException();
+
+	Arg arg = { "", false };
+	arg.isHelp = std::string(argv[1]) == "-h";
+	if (!arg.isHelp)
+	{
+		arg.inputFileName = argv[1];
+	}
+
+	return arg;
 }
 
 int main(int argc, char* argv[])
