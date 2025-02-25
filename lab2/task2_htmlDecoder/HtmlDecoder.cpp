@@ -3,11 +3,8 @@
 // Компилятор g++ c++20
 
 #include "Exception/FailedOpenFileException.h"
-#include "Exception/IncorrectEncryptionDecryptionParameterException.h"
 #include "Exception/InputOutputFileNameMatchException.h"
 #include "Exception/InvalidArgumentCountException.h"
-#include "Exception/InvalidKeyValueException.h"
-#include "Exception/KeyValueOutOfRangeException.h"
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -15,6 +12,9 @@
 #include <optional>
 
 const int EXPECTED_ARG_COUNT = 3;
+const char BEGIN_SYMBOL_OF_CODE = '&';
+const char END_SYMBOL_OF_CODE = ';';
+
 const std::map<std::string, std::string> ENTRY_MAP = {
 	{ "&quot;", "\"" },
 	{ "&apos;", "\'" },
@@ -95,23 +95,24 @@ std::string ReplaceLine(const std::string& string,
 std::string DecodeHTMLString(const std::string& string)
 {
 	size_t pos = 0;
-	size_t foundPos = 0;
-	size_t ampPos = 0;
-	size_t pointPos = 0;
+	size_t positionOfBeginSymbolOfCode = 0;
+	size_t positionOfEndSymbolOfCode = 0;
 	std::string result;
-	while ((pointPos = string.find(";", pos)) != std::string::npos)
+	while ((positionOfEndSymbolOfCode = string.find(END_SYMBOL_OF_CODE, pos)) != std::string::npos)
 	{
-		ampPos = string.rfind("&", pointPos);
-		if (ampPos == std::string::npos)
+		positionOfBeginSymbolOfCode = string.rfind(BEGIN_SYMBOL_OF_CODE, positionOfEndSymbolOfCode);
+		if (positionOfBeginSymbolOfCode == std::string::npos)
 		{
-			pos = pointPos;
-			result.append(string, pos, pointPos - pos + 1);
-			continue;
+			result.append(string, pos, positionOfEndSymbolOfCode - pos + 1);
 		}
-		result.append(string, pos, ampPos - pos);
-		std::string htmlCode = string.substr(ampPos, pointPos - ampPos + 1);
-		result.append(GetHTMLDecode(htmlCode));
-		pos = pointPos + 1;
+		else
+		{
+			result.append(string, pos, positionOfBeginSymbolOfCode - pos);
+			std::string htmlCode = string.substr(positionOfBeginSymbolOfCode, positionOfEndSymbolOfCode - positionOfBeginSymbolOfCode + 1);
+			result.append(GetHTMLDecode(htmlCode));
+		}
+
+		pos = positionOfEndSymbolOfCode + 1;
 	}
 	result.append(string, pos, string.length() - pos);
 	return result;
