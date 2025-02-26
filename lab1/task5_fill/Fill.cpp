@@ -29,7 +29,7 @@ struct Point
 	std::size_t columnIndex;
 };
 
-template <typename std::size_t Rows, std::size_t Columns>
+template <std::size_t Rows, std::size_t Columns>
 using Map = std::array<std::array<char, Columns>, Rows>;
 
 struct Arg
@@ -39,7 +39,7 @@ struct Arg
 	std::string outputFileName;
 };
 
-void assertInputOutputFileNameMismatch(const std::string& inputFileName, const std::string& outputFileName)
+void AssertInputOutputFileNameMismatch(const std::string& inputFileName, const std::string& outputFileName)
 {
 	if (inputFileName == outputFileName)
 	{
@@ -47,29 +47,37 @@ void assertInputOutputFileNameMismatch(const std::string& inputFileName, const s
 	}
 }
 
-std::optional<Arg> ParseArgs(int argc, char* argv[])
+void AssertExpectedArgumentCount(int argc)
 {
-	if (argc > 3)
+	if (argc != EXPECTED_ARG_COUNT)
 	{
 		throw InvalidArgumentCountException();
 	}
+}
+
+std::optional<Arg> ParseArgs(int argc, char* argv[])
+{
 	if (argc == 1)
 	{
 		return std::nullopt;
 	}
+
 	Arg arg;
 	if (argc == 2 && std::string(argv[1]) == "-h")
 	{
 		arg.isHelp = true;
 		return arg;
 	}
+	AssertExpectedArgumentCount(argc);
+	AssertInputOutputFileNameMismatch(argv[1], argv[2]);
+
 	arg.inputFileName = argv[1];
 	arg.outputFileName = argv[2];
-	assertInputOutputFileNameMismatch(arg.inputFileName, arg.outputFileName);
+
 	return arg;
 }
 
-void asserCorrectSymbol(char symbol)
+void AssertCorrectSymbol(char symbol)
 {
 	if (symbol != EMPTY_SYMBOL && symbol != POINT_SYMBOL && symbol != WALL_SYMBOL)
 	{
@@ -77,8 +85,8 @@ void asserCorrectSymbol(char symbol)
 	}
 }
 
-template <typename std::size_t Rows, std::size_t Columns>
-void loadMap(std::istream& input, Map<Rows, Columns>& map, std::vector<Point>& pointList)
+template <std::size_t Rows, std::size_t Columns>
+void LoadMap(std::istream& input, Map<Rows, Columns>& map, std::vector<Point>& pointList)
 {
 	std::string line;
 	std::size_t row = 0;
@@ -100,7 +108,7 @@ void loadMap(std::istream& input, Map<Rows, Columns>& map, std::vector<Point>& p
 		for (size_t col = 0; col < lineSize; ++col)
 		{
 			char ch = line[col];
-			asserCorrectSymbol(ch);
+			AssertCorrectSymbol(ch);
 			map[row][col] = ch;
 			if (ch == POINT_SYMBOL)
 			{
@@ -111,7 +119,7 @@ void loadMap(std::istream& input, Map<Rows, Columns>& map, std::vector<Point>& p
 	}
 }
 
-template <typename std::size_t Rows, std::size_t Columns>
+template <std::size_t Rows, std::size_t Columns>
 Map<Rows, Columns> getEmptyMap()
 {
 	Map<Rows, Columns> newMap;
@@ -125,8 +133,8 @@ Map<Rows, Columns> getEmptyMap()
 	return newMap;
 }
 
-template <typename std::size_t Rows, std::size_t Columns>
-void fillPointMap(Map<Rows, Columns>& map, const Point& point)
+template <std::size_t Rows, std::size_t Columns>
+void FillPointMap(Map<Rows, Columns>& map, const Point& point)
 {
 	if (point.rowIndex < 0
 		|| point.columnIndex < 0
@@ -139,26 +147,26 @@ void fillPointMap(Map<Rows, Columns>& map, const Point& point)
 		return;
 	}
 	map[point.rowIndex][point.columnIndex] = FILL_SYMBOL;
-	fillPointMap(map, { point.rowIndex - 1, point.columnIndex });
-	fillPointMap(map, { point.rowIndex + 1, point.columnIndex });
-	fillPointMap(map, { point.rowIndex, point.columnIndex - 1 });
-	fillPointMap(map, { point.rowIndex, point.columnIndex + 1 });
+	FillPointMap(map, { point.rowIndex - 1, point.columnIndex });
+	FillPointMap(map, { point.rowIndex + 1, point.columnIndex });
+	FillPointMap(map, { point.rowIndex, point.columnIndex - 1 });
+	FillPointMap(map, { point.rowIndex, point.columnIndex + 1 });
 }
 
-template <typename std::size_t Rows, std::size_t Columns>
-void fillMap(Map<Rows, Columns>& map, std::vector<Point>& pointList)
+template <std::size_t Rows, std::size_t Columns>
+void FillMap(Map<Rows, Columns>& map, std::vector<Point>& pointList)
 {
 	for (const auto point : pointList)
 	{
-		fillPointMap(map, { point.rowIndex - 1, point.columnIndex });
-		fillPointMap(map, { point.rowIndex + 1, point.columnIndex });
-		fillPointMap(map, { point.rowIndex, point.columnIndex - 1 });
-		fillPointMap(map, { point.rowIndex, point.columnIndex + 1 });
+		FillPointMap(map, { point.rowIndex - 1, point.columnIndex });
+		FillPointMap(map, { point.rowIndex + 1, point.columnIndex });
+		FillPointMap(map, { point.rowIndex, point.columnIndex - 1 });
+		FillPointMap(map, { point.rowIndex, point.columnIndex + 1 });
 	}
 }
 
-template <typename std::size_t Rows, std::size_t Columns>
-void printMap(std::ostream& output, Map<Rows, Columns>& map)
+template <std::size_t Rows, std::size_t Columns>
+void PrintMap(std::ostream& output, Map<Rows, Columns>& map)
 {
 	for (std::size_t i = 0; i < Rows; ++i)
 	{
@@ -215,18 +223,18 @@ int main(int argc, char* argv[])
 				throw FailedOpenFileException();
 			}
 
-			loadMap(inputFile, map, pointList);
-			fillMap(map, pointList);
-			printMap(outputFile, map);
+			LoadMap(inputFile, map, pointList);
+			FillMap(map, pointList);
+			PrintMap(outputFile, map);
 
 			inputFile.close();
 			outputFile.close();
 		}
 		else
 		{
-			loadMap(std::cin, map, pointList);
-			fillMap(map, pointList);
-			printMap(std::cout, map);
+			LoadMap(std::cin, map, pointList);
+			FillMap(map, pointList);
+			PrintMap(std::cout, map);
 		}
 	}
 	catch (const std::exception& e)
