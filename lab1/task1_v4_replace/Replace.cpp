@@ -1,12 +1,12 @@
-// Ерсулов Андрей ПС-21, лабораторная №1
-// Среда Visual Studio Code
-// Компилятор g++ c++20
-
 // std::string создаётся инициализированной
 // поправить название переменных File
 // аргументы консоли через ParseArgs
 // форматирование
 
+#include "./Exception/FailedOpenFileException.h"
+#include "./Exception/InputOutputFileNameMatchException.h"
+#include "./Exception/InvalidArgumentCountException.h"
+#include "./Exception/InvalidInputException.h"
 #include <fstream>
 #include <iostream>
 #include <optional>
@@ -60,6 +60,14 @@ void PrintHelp()
 	std::cout << "\tthen the replacement text\n";
 }
 
+void AssertInputOutputFileNameMismatch(const std::string& inputFileName, const std::string& outputFileName)
+{
+	if (inputFileName == outputFileName)
+	{
+		throw InputOutputFileNameMatchException();
+	}
+}
+
 struct Arg
 {
 	std::string inputFileName;
@@ -84,12 +92,12 @@ std::optional<Arg> ParseArgs(int argc, char* argv[])
 	}
 	if (argc != 5)
 	{
-		std::cout << "ERROR\n";
-		exit(1);
+		throw InvalidArgumentCountException();
 	}
 
 	arg.inputFileName = argv[1];
 	arg.outputFileName = argv[2];
+	AssertInputOutputFileNameMismatch(arg.inputFileName, arg.outputFileName);
 	arg.searchString = argv[3];
 	arg.replaceString = argv[4];
 	return arg;
@@ -97,45 +105,52 @@ std::optional<Arg> ParseArgs(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-	std::optional<Arg> arg = ParseArgs(argc, argv);
-	if (arg)
+	try
 	{
-		if (arg->isHelp)
-		{
-			PrintHelp();
-			return 0;
-		}
-		std::ifstream inputFile(arg->inputFileName);
-		if (!inputFile.is_open())
-		{
-			std::cout << "ERROR\n";
-			return 1;
-		}
-		std::ofstream outputFile(arg->outputFileName);
-		if (!outputFile.is_open())
-		{
-			std::cout << "ERROR\n";
-			return 1;
-		}
+		std::optional<Arg> arg = ParseArgs(argc, argv);
 
-		CopyStreamWithReplacement(inputFile, outputFile, arg->searchString, arg->replaceString);
+		if (arg)
+		{
+			if (arg->isHelp)
+			{
+				PrintHelp();
+				return 0;
+			}
 
-		inputFile.close();
-		outputFile.close();
+			std::ifstream inputFile(arg->inputFileName);
+			if (!inputFile.is_open())
+			{
+				throw FailedOpenFileException();
+			}
+			std::ofstream outputFile(arg->outputFileName);
+			if (!outputFile.is_open())
+			{
+				throw FailedOpenFileException();
+			}
+
+			CopyStreamWithReplacement(inputFile, outputFile, arg->searchString, arg->replaceString);
+
+			inputFile.close();
+			outputFile.close();
+		}
+		else
+		{
+			std::string searchString;
+			std::string replaceString;
+			std::getline(std::cin, searchString);
+			std::getline(std::cin, replaceString);
+			if (std::cin.eof())
+			{
+				throw InvalidInputException();
+			}
+
+			CopyStreamWithReplacement(std::cin, std::cout, searchString, replaceString);
+		}
 	}
-	else
+	catch (const std::exception& e)
 	{
-		std::string searchString = "";
-		std::string replaceString = "";
-		std::getline(std::cin, searchString);
-		std::getline(std::cin, replaceString);
-		if (std::cin.eof())
-		{
-			std::cout << "ERROR\n";
-			return 0;
-		}
-
-		CopyStreamWithReplacement(std::cin, std::cout, searchString, replaceString);
+		std::cout << e.what() << std::endl;
+		return 1;
 	}
 
 	return 0;
