@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <iostream>
 #include <optional>
+#include <regex>
 #include <sstream>
 
 double removeNegativeZero(double value)
@@ -125,7 +126,7 @@ Matrix<N, N> MultiplyMatrixOnScalar(const Matrix<N, N>& matrix, double scalar)
 	return resultMatrix;
 }
 
-void assertDeterminantNotEqualsZero(double determinant)
+void AssertDeterminantNotEqualsZero(double determinant)
 {
 	if (determinant == 0)
 	{
@@ -153,12 +154,12 @@ template <std::size_t N>
 Matrix<N, N> GetReverseMatrix(const Matrix<N, N>& matrix)
 {
 	auto determinant = GetDeterminantMatrix(matrix);
-	assertDeterminantNotEqualsZero(determinant);
+	AssertDeterminantNotEqualsZero(determinant);
 	Matrix<N, N> transposeMatrix = GetMatrixAlgebraicAdditions(TransposeMatrix(matrix));
 	return MultiplyMatrixOnScalar(transposeMatrix, 1 / determinant);
 }
 
-void assertDimensionNotExceeded(std::size_t actual, std::size_t maxAllowed)
+void AssertDimensionNotExceeded(std::size_t actual, std::size_t maxAllowed)
 {
 	if (actual > maxAllowed)
 	{
@@ -166,11 +167,21 @@ void assertDimensionNotExceeded(std::size_t actual, std::size_t maxAllowed)
 	}
 }
 
-void assertDimensionMatch(std::size_t actual, std::size_t expected)
+void AssertDimensionMatch(std::size_t actual, std::size_t expected)
 {
 	if (actual != expected)
 	{
 		throw InvalidMatrixFormatException();
+	}
+}
+
+void AssertStringCanConvertedToDouble(const std::string& string)
+{
+	const std::regex doubleRegex(R"([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)");
+
+	if (!std::regex_match(string, doubleRegex))
+	{
+		throw InvalidMatrixValueException();
 	}
 }
 
@@ -183,21 +194,14 @@ void ReadRowMatrix(std::string& line, Matrix<Rows, Columns>& matrix, std::size_t
 
 	while (std::getline(iss, item, '\t'))
 	{
-		assertDimensionNotExceeded(col + 1, Columns);
-		double value = 0;
-		try
-		{
-			value = std::stod(item);
-		}
-		catch (const std::exception& e)
-		{
-			throw InvalidMatrixValueException();
-		}
+		AssertDimensionNotExceeded(col + 1, Columns);
+		AssertStringCanConvertedToDouble(item);
+		double value = std::stod(item);
 
 		matrix[row][col] = value;
 		col++;
 	}
-	assertDimensionMatch(col, Columns);
+	AssertDimensionMatch(col, Columns);
 }
 
 template <std::size_t Rows, std::size_t Columns>
@@ -208,11 +212,11 @@ void ReadMatrix(std::istream& input, Matrix<Rows, Columns>& matrix)
 
 	while (std::getline(input, line))
 	{
-		assertDimensionNotExceeded(row + 1, Rows);
+		AssertDimensionNotExceeded(row + 1, Rows);
 		ReadRowMatrix(line, matrix, row);
 		row++;
 	}
-	assertDimensionMatch(row, Rows);
+	AssertDimensionMatch(row, Rows);
 }
 
 void PrintHelp()
@@ -231,18 +235,19 @@ std::optional<Arg> ParseArgs(int argc, char* argv[])
 	if (argc == 1)
 		return std::nullopt;
 
-	Arg arg = { "", false };
-	if (argc == 2)
+	if (argc != 2)
 	{
-		std::string firstArg = argv[1];
-		arg.isHelp = firstArg == "-h";
-		if (!arg.isHelp)
-		{
-			arg.inputFileName = firstArg;
-		}
-		return arg;
+		throw InvalidArgumentsException();
 	}
-	throw InvalidArgumentsException();
+
+	Arg arg = { "", false };
+	arg.isHelp = std::string(argv[1]) == "-h";
+	if (!arg.isHelp)
+	{
+		arg.inputFileName = argv[1];
+	}
+
+	return arg;
 }
 
 int main(int argc, char* argv[])
