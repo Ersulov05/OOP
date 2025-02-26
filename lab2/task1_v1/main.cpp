@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+#include <regex>
 #include <vector>
 
 const int NUMBER_OF_DECIMAL_PLACES = 3;
@@ -14,23 +15,20 @@ double RoundToDecimal(double number, int decimals)
 	return std::round(number * factor) / factor;
 }
 
+void AssertStringCanConvertedToDouble(const std::string& string)
+{
+	const std::regex doubleRegex(R"([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)");
+
+	if (!std::regex_match(string, doubleRegex))
+	{
+		throw InvalidValueException();
+	}
+}
+
 double StringToDouble(const std::string& string)
 {
-	std::size_t pos;
-	double number = 0;
-	try
-	{
-		number = std::stod(string, &pos);
-	}
-	catch (const std::exception&)
-	{
-		throw InvalidValueException();
-	}
-	if (pos != string.length())
-	{
-		throw InvalidValueException();
-	}
-	return number;
+	AssertStringCanConvertedToDouble(string);
+	return std::stod(string);
 }
 
 void ReadNumbers(std::istream& input, std::vector<double>& numbers)
@@ -100,7 +98,7 @@ int main(int argc, char* argv[])
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "ERROR" << std::endl; // e.what()
+		std::cout << e.what() << std::endl;
 		return 1;
 	}
 
