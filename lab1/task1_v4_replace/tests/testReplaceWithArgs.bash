@@ -1,5 +1,9 @@
 #!/bin/bash
 
+RED='\033[0;31m'  # Код для красного цвета
+GREEN='\033[0;32m' # Код для зеленого цвета
+NC='\033[0m'      # Код для сброса цвета
+
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 PROGRAMM="$SCRIPTPATH/../Replace"
@@ -22,13 +26,14 @@ run_test_case() {
 
     eval $command > $OUTPUT_FILE
 
-    diff -q $OUTPUT_FILE "$expected_output"
+    diff -q $OUTPUT_FILE "$expected_output" > /dev/null 2>&1
     
     if [ $? -eq 0 ]; then
-        echo "Test $TEST_COUNT Passed: Output matches $expected_output"
+        echo -e "${GREEN}Test $TEST_COUNT Passed${NC}: Output matches $expected_output"
+        rm "$OUTPUT_FILE"
         return 0
     else
-        echo "Test $TEST_COUNT Failed: Output differs from $expected_output"
+        echo -e "${RED}Test $TEST_COUNT Failed${NC}: Output differs from $expected_output"
         return 1
     fi
 }
@@ -47,6 +52,11 @@ if run_test_case "$PROGRAMM $INPUT_PATH/inputArg2.txt $OUTPUT_FILE string ''" $O
 fi
 
 TEST_COUNT=$((TEST_COUNT + 1))
+if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt $OUTPUT_FILE '' mamamama" $OUTPUT_PATH/outputArg3.txt; then
+    PASS_COUNT=$((PASS_COUNT + 1))
+fi
+
+TEST_COUNT=$((TEST_COUNT + 1))
 if run_test_case "$PROGRAMM $INPUT_PATH/inputArg4.txt $OUTPUT_FILE 1231234 XYZ" $OUTPUT_PATH/outputArg4.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
@@ -57,32 +67,31 @@ if run_test_case "$PROGRAMM $INPUT_PATH/inputArg5.txt $OUTPUT_FILE 123 456" $OUT
 fi
 
 TEST_COUNT=$((TEST_COUNT + 1))
-ARG5=$(cat "$INPUT_PATH/arg5.txt")
-if run_test_case "$PROGRAMM $INPUT_PATH/notFoundFile.txt $OUTPUT_FILE 123 456" $OUTPUT_PATH/error.txt; then
+if run_test_case "$PROGRAMM $INPUT_PATH/notFoundFile.txt $OUTPUT_FILE 123 456" $OUTPUT_PATH/outputArg6.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
 
 TEST_COUNT=$((TEST_COUNT + 1))
-if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt $OUTPUT_FILE ma" $OUTPUT_PATH/error.txt; then
+if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt $OUTPUT_FILE ma" $OUTPUT_PATH/outputArg7.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
 
 TEST_COUNT=$((TEST_COUNT + 1))
-if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt $OUTPUT_FILE" $OUTPUT_PATH/error.txt; then
+if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt $OUTPUT_FILE" $OUTPUT_PATH/outputArg8.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
 
 TEST_COUNT=$((TEST_COUNT + 1))
-if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt" $OUTPUT_PATH/error.txt; then
+if run_test_case "$PROGRAMM $INPUT_PATH/inputArg3.txt" $OUTPUT_PATH/outputArg9.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
 
 TEST_COUNT=$((TEST_COUNT + 1))
-chmod 000 $INPUT_PATH/inputArg6NotEnoughRules.txt
-if run_test_case "$PROGRAMM $INPUT_PATH/inputArg6NotEnoughRules.txt $OUTPUT_FILE 123 456" $OUTPUT_PATH/outputArg6.txt; then
+chmod 000 $INPUT_PATH/inputArg10NotEnoughRules.txt
+if run_test_case "$PROGRAMM $INPUT_PATH/inputArg10NotEnoughRules.txt $OUTPUT_FILE 123 456" $OUTPUT_PATH/outputArg10.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
-chmod 644 $INPUT_PATH/inputArg6NotEnoughRules.txt
+chmod 644 $INPUT_PATH/inputArg10NotEnoughRules.txt
 
 echo ""
 echo "----------------------------"

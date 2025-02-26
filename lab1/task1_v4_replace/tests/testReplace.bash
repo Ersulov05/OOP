@@ -3,6 +3,10 @@
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 
+RED='\033[0;31m'  # Код для красного цвета
+GREEN='\033[0;32m' # Код для зеленого цвета
+NC='\033[0m'      # Код для сброса цвета
+
 INPUT_PATH="$SCRIPTPATH/inputs"
 OUTPUT_PATH="$SCRIPTPATH/outputs"
 
@@ -25,14 +29,14 @@ test_replace_with_files() {
 
     $SCRIPTPATH/../Replace < "$input_file" > temp.txt
 
-    diff -q temp.txt "$output_file"
+    diff -q temp.txt "$output_file" > /dev/null 2>&1
     
     if [ $? -eq 0 ]; then
-        echo "Test $TEST_COUNT Passed: Output matches $output_file"
+        echo -e "${GREEN}Test $TEST_COUNT Passed${NC}: Output matches $expected_output"
         rm temp.txt
         return 0
     else
-        echo "Test $TEST_COUNT Failed: Output differs from $output_file"
+        echo -e "${RED}Test $TEST_COUNT Failed${NC}: Output differs from $expected_output"
         rm temp.txt
         return 1
     fi
