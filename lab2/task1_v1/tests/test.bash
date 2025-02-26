@@ -81,6 +81,15 @@ if run_test_case $INPUT_PATH/input6.txt $OUTPUT_PATH/output6.txt; then
     PASS_COUNT=$((PASS_COUNT + 1))
 fi
 
+TEST_COUNT=$((TEST_COUNT + 1))
+if run_test_case $INPUT_PATH/input7.txt $OUTPUT_PATH/output7.txt; then
+    PASS_COUNT=$((PASS_COUNT + 1))
+fi
+
+TEST_COUNT=$((TEST_COUNT + 1))
+if run_test_case $INPUT_PATH/input8.txt $OUTPUT_PATH/output8.txt; then
+    PASS_COUNT=$((PASS_COUNT + 1))
+fi
 
 echo ""
 echo "----------------------------"
