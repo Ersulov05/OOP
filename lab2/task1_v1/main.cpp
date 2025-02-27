@@ -2,35 +2,34 @@
 
 const int NUMBER_OF_DECIMAL_PLACES = 3;
 
-double RoundToDecimal(double number, int decimals)
+void PrintSortedNumbers(std::ostream& output, const std::vector<double>& numbers)
 {
-	double factor = std::pow(10, decimals);
-	return std::round(number * factor) / factor;
-}
+	std::vector<double> sortedNumbers = numbers;
+	std::sort(sortedNumbers.begin(), sortedNumbers.end());
 
-void AssertStringCanConvertedToDouble(const std::string& string)
-{
-	const std::regex doubleRegex(R"([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)");
-
-	if (!std::regex_match(string, doubleRegex))
+	output << std::fixed << std::setprecision(NUMBER_OF_DECIMAL_PLACES);
+	for (size_t i = 0; i < sortedNumbers.size(); ++i)
 	{
-		throw InvalidValueException();
+		output << sortedNumbers[i];
+		if (i < sortedNumbers.size() - 1)
+		{
+			output << " ";
+		}
 	}
 }
 
-double StringToDouble(const std::string& string)
-{
-	AssertStringCanConvertedToDouble(string);
-	return std::stod(string);
-}
-
+// TODO: Сделать через input.fail чтобы сразу из потока считывать double
 void ReadNumbers(std::istream& input, std::vector<double>& numbers)
 {
-	std::string item;
-	while (input >> item)
+	double number;
+	while (input >> number)
 	{
-		double number = StringToDouble(item);
 		numbers.push_back(number);
+	}
+
+	if (input.fail() && !input.eof())
+	{
+		throw InvalidValueException();
 	}
 }
 
@@ -61,22 +60,6 @@ std::vector<double> ProcessNumbers(const std::vector<double>& numbers)
 		});
 	}
 	return result;
-}
-
-void PrintSortedNumbers(std::ostream& output, const std::vector<double>& numbers)
-{
-	std::vector<double> sortedNumbers = numbers;
-	std::sort(sortedNumbers.begin(), sortedNumbers.end());
-
-	output << std::fixed << std::setprecision(NUMBER_OF_DECIMAL_PLACES);
-	for (size_t i = 0; i < sortedNumbers.size(); ++i)
-	{
-		output << RoundToDecimal(sortedNumbers[i], NUMBER_OF_DECIMAL_PLACES);
-		if (i < sortedNumbers.size() - 1)
-		{
-			output << " ";
-		}
-	}
 }
 
 int main(int argc, char* argv[])
