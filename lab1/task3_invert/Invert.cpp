@@ -252,7 +252,7 @@ std::optional<Arg> ParseArgs(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-	const std::size_t MATRIX_SIZE = 3;
+	const std::size_t MATRIX_SIZE = 4;
 	Matrix<MATRIX_SIZE, MATRIX_SIZE> matrix;
 
 	try

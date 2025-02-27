@@ -15,3 +15,7 @@ test: make
 	echo
 	chmod +x ./tests/testInvertWithoutArgs.bash
 	./tests/testInvertWithoutArgs.bash
+
+test4x4: make
+	chmod +x ./tests/testInvertWithoutArgs4x4.bash
+	./tests/testInvertWithoutArgs4x4.bash
