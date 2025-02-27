@@ -80,8 +80,14 @@ void AssertCorrectSymbol(char symbol)
 	}
 }
 
-void LoadMap(std::istream& input, Map& map, std::vector<Point>& pointList)
+Map GetEmptyMap()
 {
+	return std::vector<std::vector<char>>(ROW_COUNT, std::vector<char>(COLUMN_COUNT, NO_USED_CELL));
+}
+
+Map LoadMap(std::istream& input, std::vector<Point>& pointList)
+{
+	auto map = GetEmptyMap();
 	std::string line;
 	std::size_t row = 0;
 	while (getline(input, line))
@@ -111,11 +117,7 @@ void LoadMap(std::istream& input, Map& map, std::vector<Point>& pointList)
 		}
 		row++;
 	}
-}
-
-Map GetEmptyMap()
-{
-	return std::vector<std::vector<char>>(ROW_COUNT, std::vector<char>(COLUMN_COUNT, NO_USED_CELL));
+	return map;
 }
 
 bool CheckBorders(std::size_t x, std::size_t y)
@@ -188,8 +190,7 @@ void PrintHelp()
 void Fill(std::istream& input, std::ostream& output)
 {
 	std::vector<Point> pointList;
-	auto map = GetEmptyMap(); // С большой буквы
-	LoadMap(input, map, pointList);
+	auto map = LoadMap(input, pointList);
 	FillMap(map, pointList);
 	PrintMap(output, map);
 }
