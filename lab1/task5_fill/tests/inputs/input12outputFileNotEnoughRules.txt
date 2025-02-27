@@ -1,0 +1,1 @@
+test with output file not enought rights
