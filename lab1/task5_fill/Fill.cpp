@@ -1,7 +1,3 @@
-// Ерсулов Андрей ПС-21, лабораторная №1
-// Среда Visual Studio Code
-// Компилятор g++ c++20
-
 #include "Exception/FailedOpenFileException.h"
 #include "Exception/InputOutputFileNameMatchException.h"
 #include "Exception/InvalidArgumentCountException.h"
@@ -29,8 +25,7 @@ struct Point
 	std::size_t columnIndex;
 };
 
-template <std::size_t Rows, std::size_t Columns>
-using Map = std::array<std::array<char, Columns>, Rows>;
+using Map = std::vector<std::vector<char>>; // заменить на вектор векторов
 
 struct Arg
 {
@@ -85,8 +80,7 @@ void AssertCorrectSymbol(char symbol)
 	}
 }
 
-template <std::size_t Rows, std::size_t Columns>
-void LoadMap(std::istream& input, Map<Rows, Columns>& map, std::vector<Point>& pointList)
+void LoadMap(std::istream& input, Map& map, std::vector<Point>& pointList)
 {
 	std::string line;
 	std::size_t row = 0;
@@ -98,12 +92,12 @@ void LoadMap(std::istream& input, Map<Rows, Columns>& map, std::vector<Point>& p
 			row++;
 			continue;
 		}
-		if (row + 1 > Rows)
+		if (row + 1 > ROW_COUNT)
 		{
 			break;
 		}
 
-		std::size_t lineSize = line.size() > Columns ? Columns : line.size();
+		std::size_t lineSize = line.size() > COLUMN_COUNT ? COLUMN_COUNT : line.size();
 
 		for (size_t col = 0; col < lineSize; ++col)
 		{
@@ -119,30 +113,26 @@ void LoadMap(std::istream& input, Map<Rows, Columns>& map, std::vector<Point>& p
 	}
 }
 
-template <std::size_t Rows, std::size_t Columns>
-Map<Rows, Columns> getEmptyMap()
+Map GetEmptyMap()
 {
-	Map<Rows, Columns> newMap;
-	for (std::size_t i = 0; i < Rows; ++i)
-	{
-		for (std::size_t j = 0; j < Columns; ++j)
-		{
-			newMap[i][j] = NO_USED_CELL;
-		}
-	}
-	return newMap;
+	return std::vector<std::vector<char>>(ROW_COUNT, std::vector<char>(COLUMN_COUNT, NO_USED_CELL));
 }
 
-template <std::size_t Rows, std::size_t Columns>
-void FillPointMap(Map<Rows, Columns>& map, const Point& point)
+bool CheckBorders(std::size_t x, std::size_t y)
 {
-	if (point.rowIndex < 0
-		|| point.columnIndex < 0
-		|| point.columnIndex >= Rows
-		|| point.rowIndex >= Columns
-		|| map[point.rowIndex][point.columnIndex] == FILL_SYMBOL
-		|| map[point.rowIndex][point.columnIndex] == WALL_SYMBOL
-		|| map[point.rowIndex][point.columnIndex] == POINT_SYMBOL)
+	return x < 0 || y < 0 || x >= ROW_COUNT || y >= COLUMN_COUNT;
+}
+
+bool CanFill(std::size_t x, std::size_t y, const Map& map)
+{
+	return map[y][x] == FILL_SYMBOL
+		|| map[y][x] == WALL_SYMBOL
+		|| map[y][x] == POINT_SYMBOL;
+}
+
+void FillPointMap(Map& map, const Point& point)
+{
+	if (CheckBorders(point.columnIndex, point.rowIndex) || CanFill(point.columnIndex, point.rowIndex, map))
 	{
 		return;
 	}
@@ -153,10 +143,9 @@ void FillPointMap(Map<Rows, Columns>& map, const Point& point)
 	FillPointMap(map, { point.rowIndex, point.columnIndex + 1 });
 }
 
-template <std::size_t Rows, std::size_t Columns>
-void FillMap(Map<Rows, Columns>& map, std::vector<Point>& pointList)
+void FillMap(Map& map, const std::vector<Point>& pointList)
 {
-	for (const auto point : pointList)
+	for (const auto& point : pointList)
 	{
 		FillPointMap(map, { point.rowIndex - 1, point.columnIndex });
 		FillPointMap(map, { point.rowIndex + 1, point.columnIndex });
@@ -165,10 +154,9 @@ void FillMap(Map<Rows, Columns>& map, std::vector<Point>& pointList)
 	}
 }
 
-template <std::size_t Rows, std::size_t Columns>
-void PrintMap(std::ostream& output, Map<Rows, Columns>& map)
+void PrintMap(std::ostream& output, Map& map)
 {
-	for (std::size_t i = 0; i < Rows; ++i)
+	for (std::size_t i = 0; i < ROW_COUNT; ++i)
 	{
 		if (map[i][0] == EMPTY_LINE_SYMBOL)
 		{
@@ -179,7 +167,7 @@ void PrintMap(std::ostream& output, Map<Rows, Columns>& map)
 		{
 			break;
 		}
-		for (std::size_t j = 0; j < Columns; ++j)
+		for (std::size_t j = 0; j < COLUMN_COUNT; ++j)
 		{
 			char symbol = map[i][j];
 			if (symbol == NO_USED_CELL)
@@ -197,22 +185,34 @@ void PrintHelp()
 	std::cout << "help\n";
 }
 
+void Fill(std::istream& input, std::ostream& output)
+{
+	std::vector<Point> pointList;
+	auto map = GetEmptyMap(); // С большой буквы
+	LoadMap(input, map, pointList);
+	FillMap(map, pointList);
+	PrintMap(output, map);
+}
+
 int main(int argc, char* argv[])
 {
 	try
 	{
 		std::optional<Arg> arg = ParseArgs(argc, argv);
-		std::vector<Point> pointList;
-		auto map = getEmptyMap<ROW_COUNT, COLUMN_COUNT>();
+		if (arg && arg->isHelp)
+		{
+			PrintHelp();
+			return 0;
+		}
+
+		std::ifstream inputFile;
+		std::ofstream outputFile;
+		std::istream& input = arg ? inputFile : std::cin;
+		std::ostream& output = arg ? outputFile : std::cout;
 		if (arg)
 		{
-			if (arg->isHelp)
-			{
-				PrintHelp();
-				return 0;
-			}
-			std::ifstream inputFile(arg->inputFileName);
-			std::ofstream outputFile(arg->outputFileName);
+			inputFile.open(arg->inputFileName);
+			outputFile.open(arg->outputFileName);
 
 			if (!inputFile.is_open())
 			{
@@ -222,20 +222,9 @@ int main(int argc, char* argv[])
 			{
 				throw FailedOpenFileException();
 			}
-
-			LoadMap(inputFile, map, pointList);
-			FillMap(map, pointList);
-			PrintMap(outputFile, map);
-
-			inputFile.close();
-			outputFile.close();
 		}
-		else
-		{
-			LoadMap(std::cin, map, pointList);
-			FillMap(map, pointList);
-			PrintMap(std::cout, map);
-		}
+
+		Fill(input, output);
 	}
 	catch (const std::exception& e)
 	{
