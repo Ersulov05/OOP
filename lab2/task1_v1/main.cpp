@@ -1,11 +1,4 @@
-#include "Exception/InvalidValueException.h"
-#include <algorithm>
-#include <cmath>
-#include <iomanip>
-#include <iostream>
-#include <numeric>
-#include <regex>
-#include <vector>
+#include "main.h"
 
 const int NUMBER_OF_DECIMAL_PLACES = 3;
 
