@@ -1,4 +1,5 @@
-#include "main.h"
+#include "Exception/InvalidValueException.h"
+#include "Vector.h"
 
 const int NUMBER_OF_DECIMAL_PLACES = 3;
 
@@ -18,9 +19,10 @@ void PrintSortedNumbers(std::ostream& output, const std::vector<double>& numbers
 	}
 }
 
-// TODO: Сделать через input.fail чтобы сразу из потока считывать double
-void ReadNumbers(std::istream& input, std::vector<double>& numbers)
+// TODO: Сделать через input.fail чтобы сразу из потока считывать double не делая проверку
+std::vector<double> ReadNumbers(std::istream& input)
 {
+	std::vector<double> numbers;
 	double number;
 	while (input >> number)
 	{
@@ -31,43 +33,14 @@ void ReadNumbers(std::istream& input, std::vector<double>& numbers)
 	{
 		throw InvalidValueException();
 	}
-}
-
-double GetSummPositiveElements(const std::vector<double>& numbers)
-{
-	return std::accumulate(numbers.begin(), numbers.end(), 0.0, [](double acc, double value) {
-		return value > 0 ? acc + value : acc;
-	});
-}
-
-int GetCountPositiveElements(const std::vector<double>& numbers)
-{
-	return std::count_if(numbers.begin(), numbers.end(), [](double value) {
-		return value > 0;
-	});
-}
-
-std::vector<double> ProcessNumbers(const std::vector<double>& numbers)
-{
-	double sum = GetSummPositiveElements(numbers);
-	int count = GetCountPositiveElements(numbers);
-	std::vector<double> result = numbers;
-	if (count > 0)
-	{
-		double avr = sum / count;
-		std::transform(result.begin(), result.end(), result.begin(), [avr](double value) {
-			return value + avr;
-		});
-	}
-	return result;
+	return numbers;
 }
 
 int main(int argc, char* argv[])
 {
 	try
 	{
-		std::vector<double> numbers;
-		ReadNumbers(std::cin, numbers);
+		std::vector<double> numbers = ReadNumbers(std::cin);
 		std::vector<double> result = ProcessNumbers(numbers);
 		PrintSortedNumbers(std::cout, result);
 		std::cout << std::endl;
