@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 class InvalidSymbolInExpressionException : public std::runtime_error

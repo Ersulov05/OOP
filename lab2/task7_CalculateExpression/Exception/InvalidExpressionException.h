@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 class InvalidExpressionException : public std::runtime_error

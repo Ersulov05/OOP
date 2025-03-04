@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 class ValueInExpressionOutOfRangeException : public std::runtime_error
