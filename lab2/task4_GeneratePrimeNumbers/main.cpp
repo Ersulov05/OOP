@@ -53,7 +53,8 @@ int main(int argc, char* argv[])
 	try
 	{
 		Arg arg = ParseArgs(argc, argv);
-		std::set<long> primeNumbers = GeneratePrimeNumbersSet(arg.upperBound);
+		std::set<long> primeNumbers;
+		GeneratePrimeNumbersSet(arg.upperBound, primeNumbers);
 		PrintPrimeNumbers(std::cout, primeNumbers, "\n");
 	}
 	catch (const std::exception& e)

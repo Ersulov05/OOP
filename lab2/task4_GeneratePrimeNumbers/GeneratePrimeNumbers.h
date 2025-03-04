@@ -1,4 +1,4 @@
 #include <set>
 #include <vector>
 
-std::set<long> GeneratePrimeNumbersSet(long upperBound);
+void GeneratePrimeNumbersSet(long upperBound, std::set<long>& primeNumbers);
