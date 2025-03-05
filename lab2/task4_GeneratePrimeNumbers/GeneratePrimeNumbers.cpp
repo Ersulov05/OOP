@@ -24,6 +24,7 @@ void GetIsPrimeNumbers(long upperBound, std::vector<bool>& isPrime)
 
 void GeneratePrimeNumbersSet(long upperBound, std::set<long>& primeNumbers)
 {
+	primeNumbers.clear();
 	if (upperBound < 2)
 		return;
 	std::vector<bool> isPrime;

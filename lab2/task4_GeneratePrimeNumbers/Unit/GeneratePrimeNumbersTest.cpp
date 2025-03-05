@@ -4,11 +4,25 @@
 
 TEST_CASE("test GeneratePrimeNumbersSet")
 {
-	REQUIRE(GeneratePrimeNumbersSet(10) == std::set<long>{ 2, 3, 5, 7 });
-	REQUIRE(GeneratePrimeNumbersSet(-1) == std::set<long>{});
-	REQUIRE(GeneratePrimeNumbersSet(0) == std::set<long>{});
-	REQUIRE(GeneratePrimeNumbersSet(1) == std::set<long>{});
-	REQUIRE(GeneratePrimeNumbersSet(2) == std::set<long>{ 2 });
-	REQUIRE(GeneratePrimeNumbersSet(3) == std::set<long>{ 2, 3 });
-	REQUIRE(GeneratePrimeNumbersSet(100000000).size() == 5761455);
+	std::set<long> primeNumbers;
+	GeneratePrimeNumbersSet(10, primeNumbers);
+	REQUIRE(primeNumbers == std::set<long>{ 2, 3, 5, 7 });
+
+	GeneratePrimeNumbersSet(-1, primeNumbers);
+	REQUIRE(primeNumbers == std::set<long>{});
+
+	GeneratePrimeNumbersSet(0, primeNumbers);
+	REQUIRE(primeNumbers == std::set<long>{});
+
+	GeneratePrimeNumbersSet(1, primeNumbers);
+	REQUIRE(primeNumbers == std::set<long>{});
+
+	GeneratePrimeNumbersSet(2, primeNumbers);
+	REQUIRE(primeNumbers == std::set<long>{ 2 });
+
+	GeneratePrimeNumbersSet(3, primeNumbers);
+	REQUIRE(primeNumbers == std::set<long>{ 2, 3 });
+
+	GeneratePrimeNumbersSet(100000000, primeNumbers);
+	REQUIRE(primeNumbers.size() == 5761455);
 }
