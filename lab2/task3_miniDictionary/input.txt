@@ -1,6 +1,18 @@
+ball | мЯч
 cat | кот
+cat | кошка
 cat\|\|\| \| кот | \|
 dog | СобаКа
+dog | собака
 meat | мясо
+pig | свинья
 wolf | Волк
+wolf | волк
+\| | cat\|\|\| \| кот
+волк | wolf
+кот | cat
+кошка | cat
+мясо | meat
+мяч | BalL
+свинья | pig
 собака | dog

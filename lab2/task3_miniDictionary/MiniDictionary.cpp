@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <set>
 
 const int EXPECTED_ARG_COUNT = 2;
 const std::string QUIT_STRING = "...";
@@ -12,7 +13,23 @@ const std::string ESCAPE_SYMBOL = "|";
 const std::string DIVIDING_DICTIONARY_STRING = " " + ESCAPE_SYMBOL + " ";
 const std::string CONSOLE_SYMBOL = ">";
 
-void LoadDictionary(const std::string& inputFileName, std::map<std::string, std::string>& dictionary)
+using Dictionary = std::map<std::string, std::set<std::string>>;
+
+void AddTranslationInDictionary(Dictionary& dictionary, const std::string& key, const std::string& value)
+{
+	std::string savedKey = GetLowerCase(GetTrimmedString(key));
+	std::string savedValue = GetTrimmedString(value);
+	if (dictionary.find(savedKey) != dictionary.end())
+	{
+		dictionary[savedKey].insert(savedValue);
+	}
+	else
+	{
+		dictionary[savedKey] = { savedValue };
+	}
+}
+
+void LoadDictionary(const std::string& inputFileName, Dictionary& dictionary)
 {
 	std::ifstream inputFile(inputFileName);
 	if (!inputFile.is_open())
@@ -29,17 +46,18 @@ void LoadDictionary(const std::string& inputFileName, std::map<std::string, std:
 			std::string key = line.substr(0, pos);
 			std::string value = line.substr(pos + DIVIDING_DICTIONARY_STRING.size());
 
-			key = GetUnescapedString(GetLowerCase(GetTrimmedString(key)), ESCAPE_SYMBOL);
-			value = GetUnescapedString(GetTrimmedString(value), ESCAPE_SYMBOL);
+			key = GetUnescapedString(key, ESCAPE_SYMBOL);
+			value = GetUnescapedString(value, ESCAPE_SYMBOL);
 
-			dictionary[key] = value;
+			AddTranslationInDictionary(dictionary, key, value);
+			AddTranslationInDictionary(dictionary, value, key);
 		}
 	}
 
 	inputFile.close();
 }
 
-void SaveDictionary(const std::string& outputFileName, const std::map<std::string, std::string>& dictionary)
+void SaveDictionary(const std::string& outputFileName, const Dictionary& dictionary)
 {
 	std::ofstream outputFile(outputFileName);
 	if (!outputFile.is_open())
@@ -47,9 +65,12 @@ void SaveDictionary(const std::string& outputFileName, const std::map<std::strin
 		throw FailedOpenFileException();
 	}
 
-	for (const auto& [key, value] : dictionary)
+	for (const auto& [key, values] : dictionary)
 	{
-		outputFile << GetEscapedString(key, ESCAPE_SYMBOL) << DIVIDING_DICTIONARY_STRING << GetEscapedString(value, ESCAPE_SYMBOL) << std::endl;
+		for (const auto& value : values)
+		{
+			outputFile << GetEscapedString(key, ESCAPE_SYMBOL) << DIVIDING_DICTIONARY_STRING << GetEscapedString(value, ESCAPE_SYMBOL) << std::endl;
+		}
 	}
 	outputFile.close();
 	std::cout << "Изменения сохранены. ";
@@ -63,14 +84,14 @@ std::string GetExpression()
 	return line;
 }
 
-std::string GetTranslationExpressionFromDictionary(const std::map<std::string, std::string>& dictionary, const std::string& expression)
+std::set<std::string> GetTranslationExpressionFromDictionary(const Dictionary& dictionary, const std::string& expression)
 {
 	auto it = dictionary.find(GetLowerCase(GetTrimmedString(expression)));
 	if (it != dictionary.end())
 	{
 		return it->second;
 	}
-	return "";
+	return {};
 }
 
 bool RequestSaveDictionary()
@@ -81,17 +102,18 @@ bool RequestSaveDictionary()
 	return response == "Y" || response == "y";
 }
 
-std::string RequestTranslation(const std::string& expression)
+std::set<std::string> RequestTranslation(const std::string& expression)
 {
 	std::cout << "Неизвестное слово “" << expression << "”. Введите перевод или пустую строку для отказа.\n" + CONSOLE_SYMBOL;
 	std::string translatedExpression;
 	getline(std::cin, translatedExpression);
-	return translatedExpression;
+	return { translatedExpression };
 }
 
-void SaveTranslationInDictionary(std::map<std::string, std::string>& dictionary, const std::string& expression, const std::string& translatedExpression)
+void SaveTranslationInDictionary(Dictionary& dictionary, const std::string& expression, const std::string& translatedExpression)
 {
-	dictionary[GetLowerCase(GetTrimmedString(expression))] = translatedExpression;
+	AddTranslationInDictionary(dictionary, expression, translatedExpression);
+	AddTranslationInDictionary(dictionary, translatedExpression, expression);
 	std::cout << "Слово “" << expression << "” сохранено в словаре как “" << translatedExpression << "”.\n";
 }
 
@@ -100,10 +122,25 @@ void PrintIgnoreSaveMessage(const std::string& expression)
 	std::cout << "Слово “" << expression << "” проигнорировано.\n";
 }
 
-bool WorkWithDictionary(std::map<std::string, std::string>& dictionary)
+void PrintTranslations(const std::set<std::string>& translations)
+{
+	size_t i = 0;
+	for (const auto& translation : translations)
+	{
+		std::cout << translation;
+		if (i < translations.size() - 1)
+		{
+			std::cout << ", ";
+		}
+		++i;
+	}
+	std::cout << std::endl;
+}
+
+bool WorkWithDictionary(Dictionary& dictionary)
 {
 	std::string string;
-	std::string translation;
+	std::set<std::string> translations;
 	bool isChangedDictionary = false;
 	while (true)
 	{
@@ -112,24 +149,22 @@ bool WorkWithDictionary(std::map<std::string, std::string>& dictionary)
 		{
 			break;
 		}
-		translation = GetTranslationExpressionFromDictionary(dictionary, string);
-		if (translation.size() > 0)
+
+		translations = GetTranslationExpressionFromDictionary(dictionary, string);
+		if (translations.size() > 0)
 		{
-			std::cout << translation << std::endl;
+			PrintTranslations(translations);
+			continue;
 		}
-		else
+
+		translations = RequestTranslation(string);
+		if (translations.size() > 0)
 		{
-			translation = RequestTranslation(string);
-			if (translation.size() > 0)
-			{
-				SaveTranslationInDictionary(dictionary, string, translation);
-				isChangedDictionary = true;
-			}
-			else
-			{
-				PrintIgnoreSaveMessage(string);
-			}
+			SaveTranslationInDictionary(dictionary, string, *translations.begin());
+			isChangedDictionary = true;
+			continue;
 		}
+		PrintIgnoreSaveMessage(string);
 	}
 	return isChangedDictionary;
 }
@@ -172,7 +207,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		Arg arg = ParseArgs(argc, argv);
-		std::map<std::string, std::string> dictionary;
+		Dictionary dictionary;
 		LoadDictionary(arg.fileName, dictionary);
 		if (WorkWithDictionary(dictionary) && RequestSaveDictionary())
 		{
