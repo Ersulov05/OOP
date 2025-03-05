@@ -1,4 +1,4 @@
-#include "stringUtils.h"
+#include "StringUtils.h"
 
 wchar_t toLower(const wchar_t& symbol)
 {

@@ -1,6 +1,4 @@
-#ifndef STRING_UTILS_H
-#define STRING_UTILS_H
-
+#pragma once
 #include "../Exception/InvalidConvertationStringException.h"
 #include <string>
 #include <vector>
@@ -12,5 +10,3 @@ std::string ReplaceLine(const std::string& string,
 	const std::string& replaceString);
 std::string GetEscapedString(const std::string& string, const std::string& escapeSymbol);
 std::string GetUnescapedString(const std::string& string, const std::string& escapeSymbol);
-
-#endif
