@@ -1,4 +1,5 @@
 #include "CalculateExpression.h"
+#include <numeric>
 
 std::vector<int> GetValues(std::stack<Element>& stack)
 {
@@ -128,10 +129,10 @@ Element GetElement(std::istream& input)
 
 		return CharToElement(ch);
 	}
-	if (!isValue) // TODO: Вынести в Assert
+	if (!isValue)
 	{
 		throw InvalidExpressionException();
 	}
 
-	return CreateElement(value);
+	return CreateElement(negativeCoef * value);
 }

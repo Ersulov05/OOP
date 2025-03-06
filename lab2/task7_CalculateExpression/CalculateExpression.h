@@ -4,7 +4,6 @@
 #include "./Exception/ValueOutOfRangeWhenCalculatingException.h"
 #include "./Utils/Element.h"
 #include "./Utils/NumberUtils.h"
-#include <numeric>
 #include <optional>
 #include <stack>
 #include <vector>

@@ -5,7 +5,6 @@
 
 TEST_CASE("TestGetValues")
 {
-
 	std::stack<Element> stack;
 	REQUIRE(GetValues(stack) == std::vector<int>{});
 
@@ -195,6 +194,7 @@ TEST_CASE("TestCalculateExpressionInStack")
 TEST_CASE("TestGetElement")
 {
 	std::istringstream input;
+
 	REQUIRE_THROWS_AS(GetElement(input), InvalidExpressionException);
 
 	input.clear();
@@ -222,7 +222,6 @@ TEST_CASE("TestGetElement")
 
 	input.clear();
 	input.str("2147483648");
-	element = GetElement(input);
 	REQUIRE_THROWS_AS(GetElement(input), ValueOutOfRangeException);
 
 	input.clear();
@@ -233,7 +232,6 @@ TEST_CASE("TestGetElement")
 
 	input.clear();
 	input.str("-2147483648");
-	element = GetElement(input);
 	REQUIRE_THROWS_AS(GetElement(input), ValueOutOfRangeException);
 
 	input.clear();
@@ -252,5 +250,3 @@ TEST_CASE("TestGetElement")
 	input.str("&");
 	REQUIRE_THROWS_AS(GetElement(input), InvalidSymbolInExpressionException);
 }
-
-// Element GetElement(std::istream& input);
