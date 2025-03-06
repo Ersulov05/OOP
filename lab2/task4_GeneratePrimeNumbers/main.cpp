@@ -40,11 +40,11 @@ Arg ParseArgs(int argc, char* argv[])
 	return arg;
 }
 
-void PrintPrimeNumbers(std::ostream& output, const std::set<long>& primeNumbers, const std::string& separator)
+void PrintPrimeNumbers(std::ostream& output, const std::set<long>& primeNumbers)
 {
 	for (long primeNumber : primeNumbers)
 	{
-		output << primeNumber << separator;
+		output << primeNumber << std::endl;
 	}
 }
 
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 		Arg arg = ParseArgs(argc, argv);
 		std::set<long> primeNumbers;
 		GeneratePrimeNumbersSet(arg.upperBound, primeNumbers);
-		PrintPrimeNumbers(std::cout, primeNumbers, "\n");
+		PrintPrimeNumbers(std::cout, primeNumbers);
 	}
 	catch (const std::exception& e)
 	{
