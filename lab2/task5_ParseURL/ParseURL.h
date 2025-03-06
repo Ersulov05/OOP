@@ -2,9 +2,6 @@
 #include "./Exception/InvalidProtocolException.h"
 #include "./Exception/InvalidURLException.h"
 #include "./Exception/PortOutOfRangeException.h"
-#include "Utils/StringUtils.h"
-#include <iostream>
-#include <regex>
 #include <string>
 
 enum class Protocol

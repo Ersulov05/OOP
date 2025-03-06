@@ -1,4 +1,6 @@
 #include "ParseURL.h"
+#include "Utils/StringUtils.h"
+#include <regex>
 
 const int MAX_PORT = 65535;
 const int MIN_PORT = 1;
