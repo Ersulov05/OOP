@@ -12,7 +12,7 @@ enum class ElementType
 enum class Operation
 {
 	PLUS,
-	MYLTIPLY
+	MULTIPLY
 };
 
 struct Element

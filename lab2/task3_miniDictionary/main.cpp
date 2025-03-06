@@ -128,6 +128,7 @@ Arg ParseArgs(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+	setlocale(LC_ALL, "ru_RU.UTF-8");
 	try
 	{
 		Arg arg = ParseArgs(argc, argv);

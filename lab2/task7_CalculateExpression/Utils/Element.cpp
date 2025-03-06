@@ -39,7 +39,7 @@ Element CharToElement(char ch)
 	case ')':
 		return CreateCloseBracketElement();
 	case '*':
-		return CreateElement(Operation::MYLTIPLY);
+		return CreateElement(Operation::MULTIPLY);
 	case '+':
 		return CreateElement(Operation::PLUS);
 	default:

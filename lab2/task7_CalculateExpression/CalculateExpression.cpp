@@ -73,7 +73,7 @@ int Calculate(std::vector<int>& values, Operation operation)
 	{
 	case Operation::PLUS:
 		return GetSumm(values);
-	case Operation::MYLTIPLY:
+	case Operation::MULTIPLY:
 		return GetComposition(values);
 	default:
 		throw std::runtime_error("Unknown operation");
@@ -85,7 +85,7 @@ int CalculateExpressionInStack(std::stack<Element>& stack)
 	std::vector<int> values = GetValues(stack);
 	std::optional<Operation> operation = GetOperation(stack);
 	ClearOpenBracket(stack);
-	if (operation)
+	if (operation && !values.empty())
 	{
 		return Calculate(values, *operation);
 	}
