@@ -11,10 +11,8 @@ const int EXPECTED_ARG_COUNT = 3;
 
 struct Arg
 {
-	bool isCrypt = false;
 	std::string outputFileName;
 	std::string inputFileName;
-	u_int8_t key = 0;
 };
 
 void AssertInputOutputFileNameMismatch(const std::string& inputFileName, const std::string& outputFileName)
@@ -77,7 +75,7 @@ int main(int argc, char* argv[])
 				throw FailedOpenFileException();
 			}
 			DecodeHTML(inputFile, outputFile);
-			inputFile.close();
+			inputFile.close(); // TODO: Убрать т.к. закроется автоматически
 			outputFile.close();
 		}
 		else

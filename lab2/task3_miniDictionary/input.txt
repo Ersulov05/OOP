@@ -11,6 +11,7 @@ cat\|\|\| \| кот | \|
 dog | собака
 mam | mam
 meat | мясо
+pet | pet
 pig | свинья
 play | Играть
 play | играть

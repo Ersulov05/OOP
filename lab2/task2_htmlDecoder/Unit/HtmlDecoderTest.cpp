@@ -52,3 +52,5 @@ TEST_CASE("test DecodeHTMLString")
 		REQUIRE(DecodeHTMLString(testData.inputString) == testData.outputString);
 	}
 }
+
+// TODO Добавить тесты считывание с файлика
