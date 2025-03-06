@@ -3,7 +3,6 @@
 #include "./Exception/ValueOutOfRangeException.h"
 #include "./Exception/ValueOutOfRangeWhenCalculatingException.h"
 #include "./Utils/Element.h"
-#include "./Utils/NumberUtils.h"
 #include <optional>
 #include <stack>
 #include <vector>

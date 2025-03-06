@@ -1,4 +1,5 @@
 #include "CalculateExpression.h"
+#include "./Utils/NumberUtils.h"
 #include <numeric>
 
 std::vector<int> GetValues(std::stack<Element>& stack)
