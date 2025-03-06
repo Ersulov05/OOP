@@ -1,4 +1,5 @@
 #include "GeneratePrimeNumbers.h"
+#include <vector>
 
 void GetIsPrimeNumbers(long upperBound, std::vector<bool>& isPrime)
 {
@@ -30,7 +31,8 @@ void GeneratePrimeNumbersSet(long upperBound, std::set<long>& primeNumbers)
 	std::vector<bool> isPrime;
 	GetIsPrimeNumbers(upperBound, isPrime);
 
-	for (long i = 2; i <= upperBound; ++i)
+	primeNumbers.insert(2);
+	for (long i = 3; i <= upperBound; i += 2)
 	{
 		if (isPrime[i])
 		{
