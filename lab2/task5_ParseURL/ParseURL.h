@@ -12,6 +12,4 @@ enum class Protocol
 	UNKNOWN = 0,
 };
 
-Protocol ConvertStringToProtocol(const std::string& string);
-
 void ParseURL(std::string const& url, Protocol& protocol, int& port, std::string& host, std::string& document);
