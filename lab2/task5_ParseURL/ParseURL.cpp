@@ -62,7 +62,7 @@ int ConvertStringToPort(const std::string& string, Protocol protocol)
 
 void ParseURL(std::string const& url, Protocol& protocol, int& port, std::string& host, std::string& document)
 {
-	std::regex urlRegex(R"(^(.+)://([^/:]+)(?::([^/]*))?(/.*)?$)");
+	std::regex urlRegex(R"(^(.+)://([^/:]+)(?::([^/]*))?(/.*)?$)"); // TODO: http https ftp //выяснить что значат ::
 	std::smatch match;
 
 	if (!std::regex_match(url, match, urlRegex))

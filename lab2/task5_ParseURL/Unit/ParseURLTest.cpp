@@ -25,6 +25,7 @@ TEST_CASE("test ParseURL")
 		{ "https://ersulov.ru:8080", Protocol::HTTPS, 8080, "ersulov.ru", "" },
 		{ "HttP://ersulov.ru:1/index.php", Protocol::HTTP, 1, "ersulov.ru", "index.php" },
 		{ "HTTPS://ersulov.ru:65535/lab1/document/index.php", Protocol::HTTPS, 65535, "ersulov.ru", "lab1/document/index.php" },
+		// TODO проверить query параметр
 	};
 
 	URL url;
