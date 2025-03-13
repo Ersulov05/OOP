@@ -17,8 +17,8 @@ public:
 	Gear();
 	~Gear(){};
 	GearType GetGearType();
-	std::optional<int> GetMinSpeed();
-	std::optional<int> GetMaxSpeed();
+	std::optional<int> GetMinSpeed() const;
+	std::optional<int> GetMaxSpeed() const;
 
 private:
 	void AssertCorrectGearTypeWithSpeedLimits();

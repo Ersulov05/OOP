@@ -41,11 +41,11 @@ GearType Gear::GetGearType()
 	return this->gearType;
 }
 
-std::optional<int> Gear::GetMinSpeed()
+std::optional<int> Gear::GetMinSpeed() const
 {
 	return this->minSpeed;
 }
-std::optional<int> Gear::GetMaxSpeed()
+std::optional<int> Gear::GetMaxSpeed() const
 {
 	return this->maxSpeed;
 }

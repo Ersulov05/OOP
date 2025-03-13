@@ -29,7 +29,12 @@ public:
 		return this->gears[gearNumber];
 	}
 
-	int GetCurrentGear() const
+	Gear GetCurrentGear() const
+	{
+		return FindGear(this->currentGearNumber);
+	}
+
+	int GetCurrentGearNumber() const
 	{
 		return this->currentGearNumber;
 	}
@@ -44,7 +49,7 @@ private:
 	void AddReverseGear(GearSpeedInterval reverseGearSpeedInterval);
 	void AddNeutralGear();
 	void AddDriveGears(std::vector<GearSpeedInterval> driveGearsSpeedInterval);
-	Gear FindGear(int gearNumber);
+	Gear FindGear(int gearNumber) const;
 
 	MapGearCar gears = {};
 	int currentGearNumber = 0;

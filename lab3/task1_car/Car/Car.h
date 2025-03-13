@@ -15,6 +15,7 @@ public:
 	bool GetEngineStatus();
 
 private:
+	void AssertEngineOn();
 	void UpdateDirection();
 	Transmission transmission;
 	bool engineStatus;
