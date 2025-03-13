@@ -87,7 +87,7 @@ TEST_CASE("TestGetSumm")
 	numbers = { -2, 2 };
 	REQUIRE(GetSumm(numbers) == 0);
 
-	numbers = { 1, 2147483647 };
+	numbers = { 1, 2147483647 }; // TODO: использовать __INT_MAX
 	REQUIRE_THROWS_AS(GetSumm(numbers), ValueOutOfRangeWhenCalculatingException);
 
 	numbers = { 0, 2147483647 };
@@ -142,7 +142,7 @@ TEST_CASE("TestCalculate")
 	REQUIRE(Calculate(numbers, Operation::MULTIPLY) == 125);
 
 	numbers = {};
-	REQUIRE(Calculate(numbers, Operation::PLUS) == 0);
+	REQUIRE(Calculate(numbers, Operation::PLUS) == 0); // TODO: Подумать над исключением
 	REQUIRE(Calculate(numbers, Operation::MULTIPLY) == 1);
 }
 

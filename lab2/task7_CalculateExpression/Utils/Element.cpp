@@ -14,7 +14,8 @@ Element CreateCloseBracketElement()
 	return element;
 }
 
-Element CreateElement(Operation operation)
+// TODO: Избавиться от перегрузки CreateElement
+Element CreateElement(Operation operation) // TODO: паттерн фабричный метод
 {
 	Element element;
 	element.type = ElementType::OPERATION;
@@ -34,7 +35,7 @@ Element CharToElement(char ch)
 {
 	switch (ch)
 	{
-	case '(':
+	case '(': // TODO: Вынести в константы
 		return CreateOpenBracketElement();
 	case ')':
 		return CreateCloseBracketElement();

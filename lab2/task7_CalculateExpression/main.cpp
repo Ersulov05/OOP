@@ -46,7 +46,7 @@ void CalculateExpression(std::istream& input, std::ostream& output)
 		Element element = GetElement(input);
 		if (element.type == ElementType::CLOSE_BRACKET)
 		{
-			int result = CalculateExpressionInStack(expression);
+			int result = CalculateExpressionInStack(expression); // TODO: in или on
 			element = CreateElement(result);
 		}
 		expression.push(element);

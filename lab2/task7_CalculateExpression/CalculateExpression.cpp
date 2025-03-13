@@ -2,7 +2,7 @@
 #include "./Utils/NumberUtils.h"
 #include <numeric>
 
-std::vector<int> GetValues(std::stack<Element>& stack)
+std::vector<int> GetValues(std::stack<Element>& stack) // TODO: GetExpressionNumbers
 {
 	std::vector<int> values;
 	Element element;
@@ -93,7 +93,7 @@ int CalculateExpressionInStack(std::stack<Element>& stack)
 	}
 	if (values.size() != 1)
 	{
-		throw InvalidExpressionException();
+		throw InvalidExpressionException(); // TODO: Пользовательская ошибка argument_error или logic_error, желательно выводить из-за чего ошибка
 	}
 	return values[0];
 }
@@ -102,7 +102,7 @@ Element GetElement(std::istream& input)
 {
 	int value = 0;
 	int negativeCoef = GetNegativeCoef(input);
-	bool isValue = false;
+	bool isValue = false; // TODO: isNumber
 	char ch = '\0';
 
 	while (input.get(ch))
