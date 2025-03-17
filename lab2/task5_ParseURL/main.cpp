@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 		std::string urlString;
 		getline(std::cin, urlString);
 		URL url;
-		ParseURL(urlString, url.protocol, url.port, url.host, url.document); // можно просто передавать url по ссылке
+		ParseURL(urlString, url.protocol, url.port, url.host, url.document);
 		std::cout << urlString << std::endl;
 		PrintParsedURL(std::cout, url);
 	}
