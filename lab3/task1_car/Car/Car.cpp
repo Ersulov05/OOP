@@ -1,4 +1,10 @@
 #include "Car.h"
+#include "./Exception/EngineOffGearSettingException.h"
+#include "./Exception/EngineOffSpeedSettingException.h"
+#include "./Exception/NegativeSpeedException.h"
+#include "./Exception/NeutralGearAccelerationException.h"
+#include "./Exception/SpeedOutOfGearRangeException.h"
+#include "./Exception/UnCorrectTurnOffEngine.h"
 #include <iostream>
 
 Car::Car(Transmission transmission)
@@ -9,20 +15,69 @@ Car::Car(Transmission transmission)
 {
 }
 
-bool Car::TurnOnEngine()
+void AsserCompatibilitySpeedToGear(int speed, const Gear gear)
 {
-	this->engineStatus = true;
-	return true;
+	if (speed < gear.GetMinSpeed() || gear.GetMaxSpeed() < speed)
+	{
+		throw SpeedOutOfGearRangeException();
+	}
 }
 
-bool Car::TurnOffEngine()
+void AssertSpeedDecreased(int currentSpeed, int newSpeed)
 {
+	if (currentSpeed < newSpeed)
+	{
+		throw NeutralGearAccelerationException();
+	}
+}
+
+void AssertSpeedNotNegative(int speed)
+{
+	if (speed < 0)
+	{
+		throw NegativeSpeedException();
+	}
+}
+
+void Car::AssertCorrectTurnOffEngine()
+{
+	Gear currentGear = this->transmission.GetCurrentGear();
+	if (this->speed != 0 || currentGear.GetGearType() != GearType::NEUTRAL)
+	{
+		throw UnCorrectTurnOffEngine();
+	}
+}
+
+void Car::AssertSpeedSettingsWithEngineOn()
+{
+	if (!this->engineStatus)
+	{
+		throw EngineOffSpeedSettingException();
+	}
+}
+
+void Car::AssertGearShiftingWithEngineOn()
+{
+	if (!this->engineStatus)
+	{
+		throw EngineOffGearSettingException();
+	}
+}
+
+void Car::TurnOnEngine()
+{
+	this->engineStatus = true;
+}
+
+void Car::TurnOffEngine()
+{
+	AssertCorrectTurnOffEngine();
 	this->engineStatus = false;
-	return true;
 }
 
 void Car::SetGear(int gear)
 {
+	AssertGearShiftingWithEngineOn();
 	this->transmission.SetGear(gear, this->speed, this->direction);
 }
 
@@ -49,42 +104,10 @@ void Car::UpdateDirection()
 	}
 }
 
-void AsserCompatibilitySpeedToGear(int speed, const Gear gear)
-{
-	if (speed < gear.GetMinSpeed() || gear.GetMaxSpeed() < speed)
-	{
-		throw std::runtime_error("Speed is out of gear range");
-	}
-}
-
-void AssertSpeedDecreased(int currentSpeed, int newSpeed)
-{
-	if (currentSpeed < newSpeed)
-	{
-		throw std::runtime_error("Cannot accelerate on neutral");
-	}
-}
-
-void AssertSpeedNotNegative(int speed)
-{
-	if (speed < 0)
-	{
-		throw std::runtime_error("Speed cannot be negative");
-	}
-}
-
-void Car::AssertEngineOn()
-{
-	if (!this->engineStatus)
-	{
-		throw std::runtime_error("Cannot set speed while engine is off");
-	}
-}
-
 void Car::SetSpeed(int speed)
 {
 	AssertSpeedNotNegative(speed);
-	AssertEngineOn();
+	AssertSpeedSettingsWithEngineOn();
 	Gear currentGear = this->transmission.GetCurrentGear();
 	if (currentGear.GetGearType() == GearType::NEUTRAL)
 	{
@@ -98,7 +121,7 @@ void Car::SetSpeed(int speed)
 	UpdateDirection();
 }
 
-Direction Car::GetDirection()
+Direction Car::GetDirection() const
 {
 	return this->direction;
 }
@@ -113,7 +136,7 @@ int Car::GetGear() const
 	return this->transmission.GetCurrentGearNumber();
 }
 
-bool Car::GetEngineStatus()
+bool Car::GetEngineStatus() const
 {
 	return this->engineStatus;
 }

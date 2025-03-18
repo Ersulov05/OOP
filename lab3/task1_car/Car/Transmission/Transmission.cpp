@@ -80,6 +80,10 @@ bool isCorrectEnablingReverseGear(Gear newGear, Direction direction)
 void Transmission::AssertCorrectGearshift(Gear newGear, int currentSpeed, Direction direction)
 {
 	Gear currentGear = FindGear(this->currentGearNumber);
+	if (newGear.GetGearType() == GearType::NEUTRAL)
+	{
+		return;
+	}
 	if (!isCorrectEnablingReverseGear(newGear, direction))
 	{
 		throw UnCorrectGearshiftException();
@@ -98,7 +102,7 @@ void Transmission::SetGear(int gearNumber, int currentSpeed, Direction direction
 	this->currentGearNumber = gearNumber;
 };
 
-Gear Transmission::FindGear(int gearNumber)
+Gear Transmission::FindGear(int gearNumber) const
 {
 	auto it = gears.find(gearNumber);
 	if (it == gears.end())

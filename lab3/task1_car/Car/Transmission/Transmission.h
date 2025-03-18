@@ -1,16 +1,10 @@
 #pragma once
+#include "../Direction.h"
 #include "./Gear/Gear.h"
 #include <map>
 #include <vector>
 
 using MapGearCar = std::map<int, Gear>;
-
-enum class Direction
-{
-	FORWARD,
-	BACKWARD,
-	STANDING_STILL,
-};
 
 struct GearSpeedInterval
 {

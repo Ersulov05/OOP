@@ -1,5 +1,5 @@
 #include "ArgUtils.h"
-#include "../Exception/ValueOutOfRangeException.h"
+#include "./Exception/InvalidCommandArgumentException.h"
 
 int StringArgToInt(const std::string& string)
 {
@@ -10,13 +10,11 @@ int StringArgToInt(const std::string& string)
 	}
 	catch (const std::invalid_argument& e)
 	{
-		std::cout << "error" << std::endl;
-		// error Invalid command argument
+		throw InvalidCommandArgumentException();
 	}
 	catch (const std::out_of_range& e)
 	{
-		std::cout << "error" << std::endl;
-		// error Invalid command argument
+		throw InvalidCommandArgumentException();
 	}
 	return number;
 }

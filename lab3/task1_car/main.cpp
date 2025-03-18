@@ -1,59 +1,55 @@
-// #include "./Car/Gear.h"
-// #include "./Car/Transmission/Transmission.h"
+#include "./AppCommand.h"
 #include "./Car/Car.h"
+#include "./Controller/CarCommand.h"
 #include "./Controller/CarController.h"
 #include <iostream>
-#include <map>
-#include <sstream>
-#include <vector>
 
-struct Command
-{
-	std::string stringCommand;
-	std::vector<std::string> stringArgs;
-};
-
-Command GetCommand(std::istream& input)
-{
-	std::string line;
-	getline(input, line);
-
-	std::istringstream lineStream(line);
-	Command command;
-	lineStream >> command.stringCommand;
-	std::string arg;
-	while (lineStream >> arg)
-	{
-		command.stringArgs.push_back(arg);
-	}
-
-	return command;
-}
-
-// Transmission CreateTransmission()
-// {
-// 	return Transmission({ 0, 20 }, { { 0, 20 }, { 10, 40 }, { 20, 80 } });
-// }
+const std::string EXIT_STRING = "Exit";
+const std::string BEGIN_STRING_INPUT = ">";
+const int MIN_SPEED_REVERSE_GEAR = 0;
+const int MAX_SPEED_REVERSE_GEAR = 20;
+const int MIN_SPEED_FIRST_GEAR = 0;
+const int MAX_SPEED_FIRST_GEAR = 30;
+const int MIN_SPEED_SECOND_GEAR = 20;
+const int MAX_SPEED_SECOND_GEAR = 50;
+const int MIN_SPEED_THIRD_GEAR = 30;
+const int MAX_SPEED_THIRD_GEAR = 60;
+const int MIN_SPEED_FOURTH_GEAR = 40;
+const int MAX_SPEED_FOURTH_GEAR = 90;
+const int MIN_SPEED_FIFTH_GEAR = 50;
+const int MAX_SPEED_FIFTH_GEAR = 150;
 
 Car CreateCar()
 {
-	Transmission transmission({ 0, 20 }, { { 0, 20 }, { 10, 40 }, { 20, 80 } });
+	GearSpeedInterval reverseGearSpeedInterval = { MIN_SPEED_REVERSE_GEAR, MAX_SPEED_REVERSE_GEAR };
+	std::vector<GearSpeedInterval> driveGearSpeedIntervals = {
+		{ MIN_SPEED_FIRST_GEAR, MAX_SPEED_FIRST_GEAR },
+		{ MIN_SPEED_SECOND_GEAR, MAX_SPEED_SECOND_GEAR },
+		{ MIN_SPEED_THIRD_GEAR, MAX_SPEED_THIRD_GEAR },
+		{ MIN_SPEED_FOURTH_GEAR, MAX_SPEED_FOURTH_GEAR },
+		{ MIN_SPEED_FIFTH_GEAR, MAX_SPEED_FIFTH_GEAR }
+	};
+	Transmission transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
+
 	return Car(transmission);
 }
 
 void CarProcess(std::istream& input, std::ostream& output)
 {
 	Car car = CreateCar();
+	CarController carController(car);
 	std::string line;
+
 	while (true)
 	{
-		Command appCommand = GetCommand(input);
-		if (appCommand.stringCommand == "Exit")
+		output << BEGIN_STRING_INPUT;
+		AppCommand appCommand = GetAppCommand(input);
+		if (appCommand.stringCommand == EXIT_STRING)
 		{
 			break;
 		}
 		CarCommand carCommand = GetCarCommandByString(appCommand.stringCommand);
-		ProcessCarCommand(output, car, carCommand, appCommand.stringArgs);
+		carController.ProcessCarCommand(output, carCommand, appCommand.stringArgs);
 	}
 }
 

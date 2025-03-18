@@ -1,22 +1,26 @@
 #pragma once
+#include "./Direction.h"
 #include "./Transmission/Transmission.h"
 
 class Car
 {
 public:
 	Car(Transmission transmission);
-	bool TurnOnEngine();
-	bool TurnOffEngine();
+	void TurnOnEngine();
+	void TurnOffEngine();
 	void SetGear(int gear);
 	void SetSpeed(int speed);
-	Direction GetDirection();
+	Direction GetDirection() const;
 	int GetSpeed() const;
 	int GetGear() const;
-	bool GetEngineStatus();
+	bool GetEngineStatus() const;
 
 private:
-	void AssertEngineOn();
+	void AssertCorrectTurnOffEngine();
+	void AssertSpeedSettingsWithEngineOn();
+	void AssertGearShiftingWithEngineOn();
 	void UpdateDirection();
+
 	Transmission transmission;
 	bool engineStatus;
 	Direction direction;
