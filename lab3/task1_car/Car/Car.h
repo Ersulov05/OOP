@@ -21,8 +21,8 @@ private:
 	void AssertGearShiftingWithEngineOn();
 	void UpdateDirection();
 
-	Transmission transmission;
-	bool engineStatus;
-	Direction direction;
-	int speed;
+	Transmission m_transmission;
+	bool m_engineStatus;
+	Direction m_direction;
+	int m_speed;
 };

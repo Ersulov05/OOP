@@ -1,1 +1,7 @@
+Car_unit_tests
+Transmission_unit_tests
+Gear_unit_tests
+AppCommand_unit_tests
+CarCommand_unit_tests
+CarController_unit_tests
 main

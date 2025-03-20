@@ -17,21 +17,9 @@ class Transmission
 public:
 	Transmission(GearSpeedInterval reverseGear, std::vector<GearSpeedInterval> driveGears);
 	void SetGear(int gearNumber, int currentSpeed, Direction direction);
-
-	Gear GetGear(int gearNumber)
-	{
-		return this->gears[gearNumber];
-	}
-
-	Gear GetCurrentGear() const
-	{
-		return FindGear(this->currentGearNumber);
-	}
-
-	int GetCurrentGearNumber() const
-	{
-		return this->currentGearNumber;
-	}
+	Gear GetGear(int gearNumber);
+	Gear GetCurrentGear() const;
+	int GetCurrentGearNumber() const;
 
 private:
 	void AssertCorrectReverseGearMinSpeed(GearSpeedInterval reverseGearSpeedInterval);
@@ -45,6 +33,6 @@ private:
 	void AddDriveGears(std::vector<GearSpeedInterval> driveGearsSpeedInterval);
 	Gear FindGear(int gearNumber) const;
 
-	MapGearCar gears = {};
-	int currentGearNumber = 0;
+	MapGearCar m_gears = {};
+	int m_currentGearNumber = 0;
 };
