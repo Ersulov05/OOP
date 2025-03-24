@@ -35,7 +35,7 @@ Car CreateCar()
 }
 
 // TODO: Process -> Handle
-void CarProcess(std::istream& input, std::ostream& output)
+void CarHandle(std::istream& input, std::ostream& output)
 {
 	Car car = CreateCar();
 	CarController carController(car);
@@ -50,7 +50,7 @@ void CarProcess(std::istream& input, std::ostream& output)
 			break;
 		}
 		CarCommand carCommand = GetCarCommandByString(appCommand.stringCommand);
-		carController.ProcessCarCommand(output, carCommand, appCommand.stringArgs);
+		carController.HandleCarCommand(output, carCommand, appCommand.stringArgs);
 	}
 }
 
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		CarProcess(std::cin, std::cout);
+		CarHandle(std::cin, std::cout);
 	}
 	catch (const std::exception& e)
 	{

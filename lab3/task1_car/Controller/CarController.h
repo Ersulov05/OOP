@@ -9,9 +9,9 @@ class CarController
 {
 public:
 	// TODO: Добавить explicit везде
-	explicit CarController(Car car);
-	// Process -> Handle
-	void ProcessCarCommand(std::ostream& output, CarCommand command, const std::vector<std::string>& stringArgs);
+	explicit CarController(Car& car);
+	// TODO: Process -> Handle
+	void HandleCarCommand(std::ostream& output, CarCommand command, const std::vector<std::string>& stringArgs);
 	[[nodiscard]] Car GetCar() const;
 
 private:

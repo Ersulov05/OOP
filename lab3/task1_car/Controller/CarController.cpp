@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 
-CarController::CarController(Car car)
+CarController::CarController(Car& car)
 	: m_car(car){};
 
 void AssertCountArgs(int expectedCount, const std::vector<std::string>& stringArgs)
@@ -80,7 +80,7 @@ void handleException(const std::exception& e)
 	std::cout << e.what() << std::endl;
 }
 
-void CarController::ProcessCarCommand(std::ostream& output, CarCommand command, const std::vector<std::string>& stringArgs)
+void CarController::HandleCarCommand(std::ostream& output, CarCommand command, const std::vector<std::string>& stringArgs)
 {
 	try
 	{
