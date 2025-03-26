@@ -1,68 +1,41 @@
 #include "./AppCommand.h"
-#include "./Car/Car.h"
-#include "./Controller/CarCommand.h"
-#include "./Controller/CarController.h"
+#include "./Calculator/Repository/IdentificatorRepository.h"
+#include "./Calculator/Service/IdentificatorQueryService.h"
+#include "./Calculator/Service/IdentificatorService.h"
 #include <iostream>
-
-const std::string EXIT_STRING = "Exit";
-const std::string BEGIN_STRING_INPUT = ">";
-const int MIN_SPEED_REVERSE_GEAR = 0;
-const int MAX_SPEED_REVERSE_GEAR = 20;
-const int MIN_SPEED_FIRST_GEAR = 0;
-const int MAX_SPEED_FIRST_GEAR = 30;
-const int MIN_SPEED_SECOND_GEAR = 20;
-const int MAX_SPEED_SECOND_GEAR = 50;
-const int MIN_SPEED_THIRD_GEAR = 30;
-const int MAX_SPEED_THIRD_GEAR = 60;
-const int MIN_SPEED_FOURTH_GEAR = 40;
-const int MAX_SPEED_FOURTH_GEAR = 90;
-const int MIN_SPEED_FIFTH_GEAR = 50;
-const int MAX_SPEED_FIFTH_GEAR = 150;
-
-Car CreateCar()
-{
-	GearSpeedInterval reverseGearSpeedInterval = { MIN_SPEED_REVERSE_GEAR, MAX_SPEED_REVERSE_GEAR };
-	std::vector<GearSpeedInterval> driveGearSpeedIntervals = {
-		{ MIN_SPEED_FIRST_GEAR, MAX_SPEED_FIRST_GEAR },
-		{ MIN_SPEED_SECOND_GEAR, MAX_SPEED_SECOND_GEAR },
-		{ MIN_SPEED_THIRD_GEAR, MAX_SPEED_THIRD_GEAR },
-		{ MIN_SPEED_FOURTH_GEAR, MAX_SPEED_FOURTH_GEAR },
-		{ MIN_SPEED_FIFTH_GEAR, MAX_SPEED_FIFTH_GEAR }
-	};
-	Transmission transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
-
-	return Car(transmission);
-}
-
-void CarProcess(std::istream& input, std::ostream& output)
-{
-	Car car = CreateCar();
-	CarController carController(car);
-	std::string line;
-
-	while (true)
-	{
-		output << BEGIN_STRING_INPUT;
-		AppCommand appCommand = GetAppCommand(input);
-		if (appCommand.stringCommand == EXIT_STRING)
-		{
-			break;
-		}
-		CarCommand carCommand = GetCarCommandByString(appCommand.stringCommand);
-		carController.ProcessCarCommand(output, carCommand, appCommand.stringArgs);
-	}
-}
 
 int main(int argc, char* argv[])
 {
-	try
+	IdentificatorRepository identificatorRepository;
+	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorQueryService identificatorQueryService(identificatorRepository);
+
+	identificatorService.CreateVariableIdentificator("var");
+	identificatorService.EditVariableIdentificatorByValue("var", 5);
+
+	identificatorService.CreateVariableIdentificator("varit");
+	identificatorService.EditVariableIdentificatorByValue("varit", 7);
+
+	identificatorService.CreateVariableIdentificator("varer");
+	identificatorService.EditVariableIdentificatorByIdentificator("varer", "var");
+
+	identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput("fn0", Operation::PLUS, "var", "varer"));
+
+	for (int i = 1; i < 10000; ++i)
 	{
-		CarProcess(std::cin, std::cout);
+		identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput("fn" + std::to_string(i), Operation::PLUS, "fn" + std::to_string(i - 1), "varer"));
 	}
-	catch (const std::exception& e)
+
+	auto identificatorValues = identificatorQueryService.GetVariableIdentificatorValuesData();
+	for (const auto& identificatorValue : identificatorValues)
 	{
-		std::cout << e.what() << std::endl;
-		return 1;
+		std::cout << identificatorValue.identificatorName << ": " << identificatorValue.value << std::endl;
+	}
+
+	auto functionIdentificatorValues = identificatorQueryService.GetFunctionIdentificatorValuesData();
+	for (const auto& identificatorValue : functionIdentificatorValues)
+	{
+		std::cout << identificatorValue.identificatorName << ": " << identificatorValue.value << std::endl;
 	}
 
 	return 0;

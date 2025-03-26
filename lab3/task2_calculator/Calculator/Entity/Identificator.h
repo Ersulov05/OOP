@@ -1,3 +1,4 @@
+#pragma once
 #include <cmath>
 #include <string>
 
@@ -19,17 +20,38 @@ enum class Operation
 struct Function
 {
 	Operation operation = Operation::NONE;
-	Identificator identificator1;
-	Identificator identificator2;
+	std::string firstIdentificatorName;
+	std::string secondIdentificatorName;
+
+	Function(Operation operation, const std::string& firstIdentificatorName, const std::string& secondIdentificatorName)
+		: operation(operation)
+		, firstIdentificatorName(firstIdentificatorName)
+		, secondIdentificatorName(secondIdentificatorName)
+	{
+	}
 };
 
 struct Identificator
 {
 	std::string name;
-	IdentificatorType type = IdentificatorType::VARIABLE;
+	IdentificatorType type;
 	union
 	{
 		Function* function;
 		double value = NAN;
 	} data;
+
+	// Identificator(std::string name, Function function)
+	// 	: name(name)
+	// 	, type(IdentificatorType::FUNCTION)
+	// 	, data({ function, NAN })
+	// {
+	// }
+
+	// Identificator(std::string name, double value)
+	// 	: name(name)
+	// 	, type(IdentificatorType::VARIABLE)
+	// 	, data({ std::nullopt, value })
+	// {
+	// }
 };
