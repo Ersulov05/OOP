@@ -19,7 +19,7 @@ AppCommand GetAppCommand(std::istream& input)
 	AppCommand command;
 
 	lineStream >> command.stringCommand;
-	GetStringArgs(lineStream, command.stringArgs);
+	command.bodyCommand = lineStream.str();
 
 	return command;
 }

@@ -1,24 +1,7 @@
 #pragma once
 #include "../Calculator/Service/IdentificatorQueryService.h"
 #include "../Calculator/Service/IdentificatorService.h"
-#include <string>
-#include <vector>
-
-enum class CalculateCommandType
-{
-	VAR,
-	LET,
-	FN,
-	PRINT,
-	PRINTVARS,
-	PRINTFNS,
-};
-
-struct CalculateCommand
-{
-	CalculateCommandType type;
-	std::vector<std::string> stringArgs;
-};
+#include "./CalculateCommand.h"
 
 class CalculateController
 {
@@ -28,6 +11,9 @@ public:
 
 private:
 	void ExecuteCalculateCommand(std::ostream& output, const CalculateCommand& command);
+	void CreateFunction(const CalculateCommand& command);
+	void CreateVariableWithValue(const CalculateCommand& command);
+	void CreateVariable(const CalculateCommand& command);
 	IdentificatorQueryService m_identificatorQueryService;
 	IdentificatorService m_identificatorService;
 };
