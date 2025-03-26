@@ -17,23 +17,19 @@ void CalculateController::CreateVariable(const CalculateCommand& command)
 
 	if (std::regex_match(command.bodyCommand, match, pattern))
 	{
+		std::cout << match[1];
 		this->m_identificatorService.CreateVariableIdentificator(match[1]);
 	}
 	else
 	{
+		std::cout << "error";
 		// error
 	}
-
-	// std::stringstream input;
-	// input.str(command.bodyCommand);
-
-	// std::string identificatorName = GetIdentificatorName(input);
-	// this->m_identificatorService.CreateVariableIdentificator(identificatorName);
 }
 
 void CalculateController::CreateVariableWithValue(const CalculateCommand& command)
 {
-	std::regex pattern("([a-zA-Z][a-zA-Z0-9_]*) = (([a-zA-Z][a-zA-Z0-9_]*)|([+-]?\\d+(\\.\\d*)?|\\.\\d+))");
+	std::regex pattern("([a-zA-Z][a-zA-Z0-9_]*)=(([a-zA-Z][a-zA-Z0-9_]*)|([+-]?\\d+(\\.\\d*)?|\\.\\d+))");
 	std::smatch match;
 	if (std::regex_match(command.bodyCommand, match, pattern))
 	{
@@ -50,73 +46,23 @@ void CalculateController::CreateVariableWithValue(const CalculateCommand& comman
 	}
 	else
 	{
+		std::cout << "error" << command.bodyCommand;
 		// error
 	}
-	// std::stringstream input;
-	// input.str(command.bodyCommand);
-
-	// std::string identificatorName = GetIdentificatorName(input);
-	// float value = GetValue(input);
-	// this->m_identificatorService.CreateVariableIdentificator(identificatorName);
-	// this->m_identificatorService.EditVariableIdentificatorByValue(identificatorName, value);
 }
 
 void CalculateController::CreateFunction(const CalculateCommand& command)
 {
 	std::regex pattern("([a-zA-Z][a-zA-Z0-9_]*) = ([a-zA-Z][a-zA-Z0-9_]*) \\+ ([a-zA-Z][a-zA-Z0-9_]*)");
-	std::stringstream input;
-	input.str(command.bodyCommand);
+}
 
-	std::string identificatorName = GetIdentificatorName(input);
-	ClearEquals(input);
-	std::string firstIdentificatorName = GetIdentificatorName(input);
-	Operation operation = Operation::NONE;
-	std::string secondIdentificatorName;
-
-	if (input.eof())
+void CalculateController::PrintVariables(std::ostream& output)
+{
+	std::vector<IdentificatorValueData> identificatorValuesData = this->m_identificatorQueryService.GetVariableIdentificatorValuesData();
+	for (const auto& identificatorValueData : identificatorValuesData)
 	{
-		operation = GetOperation(input);
-		secondIdentificatorName = GetIdentificatorName(input);
+		output << identificatorValueData.identificatorName << ":" << identificatorValueData.value << std::endl;
 	}
-
-	this->m_identificatorService.CreateFunctionIdentificator(
-		FunctionIdentificatorInput(
-			identificatorName,
-			Operation::NONE,
-			firstIdentificatorName,
-			secondIdentificatorName));
-}
-
-std::string GetIdentificatorName(std::istream& input)
-{
-	char ch;
-	input.get(ch);
-	AssertSymbolIsEngleshLetter(ch);
-	std::string identificatorName = std::string(1, ch);
-	while (input.get(ch))
-	{
-	}
-}
-
-void AssertSymbolIsEngleshLetter(char symbol)
-{
-}
-
-Operation GetOperation(std::istream& input)
-{
-	char ch;
-	input.get(ch);
-	// convert char to operation
-}
-
-float GetValue(std::istream& input)
-{
-}
-
-void ClearEquals(std::istream& input)
-{
-	char ch;
-	input.get(ch);
 }
 
 void CalculateController::ExecuteCalculateCommand(std::ostream& output, const CalculateCommand& command)
@@ -135,6 +81,7 @@ void CalculateController::ExecuteCalculateCommand(std::ostream& output, const Ca
 	case CalculateCommandType::PRINT:
 		break;
 	case CalculateCommandType::PRINTVARS:
+		PrintVariables(output);
 		break;
 	case CalculateCommandType::PRINTFNS:
 		break;

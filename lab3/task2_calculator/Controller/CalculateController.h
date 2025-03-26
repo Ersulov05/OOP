@@ -11,6 +11,7 @@ public:
 
 private:
 	void ExecuteCalculateCommand(std::ostream& output, const CalculateCommand& command);
+	void PrintVariables(std::ostream& output);
 	void CreateFunction(const CalculateCommand& command);
 	void CreateVariableWithValue(const CalculateCommand& command);
 	void CreateVariable(const CalculateCommand& command);
