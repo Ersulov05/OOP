@@ -4,18 +4,72 @@
 #include "./Exception/NegativeSpeedException.h"
 #include "./Exception/NeutralGearAccelerationException.h"
 #include "./Exception/SpeedOutOfGearRangeException.h"
-#include "./Exception/UnCorrectTurnOffEngine.h"
+#include "./Exception/UncorrectTurnOffEngineException.h"
 #include <iostream>
 
-Car::Car(Transmission transmission)
-	: transmission(transmission)
-	, speed(0)
-	, direction(Direction::STANDING_STILL)
-	, engineStatus(false)
+Car::Car(Transmission& transmission)
+	: m_transmission(transmission)
+	, m_speed(0)
+	, m_direction(Direction::STANDING_STILL)
+	, m_engineStatus(false)
 {
 }
 
-void AsserCompatibilitySpeedToGear(int speed, const Gear gear)
+Direction Car::GetDirection() const
+{
+	return this->m_direction;
+}
+
+int Car::GetSpeed() const
+{
+	return this->m_speed;
+}
+
+int Car::GetGear() const
+{
+	return this->m_transmission.GetCurrentGearNumber();
+}
+
+bool Car::GetEngineStatus() const
+{
+	return this->m_engineStatus;
+}
+
+void Car::TurnOnEngine()
+{
+	this->m_engineStatus = true;
+}
+
+void Car::TurnOffEngine()
+{
+	AssertCorrectTurnOffEngine();
+	this->m_engineStatus = false;
+}
+
+void Car::SetGear(int gear)
+{
+	AssertGearShiftingWithEngineOn();
+	this->m_transmission.SetGear(gear, this->m_speed, this->m_direction);
+}
+
+void Car::SetSpeed(int speed)
+{
+	Car::AssertSpeedNotNegative(speed);
+	AssertSpeedSettingsWithEngineOn();
+	Gear currentGear = this->m_transmission.GetCurrentGear();
+	if (currentGear.GetGearType() == GearType::NEUTRAL)
+	{
+		Car::AssertSpeedDecreased(this->m_speed, speed);
+	}
+	else
+	{
+		Car::AsserCompatibilitySpeedToGear(speed, currentGear);
+	}
+	this->m_speed = speed;
+	UpdateDirection();
+}
+
+void Car::AsserCompatibilitySpeedToGear(int speed, const Gear gear)
 {
 	if (speed < gear.GetMinSpeed() || gear.GetMaxSpeed() < speed)
 	{
@@ -23,7 +77,7 @@ void AsserCompatibilitySpeedToGear(int speed, const Gear gear)
 	}
 }
 
-void AssertSpeedDecreased(int currentSpeed, int newSpeed)
+void Car::AssertSpeedDecreased(int currentSpeed, int newSpeed)
 {
 	if (currentSpeed < newSpeed)
 	{
@@ -31,7 +85,7 @@ void AssertSpeedDecreased(int currentSpeed, int newSpeed)
 	}
 }
 
-void AssertSpeedNotNegative(int speed)
+void Car::AssertSpeedNotNegative(int speed)
 {
 	if (speed < 0)
 	{
@@ -41,16 +95,16 @@ void AssertSpeedNotNegative(int speed)
 
 void Car::AssertCorrectTurnOffEngine()
 {
-	Gear currentGear = this->transmission.GetCurrentGear();
-	if (this->speed != 0 || currentGear.GetGearType() != GearType::NEUTRAL)
+	Gear currentGear = this->m_transmission.GetCurrentGear();
+	if (this->m_speed != 0 || currentGear.GetGearType() != GearType::NEUTRAL)
 	{
-		throw UnCorrectTurnOffEngine();
+		throw UncorrectTurnOffEngineException();
 	}
 }
 
 void Car::AssertSpeedSettingsWithEngineOn()
 {
-	if (!this->engineStatus)
+	if (!this->m_engineStatus)
 	{
 		throw EngineOffSpeedSettingException();
 	}
@@ -58,85 +112,31 @@ void Car::AssertSpeedSettingsWithEngineOn()
 
 void Car::AssertGearShiftingWithEngineOn()
 {
-	if (!this->engineStatus)
+	if (!this->m_engineStatus)
 	{
 		throw EngineOffGearSettingException();
 	}
 }
 
-void Car::TurnOnEngine()
-{
-	this->engineStatus = true;
-}
-
-void Car::TurnOffEngine()
-{
-	AssertCorrectTurnOffEngine();
-	this->engineStatus = false;
-}
-
-void Car::SetGear(int gear)
-{
-	AssertGearShiftingWithEngineOn();
-	this->transmission.SetGear(gear, this->speed, this->direction);
-}
-
 void Car::UpdateDirection()
 {
-	if (this->speed == 0)
+	if (this->m_speed == 0)
 	{
-		this->direction = Direction::STANDING_STILL;
+		this->m_direction = Direction::STANDING_STILL;
 		return;
 	}
 
-	GearType currentGearType = this->transmission.GetCurrentGear().GetGearType();
+	GearType currentGearType = this->m_transmission.GetCurrentGear().GetGearType();
 	switch (currentGearType)
 	{
 	case GearType::DRIVE:
-		this->direction = Direction::FORWARD;
+		this->m_direction = Direction::FORWARD;
 		break;
 	case GearType::REVERSE:
-		this->direction = Direction::BACKWARD;
+		this->m_direction = Direction::BACKWARD;
 		break;
 
 	default:
 		break;
 	}
-}
-
-void Car::SetSpeed(int speed)
-{
-	AssertSpeedNotNegative(speed);
-	AssertSpeedSettingsWithEngineOn();
-	Gear currentGear = this->transmission.GetCurrentGear();
-	if (currentGear.GetGearType() == GearType::NEUTRAL)
-	{
-		AssertSpeedDecreased(this->speed, speed);
-	}
-	else
-	{
-		AsserCompatibilitySpeedToGear(speed, currentGear);
-	}
-	this->speed = speed;
-	UpdateDirection();
-}
-
-Direction Car::GetDirection() const
-{
-	return this->direction;
-}
-
-int Car::GetSpeed() const
-{
-	return this->speed;
-}
-
-int Car::GetGear() const
-{
-	return this->transmission.GetCurrentGearNumber();
-}
-
-bool Car::GetEngineStatus() const
-{
-	return this->engineStatus;
 }

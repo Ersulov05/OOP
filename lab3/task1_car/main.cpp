@@ -19,7 +19,7 @@ const int MAX_SPEED_FOURTH_GEAR = 90;
 const int MIN_SPEED_FIFTH_GEAR = 50;
 const int MAX_SPEED_FIFTH_GEAR = 150;
 
-Car CreateCar()
+Transmission CreateTransmission()
 {
 	GearSpeedInterval reverseGearSpeedInterval = { MIN_SPEED_REVERSE_GEAR, MAX_SPEED_REVERSE_GEAR };
 	std::vector<GearSpeedInterval> driveGearSpeedIntervals = {
@@ -29,14 +29,14 @@ Car CreateCar()
 		{ MIN_SPEED_FOURTH_GEAR, MAX_SPEED_FOURTH_GEAR },
 		{ MIN_SPEED_FIFTH_GEAR, MAX_SPEED_FIFTH_GEAR }
 	};
-	Transmission transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
-
-	return Car(transmission);
+	return Transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
 }
 
-void CarProcess(std::istream& input, std::ostream& output)
+// TODO: Process -> Handle
+void CarHandle(std::istream& input, std::ostream& output)
 {
-	Car car = CreateCar();
+	Transmission transmission = CreateTransmission();
+	Car car(transmission);
 	CarController carController(car);
 	std::string line;
 
@@ -49,7 +49,7 @@ void CarProcess(std::istream& input, std::ostream& output)
 			break;
 		}
 		CarCommand carCommand = GetCarCommandByString(appCommand.stringCommand);
-		carController.ProcessCarCommand(output, carCommand, appCommand.stringArgs);
+		carController.HandleCarCommand(output, carCommand, appCommand.stringArgs);
 	}
 }
 
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		CarProcess(std::cin, std::cout);
+		CarHandle(std::cin, std::cout);
 	}
 	catch (const std::exception& e)
 	{

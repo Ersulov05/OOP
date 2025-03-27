@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
 
-class UnCorrectTurnOffEngine : public std::runtime_error
+class UncorrectTurnOffEngineException : public std::runtime_error
 {
 public:
-	UnCorrectTurnOffEngine()
+	UncorrectTurnOffEngineException()
 		: std::runtime_error("Сar must be stopped and in neutral gear"){};
 };

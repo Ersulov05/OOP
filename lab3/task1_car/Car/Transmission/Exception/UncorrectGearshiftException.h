@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
 
-class UnCorrectGearshiftException : public std::runtime_error
+class UncorrectGearshiftException : public std::runtime_error
 {
 public:
-	UnCorrectGearshiftException()
+	UncorrectGearshiftException()
 		: std::runtime_error("Uncorrect gearshift"){};
 };

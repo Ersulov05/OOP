@@ -11,11 +11,9 @@ enum class GearType
 class Gear
 {
 public:
-	Gear(GearType gearType, std::optional<int> minSpeed, std::optional<int> maxSpeed);
-	Gear(GearType gearType);
-	Gear(const Gear& other);
+	explicit Gear(GearType gearType, std::optional<int> minSpeed, std::optional<int> maxSpeed);
+	explicit Gear(GearType gearType);
 	Gear();
-	~Gear(){};
 	GearType GetGearType();
 	std::optional<int> GetMinSpeed() const;
 	std::optional<int> GetMaxSpeed() const;
@@ -23,7 +21,7 @@ public:
 private:
 	void AssertCorrectGearTypeWithSpeedLimits();
 	void AssertCorrectSpeedLimits();
-	GearType gearType;
-	std::optional<int> minSpeed;
-	std::optional<int> maxSpeed;
+	GearType m_gearType;
+	std::optional<int> m_minSpeed;
+	std::optional<int> m_maxSpeed;
 };

@@ -8,13 +8,16 @@
 class CarController
 {
 public:
-	CarController(Car car);
-	void ProcessCarCommand(std::ostream& output, CarCommand command, const std::vector<std::string>& stringArgs);
+	// TODO: Добавить explicit везде
+	explicit CarController(Car& car);
+	// TODO: Process -> Handle
+	void HandleCarCommand(std::ostream& output, CarCommand command, const std::vector<std::string>& stringArgs);
+	[[nodiscard]] Car GetCar() const;
 
 private:
 	void ExecuteCarCommand(std::ostream& output, CarCommand command, const std::vector<std::string>& stringArgs);
 	void PrintCarInfo(std::ostream& output);
 	void SetCarSpeed(const std::vector<std::string>& stringArgs);
 	void SetCarGear(const std::vector<std::string>& stringArgs);
-	Car car;
+	Car& m_car; // TODO Либо создавать машину тут либо передавать по ссылке или по поинтеру
 };
