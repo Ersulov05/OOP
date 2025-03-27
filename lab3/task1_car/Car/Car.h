@@ -5,7 +5,7 @@
 class Car
 {
 public:
-	Car(Transmission transmission);
+	explicit Car(Transmission& transmission);
 	void TurnOnEngine();
 	void TurnOffEngine();
 	void SetGear(int gear);
@@ -19,9 +19,12 @@ private:
 	void AssertCorrectTurnOffEngine();
 	void AssertSpeedSettingsWithEngineOn();
 	void AssertGearShiftingWithEngineOn();
+	void static AsserCompatibilitySpeedToGear(int speed, const Gear gear);
+	void static AssertSpeedDecreased(int currentSpeed, int newSpeed);
+	void static AssertSpeedNotNegative(int speed);
 	void UpdateDirection();
 
-	Transmission m_transmission;
+	Transmission& m_transmission;
 	bool m_engineStatus;
 	Direction m_direction;
 	int m_speed;

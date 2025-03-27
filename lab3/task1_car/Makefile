@@ -9,6 +9,10 @@ carController_unit_test:
 	g++ ./Utils/ArgUtils.cpp ./Unit/CarControllerTest.cpp ./Controller/CarCommand.cpp ./Controller/CarController.cpp ./Car/Car.cpp ./Car/Transmission/Transmission.cpp ./Car/Direction.cpp ./Car/Transmission/Gear/Gear.cpp -o CarController_unit_tests -std=c++20
 	./CarController_unit_tests
 
+car_unit_test:
+	g++ ./Unit/CarTest.cpp ./Car/Car.cpp ./Car/Transmission/Transmission.cpp ./Car/Direction.cpp ./Car/Transmission/Gear/Gear.cpp -o Car_unit_tests -std=c++20
+	./Car_unit_tests
+
 unit_test:
 	g++ ./Unit/GearTest.cpp ./Car/Transmission/Gear/Gear.cpp -o Gear_unit_tests -std=c++20
 	./Gear_unit_tests

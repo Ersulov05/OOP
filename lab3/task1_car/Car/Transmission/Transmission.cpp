@@ -16,6 +16,29 @@ Transmission::Transmission(GearSpeedInterval reverseGearSpeedInterval, std::vect
 	this->m_currentGearNumber = 0;
 }
 
+void Transmission::SetGear(int gearNumber, int currentSpeed, Direction direction)
+{
+	Gear gear = FindGear(gearNumber);
+	AssertCorrectGearshift(gear, currentSpeed, direction);
+
+	this->m_currentGearNumber = gearNumber;
+};
+
+Gear Transmission::GetGear(int gearNumber)
+{
+	return this->m_gears[gearNumber];
+}
+
+Gear Transmission::GetCurrentGear() const
+{
+	return FindGear(this->m_currentGearNumber);
+}
+
+int Transmission::GetCurrentGearNumber() const
+{
+	return this->m_currentGearNumber;
+}
+
 void Transmission::AssertCorrectReverseGearMinSpeed(GearSpeedInterval gearSpeedInterval)
 {
 	if (gearSpeedInterval.minSpeed != 0)
@@ -80,7 +103,7 @@ void Transmission::AddDriveGears(std::vector<GearSpeedInterval> driveGearsSpeedI
 }
 
 // TODO: сделать приватным и статичным (сделать вначале публичные затем приватные поля)
-bool isCorrectEnablingReverseGear(Gear newGear, Direction direction)
+bool Transmission::IsCorrectEnablingReverseGear(Gear newGear, Direction direction)
 {
 	return direction == Direction::STANDING_STILL
 		|| direction == Direction::FORWARD && newGear.GetGearType() != GearType::REVERSE
@@ -94,7 +117,7 @@ void Transmission::AssertCorrectGearshift(Gear newGear, int currentSpeed, Direct
 	{
 		return;
 	}
-	if (!isCorrectEnablingReverseGear(newGear, direction))
+	if (!Transmission::IsCorrectEnablingReverseGear(newGear, direction))
 	{
 		throw UncorrectGearshiftException();
 	}
@@ -104,14 +127,6 @@ void Transmission::AssertCorrectGearshift(Gear newGear, int currentSpeed, Direct
 	}
 }
 
-void Transmission::SetGear(int gearNumber, int currentSpeed, Direction direction)
-{
-	Gear gear = FindGear(gearNumber);
-	AssertCorrectGearshift(gear, currentSpeed, direction);
-
-	this->m_currentGearNumber = gearNumber;
-};
-
 Gear Transmission::FindGear(int gearNumber) const
 {
 	auto it = this->m_gears.find(gearNumber);
@@ -120,19 +135,4 @@ Gear Transmission::FindGear(int gearNumber) const
 		throw InvalidGearException();
 	}
 	return it->second;
-}
-
-Gear Transmission::GetGear(int gearNumber)
-{
-	return this->m_gears[gearNumber];
-}
-
-Gear Transmission::GetCurrentGear() const
-{
-	return FindGear(this->m_currentGearNumber);
-}
-
-int Transmission::GetCurrentGearNumber() const
-{
-	return this->m_currentGearNumber;
 }

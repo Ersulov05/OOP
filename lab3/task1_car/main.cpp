@@ -19,7 +19,7 @@ const int MAX_SPEED_FOURTH_GEAR = 90;
 const int MIN_SPEED_FIFTH_GEAR = 50;
 const int MAX_SPEED_FIFTH_GEAR = 150;
 
-Car CreateCar()
+Transmission CreateTransmission()
 {
 	GearSpeedInterval reverseGearSpeedInterval = { MIN_SPEED_REVERSE_GEAR, MAX_SPEED_REVERSE_GEAR };
 	std::vector<GearSpeedInterval> driveGearSpeedIntervals = {
@@ -29,15 +29,14 @@ Car CreateCar()
 		{ MIN_SPEED_FOURTH_GEAR, MAX_SPEED_FOURTH_GEAR },
 		{ MIN_SPEED_FIFTH_GEAR, MAX_SPEED_FIFTH_GEAR }
 	};
-	Transmission transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
-
-	return Car(transmission);
+	return Transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
 }
 
 // TODO: Process -> Handle
 void CarHandle(std::istream& input, std::ostream& output)
 {
-	Car car = CreateCar();
+	Transmission transmission = CreateTransmission();
+	Car car(transmission);
 	CarController carController(car);
 	std::string line;
 

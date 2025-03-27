@@ -19,5 +19,5 @@ private:
 	void PrintCarInfo(std::ostream& output);
 	void SetCarSpeed(const std::vector<std::string>& stringArgs);
 	void SetCarGear(const std::vector<std::string>& stringArgs);
-	Car m_car; // TODO Либо создавать машину тут либо передавать по ссылке или по поинтеру
+	Car& m_car; // TODO Либо создавать машину тут либо передавать по ссылке или по поинтеру
 };

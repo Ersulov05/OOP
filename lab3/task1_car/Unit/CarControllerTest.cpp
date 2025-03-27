@@ -10,44 +10,42 @@ const int MAX_SPEED_FIRST_GEAR = 30;
 const int MIN_SPEED_SECOND_GEAR = 20;
 const int MAX_SPEED_SECOND_GEAR = 50;
 
-Car CreateCar()
+Transmission CreateTransmission()
 {
 	GearSpeedInterval reverseGearSpeedInterval = { MIN_SPEED_REVERSE_GEAR, MAX_SPEED_REVERSE_GEAR };
 	std::vector<GearSpeedInterval> driveGearSpeedIntervals = {
 		{ MIN_SPEED_FIRST_GEAR, MAX_SPEED_FIRST_GEAR },
 		{ MIN_SPEED_SECOND_GEAR, MAX_SPEED_SECOND_GEAR }
 	};
-	Transmission transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
-
-	return Car(transmission);
+	return Transmission(reverseGearSpeedInterval, driveGearSpeedIntervals);
 }
 
 TEST_CASE("TestProcessCarCommand")
 {
 	std::stringstream output;
-
-	Car car = CreateCar();
+	Transmission transmission = CreateTransmission();
+	Car car(transmission);
 	CarController carController(car);
 	REQUIRE(carController.GetCar().GetEngineStatus() == false);
 
-	carController.ProcessCarCommand(output, CarCommand::ENGINE_ON, {});
+	carController.HandleCarCommand(output, CarCommand::ENGINE_ON, {});
 	REQUIRE(carController.GetCar().GetEngineStatus() == true);
 
-	carController.ProcessCarCommand(output, CarCommand::SET_GEAR, { "1" });
+	carController.HandleCarCommand(output, CarCommand::SET_GEAR, { "1" });
 	REQUIRE(carController.GetCar().GetGear() == 1);
 
-	carController.ProcessCarCommand(output, CarCommand::SET_SPEED, { "20" });
+	carController.HandleCarCommand(output, CarCommand::SET_SPEED, { "20" });
 	REQUIRE(carController.GetCar().GetSpeed() == 20);
 
-	carController.ProcessCarCommand(output, CarCommand::SET_GEAR, { "0" });
+	carController.HandleCarCommand(output, CarCommand::SET_GEAR, { "0" });
 	REQUIRE(carController.GetCar().GetGear() == 0);
 
-	carController.ProcessCarCommand(output, CarCommand::SET_SPEED, { "0" });
+	carController.HandleCarCommand(output, CarCommand::SET_SPEED, { "0" });
 	REQUIRE(carController.GetCar().GetSpeed() == 0);
 
-	carController.ProcessCarCommand(output, CarCommand::ENGINE_OFF, {});
+	carController.HandleCarCommand(output, CarCommand::ENGINE_OFF, {});
 	REQUIRE(carController.GetCar().GetEngineStatus() == false);
 
-	carController.ProcessCarCommand(output, CarCommand::UNKNOWN, {});
+	carController.HandleCarCommand(output, CarCommand::UNKNOWN, {});
 	REQUIRE(output.str() == "Unknown command\n");
 }
