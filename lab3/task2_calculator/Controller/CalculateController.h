@@ -8,6 +8,7 @@ class CalculateController
 public:
 	CalculateController();
 	void HandleCalculateCommand(std::ostream& output, const CalculateCommand& calculateCommand);
+	void LoadIdentificators();
 
 private:
 	void ExecuteCalculateCommand(std::ostream& output, const CalculateCommand& command);

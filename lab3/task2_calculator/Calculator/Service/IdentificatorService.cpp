@@ -16,28 +16,25 @@ void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificat
 		IdentificatorService::AssertIdentificatorExists(secondIdentificator);
 	}
 
-	Identificator newIdentificator;
-	newIdentificator.name = functionIdentificatorInput.identificatorName;
-	newIdentificator.type = IdentificatorType::FUNCTION;
+	Function function = Function(
+		functionIdentificatorInput.operation,
+		functionIdentificatorInput.firstIdentificatorName,
+		functionIdentificatorInput.secondIdentificatorName);
+	Identificator newIdentificator(functionIdentificatorInput.identificatorName, function);
 
-	newIdentificator.data.function = new Function(functionIdentificatorInput.operation, functionIdentificatorInput.firstIdentificatorName, functionIdentificatorInput.secondIdentificatorName);
 	this->m_identificatorRepository.AddIdentificator(newIdentificator);
 }
 
 void IdentificatorService::CreateVariableIdentificator(const std::string& identificatorName)
 {
-	Identificator newIdentificator;
-	newIdentificator.name = identificatorName;
-	newIdentificator.type = IdentificatorType::VARIABLE;
+	Identificator newIdentificator(identificatorName, NAN);
+
 	this->m_identificatorRepository.AddIdentificator(newIdentificator);
 }
 
 void IdentificatorService::StoreVariableIdentificatorByValue(const std::string& identificatorName, double value)
 {
-	Identificator identificator;
-	identificator.name = identificatorName;
-	identificator.type = IdentificatorType::VARIABLE;
-	identificator.data.value = value;
+	Identificator identificator(identificatorName, value);
 
 	this->m_identificatorRepository.StoreVariableIdentificator(identificator);
 }

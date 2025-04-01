@@ -27,24 +27,29 @@ struct Function
 struct Identificator
 {
 	std::string name;
-	IdentificatorType type;
-	union
+	IdentificatorType type = IdentificatorType::VARIABLE;
+	union DataUnion
 	{
 		Function* function;
-		double value = NAN;
+		double value;
+
+		DataUnion()
+			: value(NAN){};
 	} data;
 
-	// Identificator(std::string name, Function function)
-	// 	: name(name)
-	// 	, type(IdentificatorType::FUNCTION)
-	// 	, data({ function, NAN })
-	// {
-	// }
+	Identificator(std::string name, Function function)
+		: name(name)
+		, type(IdentificatorType::FUNCTION)
+	{
+		data.function = new Function(function);
+	}
 
-	// Identificator(std::string name, double value)
-	// 	: name(name)
-	// 	, type(IdentificatorType::VARIABLE)
-	// 	, data({ std::nullopt, value })
-	// {
-	// }
+	Identificator(std::string name, double value)
+		: name(name)
+		, type(IdentificatorType::VARIABLE)
+	{
+		data.value = value;
+	}
+
+	Identificator(){};
 };

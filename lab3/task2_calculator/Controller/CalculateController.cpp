@@ -17,6 +17,20 @@ CalculateController::CalculateController()
 {
 }
 
+void CalculateController::LoadIdentificators()
+{
+	this->m_identificatorService.StoreVariableIdentificatorByValue("x", 1);
+	this->m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput("fn1", Operation::NONE, "x", ""));
+	for (int i = 2; i < 1000000; ++i)
+	{
+		this->m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+			"fn" + std::to_string(i),
+			Operation::PLUS,
+			"fn" + std::to_string(i - 1),
+			"x"));
+	}
+}
+
 void CalculateController::CreateVariable(const CalculateCommand& command)
 {
 	std::regex pattern("^(" + IDENTIFIER_PATTERN + ")?$");
@@ -45,6 +59,7 @@ void CalculateController::CreateVariableWithValue(const CalculateCommand& comman
 		}
 		float value = std::stof(match[4].str());
 		this->m_identificatorService.StoreVariableIdentificatorByValue(match[1], value);
+		this->m_identificatorQueryService.ClearCache();
 	}
 	else
 	{
@@ -67,7 +82,6 @@ void CalculateController::CreateFunction(const CalculateCommand& command)
 			operation = GetOperationByString(match[3]);
 			secondIdentificatorName = match[4];
 		}
-		std::cout << identificatorName << "=" << firstIdentificatorName << std::endl;
 		this->m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(identificatorName, operation, firstIdentificatorName, secondIdentificatorName));
 	}
 	else

@@ -8,6 +8,7 @@ const std::string EXIT_STRING = "exit";
 void Process(std::istream& input, std::ostream& output)
 {
 	CalculateController calculateController;
+	calculateController.LoadIdentificators();
 	while (true)
 	{
 		AppCommand appCommand = GetAppCommand(input);

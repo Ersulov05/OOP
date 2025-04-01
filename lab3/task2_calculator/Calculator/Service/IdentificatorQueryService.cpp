@@ -6,10 +6,15 @@ IdentificatorQueryService::IdentificatorQueryService(IdentificatorRepository& id
 {
 }
 
+void IdentificatorQueryService::ClearCache()
+{
+	m_identificatorValuesCache.clear();
+}
+
 IdentificatorValueData IdentificatorQueryService::GetIdentificatorValueData(const std::string identificatorName)
 {
 	std::unordered_map<std::string, IdentificatorValueData> identificatorValues;
-	float result = this->GetIdentificatorValueByIdentificatorName(identificatorName, identificatorValues);
+	float result = this->GetIdentificatorValueByIdentificatorName(identificatorName);
 
 	return IdentificatorValueData(identificatorName, result);
 }
@@ -30,23 +35,22 @@ std::vector<IdentificatorValueData> IdentificatorQueryService::GetVariableIdenti
 
 std::vector<IdentificatorValueData> IdentificatorQueryService::GetFunctionIdentificatorValuesData()
 {
-	std::unordered_map<std::string, IdentificatorValueData> identificatorValues;
 	std::vector<IdentificatorValueData> resultIdentificatorValues;
 	std::unordered_map<std::string, Identificator> functionIdentificators = this->m_identificatorRepository.GetFunctionIdentificators();
 
 	float result = 0;
 	for (const auto& pairIdentificator : functionIdentificators)
 	{
-		result = this->GetIdentificatorValueByIdentificatorName(pairIdentificator.first, identificatorValues);
+		result = this->GetIdentificatorValueByIdentificatorName(pairIdentificator.first);
 		resultIdentificatorValues.push_back(IdentificatorValueData(pairIdentificator.first, result));
 	}
 
 	return resultIdentificatorValues;
 }
 
-float IdentificatorQueryService::GetIdentificatorValueByIdentificatorName(const std::string& identificatorName, std::unordered_map<std::string, IdentificatorValueData>& identificatorValues)
+float IdentificatorQueryService::GetIdentificatorValueByIdentificatorName(const std::string& identificatorName)
 {
-	std::optional<IdentificatorValueData> identificatorValueData = GetIdentificatorValueData(identificatorName, identificatorValues);
+	std::optional<IdentificatorValueData> identificatorValueData = GetIdentificatorValueDataByCache(identificatorName);
 	if (identificatorValueData)
 	{
 		return identificatorValueData->value;
@@ -54,30 +58,24 @@ float IdentificatorQueryService::GetIdentificatorValueByIdentificatorName(const 
 
 	std::optional<Identificator> identificator = m_identificatorRepository.GetIdentificatorByName(identificatorName);
 	IdentificatorQueryService::AssertIdentificatorExists(identificator);
-	float result = 0;
 
-	if (identificator->type == IdentificatorType::VARIABLE)
-	{
-		result = identificator->data.value;
-	}
-	else
-	{
-		result = CalculateFunction(*identificator->data.function, identificatorValues);
-	}
+	float result = identificator->type == IdentificatorType::VARIABLE
+		? identificator->data.value
+		: CalculateFunction(*identificator->data.function);
 
-	identificatorValues[identificatorName] = IdentificatorValueData(identificatorName, result);
+	AddIdentificatorValueToCache(identificatorName, result);
 	return result;
 }
 
-float IdentificatorQueryService::CalculateFunction(const Function& function, std::unordered_map<std::string, IdentificatorValueData>& identificatorValues)
+float IdentificatorQueryService::CalculateFunction(const Function& function)
 {
-	float firstArgument = this->GetIdentificatorValueByIdentificatorName(function.firstIdentificatorName, identificatorValues);
+	float firstArgument = this->GetIdentificatorValueByIdentificatorName(function.firstIdentificatorName);
 	if (function.operation == Operation::NONE)
 	{
 		return firstArgument;
 	}
 
-	float secondArgument = GetIdentificatorValueByIdentificatorName(function.secondIdentificatorName, identificatorValues);
+	float secondArgument = this->GetIdentificatorValueByIdentificatorName(function.secondIdentificatorName);
 	return this->ExecuteFunctionOperation(function.operation, firstArgument, secondArgument);
 }
 
@@ -98,14 +96,19 @@ float IdentificatorQueryService::ExecuteFunctionOperation(Operation operation, f
 	}
 }
 
-std::optional<IdentificatorValueData> IdentificatorQueryService::GetIdentificatorValueData(const std::string& identificatorName, const std::unordered_map<std::string, IdentificatorValueData>& identificatorValues)
+std::optional<IdentificatorValueData> IdentificatorQueryService::GetIdentificatorValueDataByCache(const std::string& identificatorName)
 {
-	auto it = identificatorValues.find(identificatorName);
-	if (it != identificatorValues.end())
+	auto it = m_identificatorValuesCache.find(identificatorName);
+	if (it != m_identificatorValuesCache.end())
 	{
 		return it->second;
 	}
 	return std::nullopt;
+}
+
+void IdentificatorQueryService::AddIdentificatorValueToCache(const std::string& identificatorName, double value)
+{
+	m_identificatorValuesCache[identificatorName] = IdentificatorValueData(identificatorName, value);
 }
 
 void IdentificatorQueryService::AssertIdentificatorExists(std::optional<Identificator> identificator)
