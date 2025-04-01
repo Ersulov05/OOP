@@ -1,20 +1,13 @@
 #pragma once
+#include "Operation.h"
 #include <cmath>
 #include <string>
+#include <variant>
 
 enum class IdentificatorType
 {
 	FUNCTION,
 	VARIABLE
-};
-
-enum class Operation
-{
-	PLUS,
-	MINUS,
-	MULTIPLY,
-	DIVIDING,
-	NONE
 };
 
 struct Function

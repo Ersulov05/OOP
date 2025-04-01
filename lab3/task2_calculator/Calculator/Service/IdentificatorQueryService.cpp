@@ -1,4 +1,5 @@
 #include "./IdentificatorQueryService.h"
+#include "../Exception/IdentificatorNotFoundException.h"
 
 IdentificatorQueryService::IdentificatorQueryService(IdentificatorRepository& identificatorRepository)
 	: m_identificatorRepository(identificatorRepository)
@@ -111,6 +112,6 @@ void IdentificatorQueryService::AssertIdentificatorExists(std::optional<Identifi
 {
 	if (!identificator)
 	{
-		// error
+		throw IdentificatorNotFoundException();
 	}
 }

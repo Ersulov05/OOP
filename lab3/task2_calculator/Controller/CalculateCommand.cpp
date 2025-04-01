@@ -23,7 +23,19 @@ CalculateCommand CreateCalculateCommand(const AppCommand& appCommand)
 	{
 		calculateCommandType = CalculateCommandType::PRINTVARS;
 	}
-
+	else if (appCommand.stringCommand == "printfns")
+	{
+		calculateCommandType = CalculateCommandType::PRINTFNS;
+	}
+	else if (appCommand.stringCommand == "fn")
+	{
+		calculateCommandType = CalculateCommandType::FN;
+	}
+	else if (appCommand.stringCommand == "print")
+	{
+		calculateCommandType = CalculateCommandType::PRINT;
+	}
 	std::string bodyCommand = GetStringWithoutSpaces(appCommand.bodyCommand);
+
 	return CalculateCommand(calculateCommandType, bodyCommand);
 }

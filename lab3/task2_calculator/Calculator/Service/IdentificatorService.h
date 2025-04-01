@@ -22,8 +22,8 @@ public:
 	IdentificatorService(IdentificatorRepository& identificatorRepository);
 	void CreateFunctionIdentificator(const FunctionIdentificatorInput& finctionIdentificatorInput);
 	void CreateVariableIdentificator(const std::string& identificatorName);
-	void EditVariableIdentificatorByValue(const std::string& identificatorName, double value);
-	void EditVariableIdentificatorByIdentificator(const std::string& identificatorName, const std::string& identificatorValueName);
+	void StoreVariableIdentificatorByValue(const std::string& identificatorName, double value);
+	void StoreVariableIdentificatorByIdentificator(const std::string& identificatorName, const std::string& identificatorValueName);
 
 private:
 	static void AssertIdentificatorExists(std::optional<Identificator> identificator);

@@ -9,8 +9,13 @@ void IdentificatorRepository::AddIdentificator(const Identificator& identificato
 	this->m_identificators[identificator.name] = identificator;
 }
 
-void IdentificatorRepository::EditIdentificator(const Identificator& identificator)
+void IdentificatorRepository::StoreVariableIdentificator(const Identificator& identificator)
 {
+	std::optional<Identificator> existIdentificator = GetIdentificatorByName(identificator.name);
+	if (existIdentificator)
+	{
+		IdentificatorRepository::AssertIdentificatorTypeIsVariable(existIdentificator->type);
+	}
 	IdentificatorRepository::AssertIdentificatorTypeIsVariable(identificator.type);
 	this->m_identificators[identificator.name] = identificator;
 }
@@ -63,6 +68,7 @@ void IdentificatorRepository::AssertIdentificatorNameNotExists(const std::string
 	std::optional<Identificator> identificator = GetIdentificatorByName(identificatorName);
 	if (identificator)
 	{
+		throw std::runtime_error("Identificator Name Exists");
 		// throw
 	}
 }
@@ -72,5 +78,6 @@ void IdentificatorRepository::AssertIdentificatorTypeIsVariable(IdentificatorTyp
 	if (identificatorType != IdentificatorType::VARIABLE)
 	{
 		// throw
+		throw std::runtime_error("Identificator Type Not Is Variable");
 	}
 }

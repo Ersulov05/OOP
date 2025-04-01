@@ -1,4 +1,5 @@
 #include "./IdentificatorService.h"
+#include "../Exception/IdentificatorNotFoundException.h"
 
 IdentificatorService::IdentificatorService(IdentificatorRepository& identificatorRepository)
 	: m_identificatorRepository(identificatorRepository)
@@ -8,9 +9,12 @@ IdentificatorService::IdentificatorService(IdentificatorRepository& identificato
 void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificatorInput& functionIdentificatorInput)
 {
 	std::optional<Identificator> firstIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.firstIdentificatorName);
-	std::optional<Identificator> secondIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.secondIdentificatorName);
 	IdentificatorService::AssertIdentificatorExists(firstIdentificator);
-	IdentificatorService::AssertIdentificatorExists(secondIdentificator);
+	if (functionIdentificatorInput.operation != Operation::NONE)
+	{
+		std::optional<Identificator> secondIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.secondIdentificatorName);
+		IdentificatorService::AssertIdentificatorExists(secondIdentificator);
+	}
 
 	Identificator newIdentificator;
 	newIdentificator.name = functionIdentificatorInput.identificatorName;
@@ -28,30 +32,30 @@ void IdentificatorService::CreateVariableIdentificator(const std::string& identi
 	this->m_identificatorRepository.AddIdentificator(newIdentificator);
 }
 
-void IdentificatorService::EditVariableIdentificatorByValue(const std::string& identificatorName, double value)
+void IdentificatorService::StoreVariableIdentificatorByValue(const std::string& identificatorName, double value)
 {
-	std::optional<Identificator> identificator = this->m_identificatorRepository.GetIdentificatorByName(identificatorName);
-	IdentificatorService::AssertIdentificatorExists(identificator);
-	IdentificatorService::AssertIdentificatorIsVariable(identificator->type);
-	identificator->data.value = value;
+	Identificator identificator;
+	identificator.name = identificatorName;
+	identificator.type = IdentificatorType::VARIABLE;
+	identificator.data.value = value;
 
-	this->m_identificatorRepository.EditIdentificator(*identificator);
+	this->m_identificatorRepository.StoreVariableIdentificator(identificator);
 }
 
-void IdentificatorService::EditVariableIdentificatorByIdentificator(const std::string& identificatorName, const std::string& identificatorValueName)
+void IdentificatorService::StoreVariableIdentificatorByIdentificator(const std::string& identificatorName, const std::string& identificatorValueName)
 {
 	std::optional<Identificator> identificatorValue = this->m_identificatorRepository.GetIdentificatorByName(identificatorValueName);
 	IdentificatorService::AssertIdentificatorExists(identificatorValue);
 	IdentificatorService::AssertIdentificatorIsVariable(identificatorValue->type);
 
-	this->EditVariableIdentificatorByValue(identificatorName, identificatorValue->data.value);
+	this->StoreVariableIdentificatorByValue(identificatorName, identificatorValue->data.value);
 }
 
 void IdentificatorService::AssertIdentificatorExists(std::optional<Identificator> identificator)
 {
 	if (!identificator)
 	{
-		// error
+		throw IdentificatorNotFoundException();
 	}
 }
 

@@ -1,18 +1,20 @@
 #include "./AppCommand.h"
-#include "./Calculator/Repository/IdentificatorRepository.h"
-#include "./Calculator/Service/IdentificatorQueryService.h"
-#include "./Calculator/Service/IdentificatorService.h"
 #include "./Controller/CalculateCommand.h"
 #include "./Controller/CalculateController.h"
 #include <iostream>
 
+const std::string EXIT_STRING = "exit";
+
 void Process(std::istream& input, std::ostream& output)
 {
-	IdentificatorRepository identificatorRepository;
-	CalculateController calculateController(identificatorRepository);
+	CalculateController calculateController;
 	while (true)
 	{
 		AppCommand appCommand = GetAppCommand(input);
+		if (appCommand.stringCommand == EXIT_STRING)
+		{
+			return;
+		}
 		CalculateCommand calculateCommand = CreateCalculateCommand(appCommand);
 		calculateController.HandleCalculateCommand(output, calculateCommand);
 	}
@@ -21,6 +23,5 @@ void Process(std::istream& input, std::ostream& output)
 int main(int argc, char* argv[])
 {
 	Process(std::cin, std::cout);
-
 	return 0;
 }

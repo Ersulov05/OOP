@@ -10,7 +10,7 @@ class IdentificatorRepository
 public:
 	IdentificatorRepository();
 	void AddIdentificator(const Identificator& identificator);
-	void EditIdentificator(const Identificator& identificator);
+	void StoreVariableIdentificator(const Identificator& identificator);
 	std::optional<Identificator> GetIdentificatorByName(const std::string& identificatorName) const;
 	std::unordered_map<std::string, Identificator> GetVariableIdentificators() const;
 	std::unordered_map<std::string, Identificator> GetFunctionIdentificators() const;
