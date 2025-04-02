@@ -1,14 +1,13 @@
 #include "./AppCommand.h"
-#include "./Controller/CalculateCommand.h"
-#include "./Controller/CalculateController.h"
+#include "./Controller/CalculatorCommand.h"
+#include "./Controller/CalculatorController.h"
 #include <iostream>
 
 const std::string EXIT_STRING = "exit";
 
 void Process(std::istream& input, std::ostream& output)
 {
-	CalculateController calculateController;
-	calculateController.LoadIdentificators();
+	CalculatorController calculatorController;
 	while (true)
 	{
 		AppCommand appCommand = GetAppCommand(input);
@@ -16,8 +15,8 @@ void Process(std::istream& input, std::ostream& output)
 		{
 			return;
 		}
-		CalculateCommand calculateCommand = CreateCalculateCommand(appCommand);
-		calculateController.HandleCalculateCommand(output, calculateCommand);
+		CalculatorCommand calculatorCommand = CreateCalculatorCommand(appCommand);
+		calculatorController.HandleCalculatorCommand(output, calculatorCommand);
 	}
 }
 

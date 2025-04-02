@@ -76,24 +76,7 @@ float IdentificatorQueryService::CalculateFunction(const Function& function)
 	}
 
 	float secondArgument = this->GetIdentificatorValueByIdentificatorName(function.secondIdentificatorName);
-	return this->ExecuteFunctionOperation(function.operation, firstArgument, secondArgument);
-}
-
-float IdentificatorQueryService::ExecuteFunctionOperation(Operation operation, float firstArgument, float secondArgument)
-{
-	switch (operation)
-	{
-	case Operation::PLUS:
-		return firstArgument + secondArgument;
-	case Operation::MINUS:
-		return firstArgument - secondArgument;
-	case Operation::MULTIPLY:
-		return firstArgument * secondArgument;
-	case Operation::DIVIDING:
-		return firstArgument / secondArgument;
-	default:
-		return NAN;
-	}
+	return ExecuteOperation(function.operation, firstArgument, secondArgument);
 }
 
 std::optional<IdentificatorValueData> IdentificatorQueryService::GetIdentificatorValueDataByCache(const std::string& identificatorName)

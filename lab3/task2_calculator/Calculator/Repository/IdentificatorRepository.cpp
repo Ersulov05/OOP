@@ -1,4 +1,6 @@
 #include "./IdentificatorRepository.h"
+#include "../Exception/IdentificatorNameExistsException.h"
+#include "../Exception/IdentificatorTypeNotIsVariableException.h"
 #include <iostream>
 
 IdentificatorRepository::IdentificatorRepository() {}
@@ -68,8 +70,7 @@ void IdentificatorRepository::AssertIdentificatorNameNotExists(const std::string
 	std::optional<Identificator> identificator = GetIdentificatorByName(identificatorName);
 	if (identificator)
 	{
-		throw std::runtime_error("Identificator Name Exists");
-		// throw
+		throw IdentificatorNameExistsException();
 	}
 }
 
@@ -77,7 +78,6 @@ void IdentificatorRepository::AssertIdentificatorTypeIsVariable(IdentificatorTyp
 {
 	if (identificatorType != IdentificatorType::VARIABLE)
 	{
-		// throw
-		throw std::runtime_error("Identificator Type Not Is Variable");
+		throw IdentificatorTypeNotIsVariableException();
 	}
 }

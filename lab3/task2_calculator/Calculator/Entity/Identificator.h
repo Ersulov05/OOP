@@ -2,7 +2,6 @@
 #include "Operation.h"
 #include <cmath>
 #include <string>
-#include <variant>
 
 enum class IdentificatorType
 {
@@ -16,7 +15,7 @@ struct Function
 	std::string firstIdentificatorName;
 	std::string secondIdentificatorName;
 
-	Function(Operation operation, const std::string& firstIdentificatorName, const std::string& secondIdentificatorName)
+	Function(Operation operation, const std::string& firstIdentificatorName, const std::string& secondIdentificatorName = "")
 		: operation(operation)
 		, firstIdentificatorName(firstIdentificatorName)
 		, secondIdentificatorName(secondIdentificatorName)

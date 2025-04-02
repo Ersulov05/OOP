@@ -1,5 +1,6 @@
 #include "./IdentificatorService.h"
 #include "../Exception/IdentificatorNotFoundException.h"
+#include "../Exception/IdentificatorTypeNotIsVariableException.h"
 
 IdentificatorService::IdentificatorService(IdentificatorRepository& identificatorRepository)
 	: m_identificatorRepository(identificatorRepository)
@@ -60,6 +61,6 @@ void IdentificatorService::AssertIdentificatorIsVariable(IdentificatorType ident
 {
 	if (identificatorType != IdentificatorType::VARIABLE)
 	{
-		// error
+		throw IdentificatorTypeNotIsVariableException();
 	}
 }

@@ -1,9 +1,12 @@
 make:
-	g++ main.cpp ./AppCommand.cpp ./Controller/CalculateCommand.cpp ./Controller/CalculateController.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o main -std=c++20
+	g++ main.cpp ./AppCommand.cpp ./Controller/CalculatorCommand.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o main -std=c++20
 
 unit_test:
-	g++ ./Unit/CalculateExpressionTest.cpp CalculateExpression.cpp ./Utils/Element.cpp ./Utils/NumberUtils.cpp -o CalculateExpression_unit_tests -std=c++20
-	./CalculateExpression_unit_tests
-	g++ ./Unit/ElementTest.cpp ./Utils/Element.cpp ./Utils/NumberUtils.cpp -o ElementTest_unit_tests -std=c++20
-	./ElementTest_unit_tests
-	./Car/Transmission.cpp
+	g++ ./Unit/IdentificatorServiceTest.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o IdentificatorService_unit_tests -std=c++20
+	./IdentificatorService_unit_tests
+	g++ ./Unit/IdentificatorQueryServiceTest.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o IdentificatorQueryService_unit_tests -std=c++20
+	./IdentificatorQueryService_unit_tests
+	g++ ./Unit/OperationTest.cpp ./Calculator/Entity/Operation.cpp -o Operation_unit_tests -std=c++20
+	./Operation_unit_tests
+	g++ ./Unit/CalculatorControllerTest.cpp ./Controller/CalculatorCommand.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o CalculatorController_unit_tests -std=c++20
+	./CalculatorController_unit_tests

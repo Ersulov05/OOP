@@ -1,1 +1,5 @@
 main
+Operation_unit_tests
+IdentificatorQueryService_unit_tests
+IdentificatorService_unit_tests
+CalculatorController_unit_tests

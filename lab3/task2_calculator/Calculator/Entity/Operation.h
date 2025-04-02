@@ -11,3 +11,5 @@ enum class Operation
 };
 
 Operation GetOperationByString(const std::string& str);
+
+float ExecuteOperation(Operation operation, float firstArgument, float secondArgument);
