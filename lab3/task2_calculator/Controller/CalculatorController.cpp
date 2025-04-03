@@ -3,7 +3,7 @@
 #include "../Calculator/Service/Input/FunctionIdentificatorInput.h"
 #include "./Exception/InvalidCalculatorCommandArgumentsException.h"
 #include "./Exception/UnknownCalculatorCommandException.h"
-#include <iostream>
+#include <iomanip>
 #include <regex>
 #include <sstream>
 #include <string>
@@ -87,11 +87,13 @@ void CalculatorController::CreateFunction(const CalculatorCommand& command)
 
 void CalculatorController::PrintIdentificatorValuesData(std::ostream& output, const std::vector<IdentificatorValueData>& identificatorValuesData)
 {
+	std::cout << std::fixed << std::setprecision(2);
 	std::vector<IdentificatorValueData> sortedIdentificatorValuesData = identificatorValuesData;
 	std::sort(sortedIdentificatorValuesData.begin(), sortedIdentificatorValuesData.end(),
 		[](const IdentificatorValueData& a, const IdentificatorValueData& b) {
 			return a.identificatorName < b.identificatorName;
 		});
+
 	for (const auto& identificatorValueData : sortedIdentificatorValuesData)
 	{
 		output << identificatorValueData.identificatorName << IDENTIFICATOR_VALUE_SEPARATOR << identificatorValueData.value << std::endl;

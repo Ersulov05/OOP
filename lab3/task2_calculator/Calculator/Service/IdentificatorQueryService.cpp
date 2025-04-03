@@ -19,7 +19,7 @@ IdentificatorValueData IdentificatorQueryService::GetIdentificatorValueData(cons
 	return IdentificatorValueData(identificatorName, result);
 }
 
-std::vector<IdentificatorValueData> IdentificatorQueryService::GetVariableIdentificatorValuesData() const
+std::vector<IdentificatorValueData> IdentificatorQueryService::GetVariableIdentificatorValuesData()
 {
 	std::unordered_map<std::string, Identificator> variableIdentificators = this->m_identificatorRepository.GetVariableIdentificators();
 	std::vector<IdentificatorValueData> identificatorValues;

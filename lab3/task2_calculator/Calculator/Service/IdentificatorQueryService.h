@@ -8,7 +8,7 @@ class IdentificatorQueryService
 public:
 	explicit IdentificatorQueryService(IdentificatorRepository& identificatorRepository);
 	IdentificatorValueData GetIdentificatorValueData(const std::string identificatorName);
-	std::vector<IdentificatorValueData> GetVariableIdentificatorValuesData() const;
+	std::vector<IdentificatorValueData> GetVariableIdentificatorValuesData();
 	std::vector<IdentificatorValueData> GetFunctionIdentificatorValuesData();
 	void ClearCache();
 
