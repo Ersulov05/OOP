@@ -1,5 +1,5 @@
 #include "CalculatorController.h"
-#include "../Calculator/Entity/Operation.h"
+// #include "../Calculator/Entity/Operation.h"
 #include "../Calculator/Service/Input/FunctionIdentificatorInput.h"
 #include "./Exception/InvalidCalculatorCommandArgumentsException.h"
 #include "./Exception/UnknownCalculatorCommandException.h"
@@ -14,9 +14,50 @@ const std::string OPERATION_PATTERN = "[+*/-]";
 const std::string VALUE_PATTERN = "[+-]?\\d+(\\.\\d*)?|\\.\\d+";
 
 CalculatorController::CalculatorController()
-	: m_identificatorQueryService(IdentificatorQueryService(m_identificatorRepository))
-	, m_identificatorService(IdentificatorService(m_identificatorRepository))
+	: m_identificatorService(IdentificatorService())
 {
+	// m_identificatorService.StoreVariableIdentificatorByValue("x", 1);
+	// m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+	// 	"f1",
+	// 	"x"));
+	// m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+	// 	"f2",
+	// 	"x",
+	// 	"+",
+	// 	"x"));
+	// for (int i = 3; i < 100; ++i)
+	// {
+	// 	m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+	// 		"f" + std::to_string(i),
+	// 		"f" + std::to_string(i - 1),
+	// 		"+",
+	// 		"f" + std::to_string(i - 2)));
+	// }
+}
+
+void CalculatorController::Load()
+{
+	m_identificatorService.StoreVariableIdentificatorByValue("x", 1);
+	m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+		"f1",
+		"x"));
+	// m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+	// 	"f2",
+	// 	"x",
+	// 	"+",
+	// 	"x"));
+	for (int i = 2; i < 100000; i++)
+	{
+		std::cout << i << std::endl;
+		m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+			"f" + std::to_string(i),
+			"f" + std::to_string(i - 1),
+			"+",
+			"x"));
+	}
+
+	// auto a = m_identificatorService.GetFunctionIdentificatorValuesData();
+	// std::cout << a.size() << std::endl;
 }
 
 void CalculatorController::HandleCalculatorCommand(std::ostream& output, const CalculatorCommand& command)
@@ -56,12 +97,10 @@ void CalculatorController::CreateVariableWithValue(const CalculatorCommand& comm
 	if (match[3].matched)
 	{
 		this->m_identificatorService.StoreVariableIdentificatorByIdentificator(match[1], match[3]);
-		this->m_identificatorQueryService.ClearCache();
 		return;
 	}
 	float value = std::stof(match[4].str());
 	this->m_identificatorService.StoreVariableIdentificatorByValue(match[1], value);
-	this->m_identificatorQueryService.ClearCache();
 }
 
 void CalculatorController::CreateFunction(const CalculatorCommand& command)
@@ -73,22 +112,17 @@ void CalculatorController::CreateFunction(const CalculatorCommand& command)
 		throw InvalidCalculatorCommandArgumentsException();
 	}
 
-	std::string identificatorName = match[1];
-	std::string firstIdentificatorName = match[2];
-	Operation operation = Operation::NONE;
-	std::string secondIdentificatorName;
-	if (match[3].matched)
-	{
-		operation = GetOperationByString(match[3]);
-		secondIdentificatorName = match[4];
-	}
-	this->m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(identificatorName, operation, firstIdentificatorName, secondIdentificatorName));
+	FunctionIdentificatorInput functionIdentificatorInput = match[3].matched
+		? FunctionIdentificatorInput(match[1], match[2], match[3], match[4])
+		: FunctionIdentificatorInput(match[1], match[2]);
+
+	this->m_identificatorService.CreateFunctionIdentificator(functionIdentificatorInput);
 }
 
 void CalculatorController::PrintIdentificatorValuesData(std::ostream& output, const std::vector<IdentificatorValueData>& identificatorValuesData)
 {
 	std::cout << std::fixed << std::setprecision(2);
-	std::vector<IdentificatorValueData> sortedIdentificatorValuesData = identificatorValuesData;
+	std::vector<IdentificatorValueData> sortedIdentificatorValuesData = std::move(identificatorValuesData);
 	std::sort(sortedIdentificatorValuesData.begin(), sortedIdentificatorValuesData.end(),
 		[](const IdentificatorValueData& a, const IdentificatorValueData& b) {
 			return a.identificatorName < b.identificatorName;
@@ -114,13 +148,13 @@ void CalculatorController::ExecuteCalculatorCommand(std::ostream& output, const 
 		CreateFunction(command);
 		break;
 	case CalculatorCommandType::PRINT:
-		PrintIdentificatorValuesData(output, { this->m_identificatorQueryService.GetIdentificatorValueData(GetIdentificatorName(command)) });
+		PrintIdentificatorValuesData(output, { this->m_identificatorService.GetIdentificatorValueData(GetIdentificatorName(command)) });
 		break;
 	case CalculatorCommandType::PRINTVARS:
-		PrintIdentificatorValuesData(output, this->m_identificatorQueryService.GetVariableIdentificatorValuesData());
+		PrintIdentificatorValuesData(output, this->m_identificatorService.GetVariableIdentificatorValuesData());
 		break;
 	case CalculatorCommandType::PRINTFNS:
-		PrintIdentificatorValuesData(output, this->m_identificatorQueryService.GetFunctionIdentificatorValuesData());
+		PrintIdentificatorValuesData(output, this->m_identificatorService.GetFunctionIdentificatorValuesData());
 		break;
 	default:
 		throw UnknownCalculatorCommandException();

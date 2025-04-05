@@ -1,5 +1,5 @@
 #pragma once
-#include "../Calculator/Service/IdentificatorQueryService.h"
+// #include "../Calculator/Service/IdentificatorQueryService.h"
 #include "../Calculator/Service/IdentificatorService.h"
 #include "./CalculatorCommand.h"
 #include <string>
@@ -9,6 +9,7 @@ class CalculatorController
 public:
 	CalculatorController();
 	void HandleCalculatorCommand(std::ostream& output, const CalculatorCommand& calculateCommand);
+	void Load();
 
 private:
 	void ExecuteCalculatorCommand(std::ostream& output, const CalculatorCommand& command);
@@ -17,7 +18,6 @@ private:
 	void CreateVariableWithValue(const CalculatorCommand& command);
 	void CreateVariable(const CalculatorCommand& command);
 	std::string GetIdentificatorName(const CalculatorCommand& command);
-	IdentificatorQueryService m_identificatorQueryService;
+
 	IdentificatorService m_identificatorService;
-	IdentificatorRepository m_identificatorRepository;
 };

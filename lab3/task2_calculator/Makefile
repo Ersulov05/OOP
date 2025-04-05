@@ -1,6 +1,9 @@
 make:
 	g++ main.cpp ./AppCommand.cpp ./Controller/CalculatorCommand.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o main -std=c++20
 
+make_v2:
+	g++ main.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Controller/CalculatorCommand.cpp ./AppCommand.cpp -o main
+
 unit_test:
 	g++ ./Unit/IdentificatorServiceTest.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o IdentificatorService_unit_tests -std=c++20
 	./IdentificatorService_unit_tests
@@ -10,3 +13,4 @@ unit_test:
 	./Operation_unit_tests
 	g++ ./Unit/CalculatorControllerTest.cpp ./Controller/CalculatorCommand.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o CalculatorController_unit_tests -std=c++20
 	./CalculatorController_unit_tests
+	

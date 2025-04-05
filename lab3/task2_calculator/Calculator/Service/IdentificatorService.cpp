@@ -1,55 +1,104 @@
 #include "./IdentificatorService.h"
+#include "../Entity/FunctionIdentificator.h"
+#include "../Exception/IdentificatorNameExistsException.h"
 #include "../Exception/IdentificatorNotFoundException.h"
 #include "../Exception/IdentificatorTypeNotIsVariableException.h"
 
-IdentificatorService::IdentificatorService(IdentificatorRepository& identificatorRepository)
-	: m_identificatorRepository(identificatorRepository)
+IdentificatorService::IdentificatorService()
+	: m_identificatorRepository(IdentificatorRepository())
 {
 }
 
 void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificatorInput& functionIdentificatorInput)
 {
-	std::optional<Identificator> firstIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.firstIdentificatorName);
-	IdentificatorService::AssertIdentificatorExists(firstIdentificator);
-	if (functionIdentificatorInput.operation != Operation::NONE)
+	IdentificatorService::AssertIdentificatorNameNotExists(functionIdentificatorInput.identificatorName);
+	auto leftIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.firstIdentificatorName);
+	IdentificatorService::AssertIdentificatorExists(leftIdentificator);
+
+	std::shared_ptr<IIdentificator> identificator;
+	if (functionIdentificatorInput.operation)
 	{
-		std::optional<Identificator> secondIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.secondIdentificatorName);
-		IdentificatorService::AssertIdentificatorExists(secondIdentificator);
+		auto rightIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.secondIdentificatorName);
+		IdentificatorService::AssertIdentificatorExists(rightIdentificator);
+		identificator = std::make_shared<FunctionIdentificator>(
+			functionIdentificatorInput.identificatorName,
+			*functionIdentificatorInput.operation,
+			leftIdentificator,
+			rightIdentificator);
+	}
+	else
+	{
+		identificator = std::make_shared<FunctionIdentificator>(functionIdentificatorInput.identificatorName, leftIdentificator);
 	}
 
-	Function function = Function(
-		functionIdentificatorInput.operation,
-		functionIdentificatorInput.firstIdentificatorName,
-		functionIdentificatorInput.secondIdentificatorName);
-	Identificator newIdentificator(functionIdentificatorInput.identificatorName, function);
-
-	this->m_identificatorRepository.AddIdentificator(newIdentificator);
+	this->m_identificatorRepository.StoreIdentificator(identificator);
 }
 
 void IdentificatorService::CreateVariableIdentificator(const std::string& identificatorName)
 {
-	Identificator newIdentificator(identificatorName, NAN);
+	this->AssertIdentificatorNameNotExists(identificatorName);
 
-	this->m_identificatorRepository.AddIdentificator(newIdentificator);
+	std::shared_ptr<IIdentificator> newIdentificator = std::make_shared<VariableIdentificator>(identificatorName);
+
+	this->m_identificatorRepository.StoreIdentificator(newIdentificator);
 }
 
 void IdentificatorService::StoreVariableIdentificatorByValue(const std::string& identificatorName, double value)
 {
-	Identificator identificator(identificatorName, value);
+	auto identificator = this->m_identificatorRepository.GetIdentificatorByName(identificatorName);
 
-	this->m_identificatorRepository.StoreVariableIdentificator(identificator);
+	if (!identificator)
+	{
+		identificator = std::make_shared<VariableIdentificator>(identificatorName, value);
+	}
+	identificator->SetValue(value);
+
+	this->m_identificatorRepository.StoreIdentificator(identificator);
 }
 
 void IdentificatorService::StoreVariableIdentificatorByIdentificator(const std::string& identificatorName, const std::string& identificatorValueName)
 {
-	std::optional<Identificator> identificatorValue = this->m_identificatorRepository.GetIdentificatorByName(identificatorValueName);
-	IdentificatorService::AssertIdentificatorExists(identificatorValue);
-	IdentificatorService::AssertIdentificatorIsVariable(identificatorValue->type);
+	auto identificator = this->m_identificatorRepository.GetIdentificatorByName(identificatorValueName);
+	AssertIdentificatorExists(identificator);
+	AssertIdentificatorIsVariable(identificator);
 
-	this->StoreVariableIdentificatorByValue(identificatorName, identificatorValue->data.value);
+	this->StoreVariableIdentificatorByValue(identificatorName, identificator->GetValue());
 }
 
-void IdentificatorService::AssertIdentificatorExists(std::optional<Identificator> identificator)
+IdentificatorValueData IdentificatorService::GetIdentificatorValueData(const std::string identificatorName)
+{
+	auto identificator = this->m_identificatorRepository.GetIdentificatorByName(identificatorName);
+
+	return IdentificatorValueData(identificatorName, identificator->GetValue());
+}
+
+std::vector<IdentificatorValueData> IdentificatorService::GetVariableIdentificatorValuesData()
+{
+	auto variableIdentificators = this->m_identificatorRepository.getVariables();
+
+	return IdentificatorService::CreateIdentificatorValuesData(variableIdentificators);
+}
+
+std::vector<IdentificatorValueData> IdentificatorService::GetFunctionIdentificatorValuesData()
+{
+	auto functionIdentificators = this->m_identificatorRepository.getFunctions();
+
+	return IdentificatorService::CreateIdentificatorValuesData(functionIdentificators);
+}
+
+std::vector<IdentificatorValueData> IdentificatorService::CreateIdentificatorValuesData(std::vector<std::shared_ptr<IIdentificator>> identificators)
+{
+	std::vector<IdentificatorValueData> identificatorValues;
+
+	for (const auto& identificator : identificators)
+	{
+		identificatorValues.push_back(IdentificatorValueData(identificator->GetName(), identificator->GetValue()));
+	}
+
+	return identificatorValues;
+}
+
+void IdentificatorService::AssertIdentificatorExists(std::shared_ptr<IIdentificator> identificator)
 {
 	if (!identificator)
 	{
@@ -57,10 +106,19 @@ void IdentificatorService::AssertIdentificatorExists(std::optional<Identificator
 	}
 }
 
-void IdentificatorService::AssertIdentificatorIsVariable(IdentificatorType identificatorType)
+void IdentificatorService::AssertIdentificatorIsVariable(std::shared_ptr<IIdentificator> identificator)
 {
-	if (identificatorType != IdentificatorType::VARIABLE)
+	if (!std::dynamic_pointer_cast<VariableIdentificator>(identificator))
 	{
 		throw IdentificatorTypeNotIsVariableException();
+	}
+}
+
+void IdentificatorService::AssertIdentificatorNameNotExists(const std::string& identificatorName)
+{
+	auto identificator = this->m_identificatorRepository.GetIdentificatorByName(identificatorName);
+	if (identificator)
+	{
+		throw IdentificatorNameExistsException();
 	}
 }
