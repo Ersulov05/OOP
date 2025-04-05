@@ -1,11 +1,9 @@
 #include "CalculatorController.h"
-// #include "../Calculator/Entity/Operation.h"
 #include "../Calculator/Service/Input/FunctionIdentificatorInput.h"
 #include "./Exception/InvalidCalculatorCommandArgumentsException.h"
 #include "./Exception/UnknownCalculatorCommandException.h"
 #include <iomanip>
 #include <regex>
-#include <sstream>
 #include <string>
 
 const std::string IDENTIFICATOR_VALUE_SEPARATOR = ":";

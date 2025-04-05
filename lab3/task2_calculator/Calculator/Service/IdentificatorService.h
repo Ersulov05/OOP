@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../Repository/IdentificatorRepository.h"
 #include "./Data/IdentificatorValueData.h"
 #include "./Input/FunctionIdentificatorInput.h"

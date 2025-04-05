@@ -13,10 +13,10 @@ public:
 	virtual void ResetCache() = 0;
 	virtual void AddDependent(IIdentificator* dependent) = 0;
 	virtual bool IsCacheValid() = 0;
-	virtual std::unordered_set<IIdentificator*> GetSubscribes()
-	{
-		return {};
-	};
+	virtual std::unordered_set<IIdentificator*> GetSubscribes() = 0;
+	// {
+	// 	return {};
+	// };
 
 protected:
 	static void ValidateIdentifier(const std::string& name)

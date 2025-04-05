@@ -1,83 +1,44 @@
 #include "./IdentificatorRepository.h"
-#include "../Exception/IdentificatorNameExistsException.h"
-#include "../Exception/IdentificatorTypeNotIsVariableException.h"
-#include <iostream>
+#include "../Entity/FunctionIdentificator.h"
+#include "../Entity/VariableIdentificator.h"
 
-IdentificatorRepository::IdentificatorRepository() {}
-
-void IdentificatorRepository::AddIdentificator(const Identificator& identificator)
+void IdentificatorRepository::StoreIdentificator(std::shared_ptr<IIdentificator> identificator)
 {
-	IdentificatorRepository::AssertIdentificatorNameNotExists(identificator.name);
-	this->m_identificators[identificator.name] = identificator;
+	m_identificators[identificator->GetName()] = identificator;
 }
 
-void IdentificatorRepository::StoreVariableIdentificator(const Identificator& identificator)
+std::shared_ptr<IIdentificator> IdentificatorRepository::GetIdentificatorByName(const std::string& name)
 {
-	std::optional<Identificator> existIdentificator = GetIdentificatorByName(identificator.name);
-	if (existIdentificator)
+	auto it = m_identificators.find(name);
+	if (it == m_identificators.end())
 	{
-		IdentificatorRepository::AssertIdentificatorTypeIsVariable(existIdentificator->type);
+		return nullptr;
 	}
-	IdentificatorRepository::AssertIdentificatorTypeIsVariable(identificator.type);
-	this->m_identificators[identificator.name] = identificator;
+	return it->second;
 }
 
-std::optional<Identificator> IdentificatorRepository::GetIdentificatorByName(const std::string& identificatorName) const
+std::vector<std::shared_ptr<IIdentificator>> IdentificatorRepository::getVariables()
 {
-	auto it = m_identificators.find(identificatorName);
-	if (it != m_identificators.end())
+	std::vector<std::shared_ptr<IIdentificator>> variables;
+	for (const auto& [name, identificator] : m_identificators)
 	{
-		return it->second;
-	}
-	return std::nullopt;
-}
-
-std::unordered_map<std::string, Identificator> IdentificatorRepository::GetVariableIdentificators() const
-{
-	std::unordered_map<std::string, Identificator> variableIdentificators;
-	for (const auto& pair : this->m_identificators)
-	{
-		if (pair.second.type == IdentificatorType::VARIABLE)
+		if (std::dynamic_pointer_cast<VariableIdentificator>(identificator))
 		{
-			variableIdentificators[pair.first] = pair.second;
+			variables.push_back(identificator);
 		}
 	}
-
-	return variableIdentificators;
+	return variables;
 }
 
-std::unordered_map<std::string, Identificator> IdentificatorRepository::GetFunctionIdentificators() const
+std::vector<std::shared_ptr<IIdentificator>> IdentificatorRepository::getFunctions()
 {
-	std::unordered_map<std::string, Identificator> variableIdentificators;
-	for (const auto& pair : m_identificators)
+	std::vector<std::shared_ptr<IIdentificator>> functions;
+	for (const auto& [name, identificator] : m_identificators)
 	{
-		if (pair.second.type == IdentificatorType::FUNCTION)
+		if (std::dynamic_pointer_cast<FunctionIdentificator>(identificator))
 		{
-			variableIdentificators[pair.first] = pair.second;
+			functions.push_back(identificator);
 		}
 	}
-
-	return variableIdentificators;
-}
-
-std::unordered_map<std::string, Identificator> IdentificatorRepository::GetAllIdentificators() const
-{
-	return this->m_identificators;
-}
-
-void IdentificatorRepository::AssertIdentificatorNameNotExists(const std::string& identificatorName)
-{
-	std::optional<Identificator> identificator = GetIdentificatorByName(identificatorName);
-	if (identificator)
-	{
-		throw IdentificatorNameExistsException();
-	}
-}
-
-void IdentificatorRepository::AssertIdentificatorTypeIsVariable(IdentificatorType identificatorType)
-{
-	if (identificatorType != IdentificatorType::VARIABLE)
-	{
-		throw IdentificatorTypeNotIsVariableException();
-	}
+	return functions;
 }

@@ -2,7 +2,7 @@ make:
 	g++ main.cpp ./AppCommand.cpp ./Controller/CalculatorCommand.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o main -std=c++20
 
 make_v2:
-	g++ main.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Controller/CalculatorCommand.cpp ./AppCommand.cpp -o main
+	g++ main.cpp ./Controller/CalculatorController.cpp ./Calculator/Service/IdentificatorService.cpp ./Controller/CalculatorCommand.cpp ./AppCommand.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/FunctionIdentificator.cpp ./Calculator/Entity/VariableIdentificator.cpp -o main
 
 unit_test:
 	g++ ./Unit/IdentificatorServiceTest.cpp ./Calculator/Service/IdentificatorService.cpp ./Calculator/Service/IdentificatorQueryService.cpp ./Calculator/Repository/IdentificatorRepository.cpp ./Calculator/Entity/Operation.cpp -o IdentificatorService_unit_tests -std=c++20

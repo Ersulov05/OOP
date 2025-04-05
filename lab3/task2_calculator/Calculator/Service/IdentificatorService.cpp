@@ -1,5 +1,6 @@
 #include "./IdentificatorService.h"
 #include "../Entity/FunctionIdentificator.h"
+#include "../Entity/VariableIdentificator.h"
 #include "../Exception/IdentificatorNameExistsException.h"
 #include "../Exception/IdentificatorNotFoundException.h"
 #include "../Exception/IdentificatorTypeNotIsVariableException.h"
