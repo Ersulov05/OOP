@@ -12,14 +12,6 @@ class IdentificatorRepository
 {
 public:
 	IdentificatorRepository(){};
-	~IdentificatorRepository()
-	{
-		for (auto& pair : m_identificators)
-		{
-			pair.second->RemoveDependencies();
-		}
-		m_identificators.clear();
-	}
 	void StoreIdentificator(std::shared_ptr<IIdentificator> identificator)
 	{
 		m_identificators[identificator->GetName()] = identificator;

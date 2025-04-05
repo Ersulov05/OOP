@@ -12,7 +12,6 @@ public:
 	virtual std::string GetName() const = 0;
 	virtual void ResetCache() = 0;
 	virtual void AddDependent(IIdentificator* dependent) = 0;
-	virtual void RemoveDependencies() = 0;
 	virtual bool IsCacheValid() = 0;
 	virtual std::unordered_set<IIdentificator*> GetSubscribes()
 	{

@@ -14,18 +14,12 @@ public:
 		ValidateIdentifier(name);
 	}
 
-	~VariableIdentificator()
-	{
-		m_dependents.clear();
-	}
-
 	double GetValue() override { return m_value; }
 	std::string GetName() const override { return m_name; }
 	void SetValue(double newValue) override
 	{
 		m_value = newValue;
 		ResetCache();
-		std::cout << "++" << std::endl;
 	}
 
 	void ResetCache() override
@@ -45,11 +39,6 @@ public:
 		{
 			m_dependents.insert(dependent);
 		}
-	}
-
-	void RemoveDependencies() override
-	{
-		m_dependents.clear();
 	}
 
 	virtual std::unordered_set<IIdentificator*> GetSubscribes() override

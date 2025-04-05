@@ -1,9 +1,5 @@
 #include "./AppCommand.h"
 #include "./Controller/CalculatorCommand.h"
-// #include "./Controller/CalculatorController.h"
-
-// #include "./Calculator/Service/IdentificatorService.h"
-// #include "./Calculator/Service/Input/FunctionIdentificatorInput.h"
 #include "./Controller/CalculatorController.h"
 #include <iostream>
 

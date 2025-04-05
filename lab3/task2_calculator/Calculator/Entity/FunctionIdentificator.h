@@ -23,37 +23,27 @@ public:
 		std::shared_ptr<IIdentificator> right)
 		: m_name(name)
 		, m_operation(ParseOperation(operation))
-		, m_left(left)
-		, m_right(right)
+		, m_left(left.get())
+		, m_right(right.get())
 	{
 		ValidateIdentifier(name);
-		// m_left->AddDependent(this);
-		// if (m_right)
-		// 	m_right->AddDependent(this);
 		AddDependent(this);
 	}
 
 	FunctionIdentificator(const std::string& name,
 		std::shared_ptr<IIdentificator> target)
 		: m_name(name)
-		, m_left(target)
+		, m_left(target.get())
 	{
 		ValidateIdentifier(name);
 		AddDependent(this);
-	}
-
-	~FunctionIdentificator()
-	{
-		std::cout << "++";
-		m_left = nullptr;
-		m_right = nullptr;
-		m_subscribes.clear();
 	}
 
 	void AddDependent(IIdentificator* dependent) override
 	{
 		auto leftSubscribes = m_left->GetSubscribes();
 		m_subscribes.insert(leftSubscribes.begin(), leftSubscribes.end());
+
 		if (m_right)
 		{
 			auto rightSubscribes = m_right->GetSubscribes();
@@ -65,11 +55,9 @@ public:
 		}
 	}
 
-	void RemoveDependencies() override
+	std::unordered_set<IIdentificator*> GetSubscribes() override
 	{
-		m_left = nullptr;
-		m_right = nullptr;
-		m_subscribes.clear();
+		return m_subscribes;
 	}
 
 	bool IsCacheValid() override
@@ -81,10 +69,8 @@ public:
 	{
 		if (m_cacheValid)
 		{
-			// std::cout << m_name << "cache" << std::endl;
 			return m_cachedValue;
 		}
-		// std::cout << m_name << "-------cache------" << std::endl;
 		std::stack<IIdentificator*> stack;
 		stack.push(this);
 
@@ -99,54 +85,9 @@ public:
 			}
 
 			auto func = dynamic_cast<FunctionIdentificator*>(current);
-
-			if (!func->m_operation.has_value())
-			{
-				if (func->m_left->IsCacheValid())
-				{
-					func->SetCache(func->m_left->GetValue());
-					stack.pop();
-				}
-				else
-				{
-					stack.push(func->m_left.get());
-				}
-				continue;
-			}
-
-			bool leftReady = func->m_left->IsCacheValid();
-			bool rightReady = func->m_right->IsCacheValid();
-
-			if (!rightReady)
-				stack.push(func->m_right.get());
-			if (!leftReady)
-				stack.push(func->m_left.get());
-
-			if (leftReady && rightReady)
-			{
-				double a = func->m_left->GetValue();
-				double b = func->m_right->GetValue();
-				double result = 0;
-				switch (*func->m_operation)
-				{
-				case Operation::PLUS:
-					result = a + b;
-					break;
-				case Operation::MINUS:
-					result = a - b;
-					break;
-				case Operation::MULTIPLY:
-					result = a * b;
-					break;
-				case Operation::DIVIDE:
-					result = b != 0
-						? a / b
-						: NAN;
-					break;
-				}
-				func->SetCache(result);
-				stack.pop();
-			}
+			func->m_operation.has_value()
+				? CalculateBinaryFunction(stack, func)
+				: CalculateFunction(stack, func);
 		}
 
 		return m_cachedValue;
@@ -168,10 +109,10 @@ public:
 private:
 	std::string m_name;
 	std::optional<Operation> m_operation;
-	std::shared_ptr<IIdentificator> m_left;
-	std::shared_ptr<IIdentificator> m_right;
+	IIdentificator* m_left = nullptr;
+	IIdentificator* m_right = nullptr;
 	mutable bool m_cacheValid = false;
-	mutable double m_cachedValue;
+	mutable double m_cachedValue = NAN;
 
 	static Operation ParseOperation(const std::string& op)
 	{
@@ -185,5 +126,60 @@ private:
 			return Operation::DIVIDE;
 		throw std::invalid_argument("Invalid operation: " + op);
 	}
+
+	static double ExecuteOperation(Operation operation, double a, double b)
+	{
+		switch (operation)
+		{
+		case Operation::PLUS:
+			return a + b;
+		case Operation::MINUS:
+			return a - b;
+		case Operation::MULTIPLY:
+			return a * b;
+		case Operation::DIVIDE:
+			return b != 0
+				? a / b
+				: NAN;
+		default:
+			return NAN;
+		}
+	}
+
+	void CalculateFunction(std::stack<IIdentificator*>& stack, FunctionIdentificator* func)
+	{
+		if (func->m_left->IsCacheValid())
+		{
+			func->SetCache(func->m_left->GetValue());
+			stack.pop();
+		}
+		else
+		{
+			stack.push(func->m_left);
+		}
+		return;
+	}
+
+	void CalculateBinaryFunction(std::stack<IIdentificator*>& stack, FunctionIdentificator* func)
+	{
+		bool leftReady = func->m_left->IsCacheValid();
+		bool rightReady = func->m_right->IsCacheValid();
+
+		if (!rightReady)
+			stack.push(func->m_right);
+		if (!leftReady)
+			stack.push(func->m_left);
+
+		if (leftReady && rightReady)
+		{
+			double result = FunctionIdentificator::ExecuteOperation(
+				*func->m_operation,
+				func->m_left->GetValue(),
+				func->m_right->GetValue());
+			func->SetCache(result);
+			stack.pop();
+		}
+	}
+
 	std::unordered_set<IIdentificator*> m_subscribes;
 };

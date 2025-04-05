@@ -16,23 +16,6 @@ const std::string VALUE_PATTERN = "[+-]?\\d+(\\.\\d*)?|\\.\\d+";
 CalculatorController::CalculatorController()
 	: m_identificatorService(IdentificatorService())
 {
-	// m_identificatorService.StoreVariableIdentificatorByValue("x", 1);
-	// m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
-	// 	"f1",
-	// 	"x"));
-	// m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
-	// 	"f2",
-	// 	"x",
-	// 	"+",
-	// 	"x"));
-	// for (int i = 3; i < 100; ++i)
-	// {
-	// 	m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
-	// 		"f" + std::to_string(i),
-	// 		"f" + std::to_string(i - 1),
-	// 		"+",
-	// 		"f" + std::to_string(i - 2)));
-	// }
 }
 
 void CalculatorController::Load()
@@ -41,23 +24,17 @@ void CalculatorController::Load()
 	m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
 		"f1",
 		"x"));
-	// m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
-	// 	"f2",
-	// 	"x",
-	// 	"+",
-	// 	"x"));
+
 	for (int i = 2; i < 100000; i++)
 	{
-		std::cout << i << std::endl;
+		if (i % 10000 == 0)
+			std::cout << i << std::endl;
 		m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
 			"f" + std::to_string(i),
 			"f" + std::to_string(i - 1),
 			"+",
-			"x"));
+			"f" + std::to_string(i - 1)));
 	}
-
-	// auto a = m_identificatorService.GetFunctionIdentificatorValuesData();
-	// std::cout << a.size() << std::endl;
 }
 
 void CalculatorController::HandleCalculatorCommand(std::ostream& output, const CalculatorCommand& command)
