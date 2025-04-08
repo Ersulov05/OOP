@@ -22,9 +22,9 @@ public:
 		return GetLength(m_startPoint, m_endPoint);
 	}
 
-	std::string ToString() const override
+	std::string ToString(std::optional<int> precision = std::nullopt) const override
 	{
-		return "line";
+		return "type: line";
 	}
 
 	u_int32_t GetOutlineColor() const override

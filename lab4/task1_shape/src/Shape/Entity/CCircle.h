@@ -1,7 +1,10 @@
 #pragma once
+#include "../Exception/InvalidCircleRadiusException.h"
 #include "./CPoint.h"
 #include "./ISolidShape.h"
 #include <cmath>
+#include <iomanip>
+#include <sstream>
 
 class CCircle : public ISolidShape
 {
@@ -25,9 +28,18 @@ public:
 		return M_PI * m_radius * 2;
 	}
 
-	std::string ToString() const override
+	std::string ToString(std::optional<int> precision = std::nullopt) const override
 	{
-		return "circle";
+		std::ostringstream oss;
+		if (precision.has_value())
+		{
+			oss << std::fixed << std::setprecision(precision.value());
+		}
+		oss << "center: " << PointToString(GetCenter(), precision)
+			<< " radius: " << GetRadius()
+			<< " type: circle";
+
+		return oss.str();
 	}
 
 	u_int32_t GetOutlineColor() const override
@@ -53,6 +65,10 @@ public:
 private:
 	void ValidateCircle()
 	{
+		if (m_radius <= 0)
+		{
+			throw InvalidCircleRadiusException();
+		}
 	}
 	CPoint m_center;
 	double m_radius;

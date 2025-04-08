@@ -1,4 +1,5 @@
 #pragma once
+#include "../Exception/InvalidRectangleSizeException.h"
 #include "./CPoint.h"
 #include "./ISolidShape.h"
 
@@ -24,9 +25,20 @@ public:
 		return (GetWidth() + GetHeight()) * 2;
 	}
 
-	std::string ToString() const override
+	std::string ToString(std::optional<int> precision = std::nullopt) const override
 	{
-		return "rectangle";
+		std::ostringstream oss;
+		if (precision.has_value())
+		{
+			oss << std::fixed << std::setprecision(precision.value());
+		}
+		oss << "leftTopPoint: " << PointToString(m_leftTop, precision)
+			<< " rightBottom: " << PointToString(m_rightBottom, precision)
+			<< " width: " << std::to_string(GetWidth())
+			<< " height: " << std::to_string(GetHeight())
+			<< " type: rectangle";
+
+		return oss.str();
 	}
 
 	u_int32_t GetOutlineColor() const override
@@ -62,6 +74,10 @@ public:
 private:
 	void ValidateRectangle()
 	{
+		if (GetWidth() <= 0 || GetHeight() <= 0)
+		{
+			throw InvalidRectangleSizeException();
+		}
 	}
 	CPoint m_leftTop;
 	CPoint m_rightBottom;
