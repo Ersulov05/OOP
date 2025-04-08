@@ -15,7 +15,7 @@ struct CPoint
 	}
 };
 
-double GetLength(const CPoint& startPoint, const CPoint& endPoint)
+inline double GetLength(const CPoint& startPoint, const CPoint& endPoint)
 {
 	double dx = endPoint.x - startPoint.x;
 	double dy = endPoint.y - startPoint.y;
@@ -23,7 +23,7 @@ double GetLength(const CPoint& startPoint, const CPoint& endPoint)
 	return sqrt(dx * dx + dy * dy);
 }
 
-std::string PointToString(const CPoint& point, std::optional<int> precision = std::nullopt)
+inline std::string PointToString(const CPoint& point, std::optional<int> precision = std::nullopt)
 {
 	std::ostringstream oss;
 	if (precision.has_value())
