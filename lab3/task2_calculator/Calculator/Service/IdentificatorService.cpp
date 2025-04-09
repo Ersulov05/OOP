@@ -52,6 +52,11 @@ void IdentificatorService::StoreVariableIdentificatorByValue(const std::string& 
 	{
 		identificator = std::make_shared<VariableIdentificator>(identificatorName, value);
 	}
+	else
+	{
+		AssertIdentificatorIsVariable(identificator);
+	}
+
 	identificator->SetValue(value);
 
 	this->m_identificatorRepository.StoreIdentificator(identificator);

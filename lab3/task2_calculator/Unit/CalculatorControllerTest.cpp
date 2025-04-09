@@ -49,7 +49,7 @@ TEST_CASE("TestHandleCalculatorCommandLET")
 	calculatorCommand = CalculatorCommand(CalculatorCommandType::PRINT, "x");
 	output.str("");
 	calculatorController.HandleCalculatorCommand(output, calculatorCommand);
-	REQUIRE(output.str() == "x:7\n");
+	REQUIRE(output.str() == "x:7.00\n");
 
 	calculatorCommand = CalculatorCommand(CalculatorCommandType::LET, "y = x");
 	output.str("");
@@ -58,7 +58,7 @@ TEST_CASE("TestHandleCalculatorCommandLET")
 	calculatorCommand = CalculatorCommand(CalculatorCommandType::PRINT, "y");
 	output.str("");
 	calculatorController.HandleCalculatorCommand(output, calculatorCommand);
-	REQUIRE(output.str() == "y:7\n");
+	REQUIRE(output.str() == "y:7.00\n");
 
 	output.str("");
 	calculatorCommand = CalculatorCommand(CalculatorCommandType::LET, "c=b&b");
@@ -101,7 +101,7 @@ TEST_CASE("TestHandleCalculatorCommandFN")
 	calculatorCommand = CalculatorCommand(CalculatorCommandType::PRINTFNS);
 	output.str("");
 	calculatorController.HandleCalculatorCommand(output, calculatorCommand);
-	REQUIRE(output.str() == "a:196\nb:1\nc:0\ny:14\n");
+	REQUIRE(output.str() == "a:196.00\nb:1.00\nc:0.00\ny:14.00\n");
 
 	output.str("");
 	calculatorCommand = CalculatorCommand(CalculatorCommandType::FN, "c=b&b");

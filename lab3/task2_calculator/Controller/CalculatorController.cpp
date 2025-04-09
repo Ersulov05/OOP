@@ -96,8 +96,8 @@ void CalculatorController::CreateFunction(const CalculatorCommand& command)
 
 void CalculatorController::PrintIdentificatorValuesData(std::ostream& output, const std::vector<IdentificatorValueData>& identificatorValuesData)
 {
-	std::cout << std::fixed << std::setprecision(2);
-	std::vector<IdentificatorValueData> sortedIdentificatorValuesData = std::move(identificatorValuesData);
+	output << std::fixed << std::setprecision(2);
+	std::vector<IdentificatorValueData> sortedIdentificatorValuesData = identificatorValuesData;
 	std::sort(sortedIdentificatorValuesData.begin(), sortedIdentificatorValuesData.end(),
 		[](const IdentificatorValueData& a, const IdentificatorValueData& b) {
 			return a.identificatorName < b.identificatorName;

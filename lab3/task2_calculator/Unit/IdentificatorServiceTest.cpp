@@ -9,22 +9,19 @@
 
 TEST_CASE("TestCreateVariableIdentificatorSuccess")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string identificatorName = "x";
 	identificatorService.CreateVariableIdentificator(identificatorName);
 
-	std::optional<Identificator> identificator = identificatorRepository.GetIdentificatorByName(identificatorName);
-	REQUIRE(identificator.has_value() == true);
-	REQUIRE(identificator->name == identificatorName);
-	REQUIRE(identificator->type == IdentificatorType::VARIABLE);
+	IdentificatorValueData identificatorValueData = identificatorService.GetIdentificatorValueData(identificatorName);
+	REQUIRE(identificatorValueData.identificatorName == identificatorName);
+	REQUIRE(std::isnan(identificatorValueData.value));
 }
 
 TEST_CASE("TestCreateVariableIdentificatorNameExistsFailed")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string identificatorName = "x";
 	identificatorService.CreateVariableIdentificator(identificatorName);
@@ -33,8 +30,7 @@ TEST_CASE("TestCreateVariableIdentificatorNameExistsFailed")
 
 TEST_CASE("TestCreateFunctionIdentificatorSuccess")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string firstVariableIdentificatorName = "x";
 	std::string secondVariableIdentificatorName = "y";
@@ -42,56 +38,43 @@ TEST_CASE("TestCreateFunctionIdentificatorSuccess")
 	identificatorService.CreateVariableIdentificator(secondVariableIdentificatorName);
 
 	std::string functionIdentificatorName = "fn1";
-	Operation operation = Operation::PLUS;
+	std::string operation = "+";
 	FunctionIdentificatorInput functionIdentificatorInput(
 		functionIdentificatorName,
-		operation,
 		firstVariableIdentificatorName,
+		operation,
 		secondVariableIdentificatorName);
 
 	identificatorService.CreateFunctionIdentificator(functionIdentificatorInput);
-	std::optional<Identificator> identificator = identificatorRepository.GetIdentificatorByName(functionIdentificatorName);
+	IdentificatorValueData identificatorValueData = identificatorService.GetIdentificatorValueData(functionIdentificatorName);
 
-	REQUIRE(identificator.has_value() == true);
-	REQUIRE(identificator->name == functionIdentificatorName);
-	REQUIRE(identificator->type == IdentificatorType::FUNCTION);
-	Function* function = identificator->data.function;
-	REQUIRE(function->firstIdentificatorName == firstVariableIdentificatorName);
-	REQUIRE(function->secondIdentificatorName == secondVariableIdentificatorName);
-	REQUIRE(function->operation == operation);
+	REQUIRE(identificatorValueData.identificatorName == functionIdentificatorName);
+	REQUIRE(std::isnan(identificatorValueData.value));
 
 	std::string secondFunctionIdentificatorName = "fn2";
 	FunctionIdentificatorInput secondFunctionIdentificatorInput(
 		secondFunctionIdentificatorName,
-		operation,
 		functionIdentificatorName,
+		operation,
 		functionIdentificatorName);
 
 	identificatorService.CreateFunctionIdentificator(secondFunctionIdentificatorInput);
-	identificator = identificatorRepository.GetIdentificatorByName(secondFunctionIdentificatorName);
+	identificatorValueData = identificatorService.GetIdentificatorValueData(secondFunctionIdentificatorName);
 
-	REQUIRE(identificator.has_value() == true);
-	REQUIRE(identificator->name == secondFunctionIdentificatorName);
-	REQUIRE(identificator->type == IdentificatorType::FUNCTION);
-	function = identificator->data.function;
-	REQUIRE(function->firstIdentificatorName == functionIdentificatorName);
-	REQUIRE(function->secondIdentificatorName == functionIdentificatorName);
-	REQUIRE(function->operation == operation);
+	REQUIRE(identificatorValueData.identificatorName == secondFunctionIdentificatorName);
+	REQUIRE(std::isnan(identificatorValueData.value));
 }
 
 TEST_CASE("TestCreateFunctionIdentificatorNameExistsFailed")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string variableIdentificatorName = "x";
 	identificatorService.CreateVariableIdentificator(variableIdentificatorName);
 
 	std::string identificatorName = "x";
-	Operation operation = Operation::PLUS;
 	FunctionIdentificatorInput functionIdentificatorInput(
 		identificatorName,
-		Operation::NONE,
 		variableIdentificatorName);
 
 	REQUIRE_THROWS_AS(identificatorService.CreateFunctionIdentificator(functionIdentificatorInput), IdentificatorNameExistsException);
@@ -99,16 +82,13 @@ TEST_CASE("TestCreateFunctionIdentificatorNameExistsFailed")
 
 TEST_CASE("TestCreateFunctionIdentificatorNotFoundFailed")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string variableIdentificatorName = "x";
 	std::string identificatorName = "fn1";
 
-	Operation operation = Operation::PLUS;
 	FunctionIdentificatorInput functionIdentificatorInput(
 		identificatorName,
-		Operation::NONE,
 		variableIdentificatorName);
 
 	REQUIRE_THROWS_AS(identificatorService.CreateFunctionIdentificator(functionIdentificatorInput), IdentificatorNotFoundException);
@@ -116,44 +96,61 @@ TEST_CASE("TestCreateFunctionIdentificatorNotFoundFailed")
 
 TEST_CASE("TestStoreVariableIdentificatorByValueSuccess")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string identificatorName = "x";
 	double value = 10;
 	identificatorService.StoreVariableIdentificatorByValue(identificatorName, value);
 
-	std::optional<Identificator> identificator = identificatorRepository.GetIdentificatorByName(identificatorName);
-	REQUIRE(identificator.has_value() == true);
-	REQUIRE(identificator->name == identificatorName);
-	REQUIRE(identificator->type == IdentificatorType::VARIABLE);
-	REQUIRE(identificator->data.value == value);
+	IdentificatorValueData identificatorValueData = identificatorService.GetIdentificatorValueData(identificatorName);
+
+	REQUIRE(identificatorValueData.identificatorName == identificatorName);
+	REQUIRE(identificatorValueData.value == value);
 
 	value = -100;
 	identificatorService.StoreVariableIdentificatorByValue(identificatorName, value);
-	identificator = identificatorRepository.GetIdentificatorByName(identificatorName);
-	REQUIRE(identificator.has_value() == true);
-	REQUIRE(identificator->name == identificatorName);
-	REQUIRE(identificator->type == IdentificatorType::VARIABLE);
-	REQUIRE(identificator->data.value == value);
+	identificatorValueData = identificatorService.GetIdentificatorValueData(identificatorName);
+
+	REQUIRE(identificatorValueData.identificatorName == identificatorName);
+	REQUIRE(identificatorValueData.value == value);
 }
 
 TEST_CASE("TestStoreVariableIdentificatorByValueTypeNotIsVariableFailed")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
-	std::string identificatorName = "x";
-	identificatorRepository.AddIdentificator(Identificator(identificatorName, Function(Operation::NONE, "y")));
+	identificatorService.CreateVariableIdentificator("x");
+	std::string functionName = "fn";
+	FunctionIdentificatorInput functionIdentificatorInput(
+		functionName,
+		"x");
+	identificatorService.CreateFunctionIdentificator(functionIdentificatorInput);
 
 	double value = 10;
-	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByValue(identificatorName, value), IdentificatorTypeNotIsVariableException);
+	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByValue(functionName, value), IdentificatorTypeNotIsVariableException);
+}
+
+TEST_CASE("TestStoreVariableIdentificatorByIdentificatorTypeNotIsVariableFailed")
+{
+	IdentificatorService identificatorService;
+
+	std::string variableName = "x";
+	identificatorService.CreateVariableIdentificator(variableName);
+	std::string functionName = "fn";
+	FunctionIdentificatorInput functionIdentificatorInput(
+		functionName,
+		variableName);
+	identificatorService.CreateFunctionIdentificator(functionIdentificatorInput);
+
+	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(functionName, variableName), IdentificatorTypeNotIsVariableException);
+
+	std::string identificatorName = "y";
+	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(identificatorName, functionName), IdentificatorTypeNotIsVariableException);
 }
 
 TEST_CASE("TestStoreVariableIdentificatorByIdentificatorSuccess")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string firstIdentificatorName = "x";
 	std::string secondIdentificatorName = "y";
@@ -166,41 +163,24 @@ TEST_CASE("TestStoreVariableIdentificatorByIdentificatorSuccess")
 	std::string thirdIdentificatorName = "z";
 	identificatorService.StoreVariableIdentificatorByIdentificator(thirdIdentificatorName, firstIdentificatorName);
 
-	std::optional<Identificator> identificator = identificatorRepository.GetIdentificatorByName(thirdIdentificatorName);
-	REQUIRE(identificator.has_value() == true);
-	REQUIRE(identificator->name == thirdIdentificatorName);
-	REQUIRE(identificator->type == IdentificatorType::VARIABLE);
-	REQUIRE(identificator->data.value == firstIdentificatorValue);
+	auto firstValueData = identificatorService.GetIdentificatorValueData(firstIdentificatorName);
+	auto secondValueData = identificatorService.GetIdentificatorValueData(secondIdentificatorName);
+	auto thirdValueData = identificatorService.GetIdentificatorValueData(thirdIdentificatorName);
 
-	identificatorService.StoreVariableIdentificatorByIdentificator(thirdIdentificatorName, secondIdentificatorName);
+	REQUIRE(firstValueData.identificatorName == firstIdentificatorName);
+	REQUIRE(firstValueData.value == firstIdentificatorValue);
 
-	identificator = identificatorRepository.GetIdentificatorByName(thirdIdentificatorName);
-	REQUIRE(identificator.has_value() == true);
-	REQUIRE(identificator->name == thirdIdentificatorName);
-	REQUIRE(identificator->type == IdentificatorType::VARIABLE);
-	REQUIRE(identificator->data.value == secondIdentificatorValue);
+	REQUIRE(secondValueData.identificatorName == secondIdentificatorName);
+	REQUIRE(secondValueData.value == secondIdentificatorValue);
+
+	REQUIRE(thirdValueData.identificatorName == thirdIdentificatorName);
+	REQUIRE(thirdValueData.value == firstIdentificatorValue);
 }
 
 TEST_CASE("TestStoreVariableIdentificatorByIdentificatorNotFoundFailed")
 {
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
+	IdentificatorService identificatorService;
 
 	std::string identificatorName = "x";
 	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(identificatorName, "notFoundIdentificator"), IdentificatorNotFoundException);
-}
-
-TEST_CASE("TestStoreVariableIdentificatorByIdentificatorTypeNotIsVariableFailed")
-{
-	IdentificatorRepository identificatorRepository;
-	IdentificatorService identificatorService(identificatorRepository);
-
-	std::string functionIdentificatorName = "x";
-	identificatorRepository.AddIdentificator(Identificator(functionIdentificatorName, Function(Operation::NONE, "y")));
-
-	std::string identificatorName = "y";
-	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(identificatorName, functionIdentificatorName), IdentificatorTypeNotIsVariableException);
-	identificatorService.StoreVariableIdentificatorByValue(identificatorName, 10);
-
-	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(functionIdentificatorName, identificatorName), IdentificatorTypeNotIsVariableException);
 }

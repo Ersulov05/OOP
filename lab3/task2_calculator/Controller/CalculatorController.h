@@ -1,5 +1,4 @@
 #pragma once
-// #include "../Calculator/Service/IdentificatorQueryService.h"
 #include "../Calculator/Service/IdentificatorService.h"
 #include "./CalculatorCommand.h"
 #include <string>
