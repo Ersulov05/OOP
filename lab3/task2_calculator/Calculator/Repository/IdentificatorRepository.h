@@ -7,11 +7,12 @@
 class IdentificatorRepository
 {
 public:
-	void StoreIdentificator(std::shared_ptr<IIdentificator> identificator);
-	std::shared_ptr<IIdentificator> GetIdentificatorByName(const std::string& name);
-	std::vector<std::shared_ptr<IIdentificator>> getVariables();
-	std::vector<std::shared_ptr<IIdentificator>> getFunctions();
+	~IdentificatorRepository();
+	void StoreIdentificator(IIdentificator* identificator);
+	IIdentificator* GetIdentificatorByName(const std::string& name);
+	std::vector<IIdentificator*> getVariables();
+	std::vector<IIdentificator*> getFunctions();
 
 private:
-	std::unordered_map<std::string, std::shared_ptr<IIdentificator>> m_identificators;
+	std::unordered_map<std::string, IIdentificator*> m_identificators;
 };

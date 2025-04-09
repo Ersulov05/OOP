@@ -16,12 +16,12 @@ void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificat
 	auto leftIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.firstIdentificatorName);
 	IdentificatorService::AssertIdentificatorExists(leftIdentificator);
 
-	std::shared_ptr<IIdentificator> identificator;
+	IIdentificator* identificator;
 	if (functionIdentificatorInput.operation)
 	{
 		auto rightIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.secondIdentificatorName);
 		IdentificatorService::AssertIdentificatorExists(rightIdentificator);
-		identificator = std::make_shared<FunctionIdentificator>(
+		identificator = new FunctionIdentificator(
 			functionIdentificatorInput.identificatorName,
 			*functionIdentificatorInput.operation,
 			leftIdentificator,
@@ -29,7 +29,7 @@ void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificat
 	}
 	else
 	{
-		identificator = std::make_shared<FunctionIdentificator>(functionIdentificatorInput.identificatorName, leftIdentificator);
+		identificator = new FunctionIdentificator(functionIdentificatorInput.identificatorName, leftIdentificator);
 	}
 
 	this->m_identificatorRepository.StoreIdentificator(identificator);
@@ -39,7 +39,7 @@ void IdentificatorService::CreateVariableIdentificator(const std::string& identi
 {
 	this->AssertIdentificatorNameNotExists(identificatorName);
 
-	std::shared_ptr<IIdentificator> newIdentificator = std::make_shared<VariableIdentificator>(identificatorName);
+	IIdentificator* newIdentificator = new VariableIdentificator(identificatorName);
 
 	this->m_identificatorRepository.StoreIdentificator(newIdentificator);
 }
@@ -50,7 +50,7 @@ void IdentificatorService::StoreVariableIdentificatorByValue(const std::string& 
 
 	if (!identificator)
 	{
-		identificator = std::make_shared<VariableIdentificator>(identificatorName, value);
+		identificator = new VariableIdentificator(identificatorName, value);
 	}
 	else
 	{
@@ -92,7 +92,7 @@ std::vector<IdentificatorValueData> IdentificatorService::GetFunctionIdentificat
 	return IdentificatorService::CreateIdentificatorValuesData(functionIdentificators);
 }
 
-std::vector<IdentificatorValueData> IdentificatorService::CreateIdentificatorValuesData(std::vector<std::shared_ptr<IIdentificator>> identificators)
+std::vector<IdentificatorValueData> IdentificatorService::CreateIdentificatorValuesData(std::vector<IIdentificator*> identificators)
 {
 	std::vector<IdentificatorValueData> identificatorValues;
 
@@ -104,7 +104,7 @@ std::vector<IdentificatorValueData> IdentificatorService::CreateIdentificatorVal
 	return identificatorValues;
 }
 
-void IdentificatorService::AssertIdentificatorExists(std::shared_ptr<IIdentificator> identificator)
+void IdentificatorService::AssertIdentificatorExists(IIdentificator* identificator)
 {
 	if (!identificator)
 	{
@@ -112,9 +112,9 @@ void IdentificatorService::AssertIdentificatorExists(std::shared_ptr<IIdentifica
 	}
 }
 
-void IdentificatorService::AssertIdentificatorIsVariable(std::shared_ptr<IIdentificator> identificator)
+void IdentificatorService::AssertIdentificatorIsVariable(IIdentificator* identificator)
 {
-	if (!std::dynamic_pointer_cast<VariableIdentificator>(identificator))
+	if (!dynamic_cast<VariableIdentificator*>(identificator))
 	{
 		throw IdentificatorTypeNotIsVariableException();
 	}

@@ -17,9 +17,9 @@ class FunctionIdentificator : public IIdentificator
 {
 public:
 	FunctionIdentificator(const std::string& name, const std::string& operation,
-		std::shared_ptr<IIdentificator> left,
-		std::shared_ptr<IIdentificator> right);
-	FunctionIdentificator(const std::string& name, std::shared_ptr<IIdentificator> target);
+		IIdentificator* left,
+		IIdentificator* right);
+	FunctionIdentificator(const std::string& name, IIdentificator* target);
 	void AddDependent(IIdentificator* dependent) override;
 	std::unordered_set<IIdentificator*> GetSubscribes() override;
 	bool IsCacheValid() override;

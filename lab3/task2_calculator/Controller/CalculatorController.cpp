@@ -23,7 +23,7 @@ void CalculatorController::Load()
 		"f1",
 		"x"));
 
-	for (int i = 2; i < 100000; i++)
+	for (int i = 2; i < 1000000; i++)
 	{
 		if (i % 10000 == 0)
 			std::cout << i << std::endl;

@@ -2,21 +2,21 @@
 #include <stack>
 
 FunctionIdentificator::FunctionIdentificator(const std::string& name, const std::string& operation,
-	std::shared_ptr<IIdentificator> left,
-	std::shared_ptr<IIdentificator> right)
+	IIdentificator* left,
+	IIdentificator* right)
 	: m_name(name)
 	, m_operation(ParseOperation(operation))
-	, m_left(left.get())
-	, m_right(right.get())
+	, m_left(left)
+	, m_right(right)
 {
 	ValidateIdentifier(name);
 	AddDependent(this);
 }
 
 FunctionIdentificator::FunctionIdentificator(const std::string& name,
-	std::shared_ptr<IIdentificator> target)
+	IIdentificator* target)
 	: m_name(name)
-	, m_left(target.get())
+	, m_left(target)
 {
 	ValidateIdentifier(name);
 	AddDependent(this);
