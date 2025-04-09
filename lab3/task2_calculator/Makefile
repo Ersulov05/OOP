@@ -24,7 +24,8 @@ MAIN_SRCS := \
 # Тестовые файлы
 TEST_SRCS := \
 	$(TEST_DIR)/CalculatorControllerTest.cpp \
-	$(TEST_DIR)/IdentificatorServiceTest.cpp
+	$(TEST_DIR)/IdentificatorServiceTest.cpp \
+	$(TEST_DIR)/IdentificatorRepositoryTest.cpp
 
 # Объектные файлы для основной программы
 MAIN_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(MAIN_SRCS))

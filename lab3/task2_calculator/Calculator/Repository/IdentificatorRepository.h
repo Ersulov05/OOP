@@ -10,8 +10,8 @@ public:
 	~IdentificatorRepository();
 	void StoreIdentificator(IIdentificator* identificator);
 	IIdentificator* GetIdentificatorByName(const std::string& name);
-	std::vector<IIdentificator*> getVariables();
-	std::vector<IIdentificator*> getFunctions();
+	std::vector<IIdentificator*> GetVariables();
+	std::vector<IIdentificator*> GetFunctions();
 
 private:
 	std::unordered_map<std::string, IIdentificator*> m_identificators;

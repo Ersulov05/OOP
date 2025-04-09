@@ -26,7 +26,7 @@ IIdentificator* IdentificatorRepository::GetIdentificatorByName(const std::strin
 	return it->second;
 }
 
-std::vector<IIdentificator*> IdentificatorRepository::getVariables()
+std::vector<IIdentificator*> IdentificatorRepository::GetVariables()
 {
 	std::vector<IIdentificator*> variables;
 	for (const auto& [name, identificator] : m_identificators)
@@ -39,7 +39,7 @@ std::vector<IIdentificator*> IdentificatorRepository::getVariables()
 	return variables;
 }
 
-std::vector<IIdentificator*> IdentificatorRepository::getFunctions()
+std::vector<IIdentificator*> IdentificatorRepository::GetFunctions()
 {
 	std::vector<IIdentificator*> functions;
 	for (const auto& [name, identificator] : m_identificators)

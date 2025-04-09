@@ -80,14 +80,14 @@ IdentificatorValueData IdentificatorService::GetIdentificatorValueData(const std
 
 std::vector<IdentificatorValueData> IdentificatorService::GetVariableIdentificatorValuesData()
 {
-	auto variableIdentificators = this->m_identificatorRepository.getVariables();
+	auto variableIdentificators = this->m_identificatorRepository.GetVariables();
 
 	return IdentificatorService::CreateIdentificatorValuesData(variableIdentificators);
 }
 
 std::vector<IdentificatorValueData> IdentificatorService::GetFunctionIdentificatorValuesData()
 {
-	auto functionIdentificators = this->m_identificatorRepository.getFunctions();
+	auto functionIdentificators = this->m_identificatorRepository.GetFunctions();
 
 	return IdentificatorService::CreateIdentificatorValuesData(functionIdentificators);
 }

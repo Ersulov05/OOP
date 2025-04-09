@@ -1,0 +1,78 @@
+classDiagram
+direction TB
+
+    namespace Group_Controller {
+        class CalculatorController {
+            -IdentificatorService m_identificatorService
+	        -IdentificatorRepository m_identificatorRepository
+            +HandleCalculatorCommand() void
+        }
+
+        class IdentificatorService {
+            +CreateFunctionIdentificator() void
+            +CreateVariableIdentificator() void
+            +StoreVariableIdentificatorByValue() void
+            +StoreVariableIdentificatorByIdentificator() void
+            +GetIdentificatorValueData() IdentificatorValueData
+            +GetVariableIdentificatorValuesData() IdentificatorValueData[]
+            +GetFunctionIdentificatorValuesData() IdentificatorValueData[]
+            -IdentificatorRepository m_identificatorRepository
+        }
+
+        class IdentificatorRepository {
+            +StoreIdentificator() void
+            +GetIdentificatorByName() Identificator
+            +GetFunctions() map<string, IIdentificator*>
+            +GetVariables() map<string, IIdentificator*>
+
+            -map<string, IIdentificator> m_identificators
+        }
+    }
+    namespace Group_DTO {
+        class IdentificatorValueData {
+            +string identificatorName
+            +double value
+        }
+        class FunctionIdentificatorInput {
+            +string identificatorName;
+            +Operation operation;
+            +string firstIdentificatorName;
+            +string secondIdentificatorName;
+        }
+    }
+
+    namespace Group_Identificator {
+        class IIdentificator {
+            +string name
+            +IdentificatorType type
+            +union data
+        }
+
+        class FunctionIdentificator {
+            +Operation operation
+            +string firstIdentificatorName
+            +string secondIdentificatorName
+        }
+
+        class VariableIdentificator {
+            +Operation operation
+            +string firstIdentificatorName
+            +string secondIdentificatorName
+        }
+    }
+
+    class CalculatorCommand {
+        +CalculatorCommandType type
+        +string bodyCommand
+    }
+
+    CalculatorController ..> CalculatorCommand
+    CalculatorController *-- IdentificatorService
+    IdentificatorService *-- IdentificatorRepository
+    IdentificatorRepository *-- IIdentificator
+    IdentificatorValueData <.. IdentificatorService
+    FunctionIdentificatorInput <.. CalculatorController 
+    FunctionIdentificatorInput <.. IdentificatorService 
+    
+    IIdentificator --|> FunctionIdentificator
+    IIdentificator --|> VariableIdentificator
