@@ -24,7 +24,7 @@ void Process(std::istream& input, std::ostream& output)
 	shapeController.PrintShapeWithMinPerimeter(output);
 }
 
-int main(int argc, char* argv[])
+int main()
 {
 	Process(std::cin, std::cout);
 

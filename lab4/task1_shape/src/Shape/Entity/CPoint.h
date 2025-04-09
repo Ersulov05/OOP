@@ -13,6 +13,13 @@ struct CPoint
 		, y(y)
 	{
 	}
+
+	bool operator==(const CPoint& other) const
+	{
+		const double epsilon = 1e-10;
+		return std::fabs(x - other.x) < epsilon
+			&& std::fabs(y - other.y) < epsilon;
+	}
 };
 
 inline double GetLength(const CPoint& startPoint, const CPoint& endPoint)

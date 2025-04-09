@@ -1,6 +1,7 @@
 #include "./CLineSegment.h"
 #include "./CPoint.h"
 #include "./IShape.h"
+#include <optional>
 
 CLineSegment::CLineSegment(CPoint startPoint, CPoint endPoint, u_int32_t outlineColor)
 	: m_startPoint(startPoint)
