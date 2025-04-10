@@ -92,3 +92,25 @@ TEST_CASE("TestIdentificatorRepositoryGetVariables")
 		REQUIRE(dynamic_cast<VariableIdentificator*>(variable) != nullptr);
 	}
 }
+
+TEST_CASE("TestIdentificatorRepositoryLongDependences")
+{
+	IdentificatorRepository identificatorRepository;
+
+	identificatorRepository.StoreIdentificator(new VariableIdentificator("x", 1));
+	identificatorRepository.StoreIdentificator(new FunctionIdentificator("f1", identificatorRepository.GetIdentificatorByName("x")));
+
+	size_t n = 100000;
+	for (size_t i = 2; i < n; i++)
+	{
+		auto identificator = identificatorRepository.GetIdentificatorByName("f" + std::to_string(i - 1));
+		identificatorRepository.StoreIdentificator(new FunctionIdentificator(
+			"f" + std::to_string(i),
+			identificator,
+			"+",
+			identificator));
+	}
+
+	auto functions = identificatorRepository.GetFunctions();
+	REQUIRE(functions.size() == n - 1);
+}

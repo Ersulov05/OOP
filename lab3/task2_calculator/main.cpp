@@ -4,13 +4,14 @@
 #include <iostream>
 
 const std::string EXIT_STRING = "exit";
+const std::string START_COMMAND_SYMBOL = ">";
 
-void Process(std::istream& input, std::ostream& output)
+void HandleCalculator(std::istream& input, std::ostream& output)
 {
 	CalculatorController calculatorController;
-	calculatorController.Load();
 	while (true)
 	{
+		output << START_COMMAND_SYMBOL;
 		AppCommand appCommand = GetAppCommand(input);
 		if (appCommand.stringCommand == EXIT_STRING)
 		{
@@ -21,9 +22,9 @@ void Process(std::istream& input, std::ostream& output)
 	}
 }
 
-int main(int argc, char* argv[])
+int main()
 {
-	Process(std::cin, std::cout);
+	HandleCalculator(std::cin, std::cout);
 
 	return 0;
 }

@@ -16,25 +16,6 @@ CalculatorController::CalculatorController()
 {
 }
 
-void CalculatorController::Load()
-{
-	m_identificatorService.StoreVariableIdentificatorByValue("x", 1);
-	m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
-		"f1",
-		"x"));
-
-	for (int i = 2; i < 1000000; i++)
-	{
-		if (i % 10000 == 0)
-			std::cout << i << std::endl;
-		m_identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
-			"f" + std::to_string(i),
-			"f" + std::to_string(i - 1),
-			"+",
-			"f" + std::to_string(i - 1)));
-	}
-}
-
 void CalculatorController::HandleCalculatorCommand(std::ostream& output, const CalculatorCommand& command)
 {
 	try

@@ -145,7 +145,9 @@ TEST_CASE("TestStoreVariableIdentificatorByIdentificatorTypeNotIsVariableFailed"
 	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(functionName, variableName), IdentificatorTypeNotIsVariableException);
 
 	std::string identificatorName = "y";
-	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(identificatorName, functionName), IdentificatorTypeNotIsVariableException);
+	identificatorService.StoreVariableIdentificatorByIdentificator(identificatorName, functionName);
+	IdentificatorValueData valueData = identificatorService.GetIdentificatorValueData(identificatorName);
+	REQUIRE(valueData.identificatorName == identificatorName);
 }
 
 TEST_CASE("TestStoreVariableIdentificatorByIdentificatorSuccess")
@@ -183,4 +185,57 @@ TEST_CASE("TestStoreVariableIdentificatorByIdentificatorNotFoundFailed")
 
 	std::string identificatorName = "x";
 	REQUIRE_THROWS_AS(identificatorService.StoreVariableIdentificatorByIdentificator(identificatorName, "notFoundIdentificator"), IdentificatorNotFoundException);
+}
+
+TEST_CASE("TestFibonachi")
+{
+	IdentificatorService identificatorService;
+	identificatorService.StoreVariableIdentificatorByValue("v0", 0);
+	identificatorService.StoreVariableIdentificatorByValue("v1", 1);
+	identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput("fib0", "v0"));
+	identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput("fib1", "v1"));
+
+	for (size_t i = 2; i < 51; i++)
+	{
+		identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+			"fib" + std::to_string(i),
+			"fib" + std::to_string(i - 1),
+			"+",
+			"fib" + std::to_string(i - 2)));
+	}
+
+	auto functionValueData = identificatorService.GetIdentificatorValueData("fib50");
+	REQUIRE(functionValueData.identificatorName == "fib50");
+	REQUIRE(functionValueData.value == 12586269025);
+
+	identificatorService.StoreVariableIdentificatorByValue("v0", 1);
+
+	functionValueData = identificatorService.GetIdentificatorValueData("fib50");
+	REQUIRE(functionValueData.identificatorName == "fib50");
+	REQUIRE(functionValueData.value == 20365011074);
+}
+
+TEST_CASE("TestStack")
+{
+	IdentificatorService identificatorService;
+	identificatorService.StoreVariableIdentificatorByValue("x", 1);
+	identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput("x2", "x", "+", "x"));
+	for (size_t i = 3; i <= 1000000; i++)
+	{
+		identificatorService.CreateFunctionIdentificator(FunctionIdentificatorInput(
+			"x" + std::to_string(i),
+			"x" + std::to_string(i - 1),
+			"+",
+			"x"));
+	}
+
+	auto functionValueData = identificatorService.GetIdentificatorValueData("x1000000");
+	REQUIRE(functionValueData.identificatorName == "x1000000");
+	REQUIRE(functionValueData.value == 1000000);
+
+	identificatorService.StoreVariableIdentificatorByValue("x", 2);
+
+	functionValueData = identificatorService.GetIdentificatorValueData("x1000000");
+	REQUIRE(functionValueData.identificatorName == "x1000000");
+	REQUIRE(functionValueData.value == 2000000);
 }

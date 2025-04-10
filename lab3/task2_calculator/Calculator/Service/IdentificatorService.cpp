@@ -23,8 +23,8 @@ void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificat
 		IdentificatorService::AssertIdentificatorExists(rightIdentificator);
 		identificator = new FunctionIdentificator(
 			functionIdentificatorInput.identificatorName,
-			*functionIdentificatorInput.operation,
 			leftIdentificator,
+			*functionIdentificatorInput.operation,
 			rightIdentificator);
 	}
 	else
@@ -66,7 +66,7 @@ void IdentificatorService::StoreVariableIdentificatorByIdentificator(const std::
 {
 	auto identificator = this->m_identificatorRepository.GetIdentificatorByName(identificatorValueName);
 	AssertIdentificatorExists(identificator);
-	AssertIdentificatorIsVariable(identificator);
+	// AssertIdentificatorIsVariable(identificator);
 
 	this->StoreVariableIdentificatorByValue(identificatorName, identificator->GetValue());
 }
