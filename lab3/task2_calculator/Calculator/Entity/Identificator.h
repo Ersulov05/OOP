@@ -2,24 +2,21 @@
 #include <regex>
 #include <string>
 #include <unordered_set>
-
-class IIdentificator
+// TODO: Переименовать
+class Identificator
 {
 public:
-	virtual ~IIdentificator() = default;
+	virtual ~Identificator() = default;
 	virtual double GetValue() = 0;
 	virtual void SetValue(double value) {};
 	virtual std::string GetName() const = 0;
 	virtual void ResetCache() = 0;
-	virtual void AddDependent(IIdentificator* dependent) = 0;
+	virtual void AddDependent(Identificator* dependent) = 0;
 	virtual bool IsCacheValid() = 0;
-	virtual std::unordered_set<IIdentificator*> GetSubscribes() = 0;
-	// {
-	// 	return {};
-	// };
+	virtual std::unordered_set<Identificator*> GetSubscribes() = 0;
 
 protected:
-	static void ValidateIdentifier(const std::string& name)
+	static void ValidateName(const std::string& name)
 	{
 		static const std::regex identifier_regex("^[a-zA-Z][a-zA-Z0-9_]*$");
 

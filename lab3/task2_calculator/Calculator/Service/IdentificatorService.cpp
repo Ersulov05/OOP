@@ -1,6 +1,6 @@
 #include "./IdentificatorService.h"
-#include "../Entity/FunctionIdentificator.h"
-#include "../Entity/VariableIdentificator.h"
+#include "../Entity/Function.h"
+#include "../Entity/Variable.h"
 #include "../Exception/IdentificatorNameExistsException.h"
 #include "../Exception/IdentificatorNotFoundException.h"
 #include "../Exception/IdentificatorTypeNotIsVariableException.h"
@@ -16,12 +16,12 @@ void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificat
 	auto leftIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.firstIdentificatorName);
 	IdentificatorService::AssertIdentificatorExists(leftIdentificator);
 
-	IIdentificator* identificator;
+	Identificator* identificator;
 	if (functionIdentificatorInput.operation)
 	{
 		auto rightIdentificator = this->m_identificatorRepository.GetIdentificatorByName(functionIdentificatorInput.secondIdentificatorName);
 		IdentificatorService::AssertIdentificatorExists(rightIdentificator);
-		identificator = new FunctionIdentificator(
+		identificator = new Function(
 			functionIdentificatorInput.identificatorName,
 			leftIdentificator,
 			*functionIdentificatorInput.operation,
@@ -29,7 +29,7 @@ void IdentificatorService::CreateFunctionIdentificator(const FunctionIdentificat
 	}
 	else
 	{
-		identificator = new FunctionIdentificator(functionIdentificatorInput.identificatorName, leftIdentificator);
+		identificator = new Function(functionIdentificatorInput.identificatorName, leftIdentificator);
 	}
 
 	this->m_identificatorRepository.StoreIdentificator(identificator);
@@ -39,7 +39,7 @@ void IdentificatorService::CreateVariableIdentificator(const std::string& identi
 {
 	this->AssertIdentificatorNameNotExists(identificatorName);
 
-	IIdentificator* newIdentificator = new VariableIdentificator(identificatorName);
+	Identificator* newIdentificator = new Variable(identificatorName);
 
 	this->m_identificatorRepository.StoreIdentificator(newIdentificator);
 }
@@ -50,7 +50,7 @@ void IdentificatorService::StoreVariableIdentificatorByValue(const std::string& 
 
 	if (!identificator)
 	{
-		identificator = new VariableIdentificator(identificatorName, value);
+		identificator = new Variable(identificatorName, value);
 	}
 	else
 	{
@@ -66,7 +66,6 @@ void IdentificatorService::StoreVariableIdentificatorByIdentificator(const std::
 {
 	auto identificator = this->m_identificatorRepository.GetIdentificatorByName(identificatorValueName);
 	AssertIdentificatorExists(identificator);
-	// AssertIdentificatorIsVariable(identificator);
 
 	this->StoreVariableIdentificatorByValue(identificatorName, identificator->GetValue());
 }
@@ -92,7 +91,7 @@ std::vector<IdentificatorValueData> IdentificatorService::GetFunctionIdentificat
 	return IdentificatorService::CreateIdentificatorValuesData(functionIdentificators);
 }
 
-std::vector<IdentificatorValueData> IdentificatorService::CreateIdentificatorValuesData(std::vector<IIdentificator*> identificators)
+std::vector<IdentificatorValueData> IdentificatorService::CreateIdentificatorValuesData(std::vector<Identificator*> identificators)
 {
 	std::vector<IdentificatorValueData> identificatorValues;
 
@@ -104,7 +103,7 @@ std::vector<IdentificatorValueData> IdentificatorService::CreateIdentificatorVal
 	return identificatorValues;
 }
 
-void IdentificatorService::AssertIdentificatorExists(IIdentificator* identificator)
+void IdentificatorService::AssertIdentificatorExists(Identificator* identificator)
 {
 	if (!identificator)
 	{
@@ -112,9 +111,9 @@ void IdentificatorService::AssertIdentificatorExists(IIdentificator* identificat
 	}
 }
 
-void IdentificatorService::AssertIdentificatorIsVariable(IIdentificator* identificator)
+void IdentificatorService::AssertIdentificatorIsVariable(Identificator* identificator)
 {
-	if (!dynamic_cast<VariableIdentificator*>(identificator))
+	if (!dynamic_cast<Variable*>(identificator))
 	{
 		throw IdentificatorTypeNotIsVariableException();
 	}

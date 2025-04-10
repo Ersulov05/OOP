@@ -18,9 +18,9 @@ public:
 	std::vector<IdentificatorValueData> GetFunctionIdentificatorValuesData();
 
 private:
-	static std::vector<IdentificatorValueData> CreateIdentificatorValuesData(std::vector<IIdentificator*> identificators);
-	static void AssertIdentificatorExists(IIdentificator* identificator);
+	static std::vector<IdentificatorValueData> CreateIdentificatorValuesData(std::vector<Identificator*> identificators);
+	static void AssertIdentificatorExists(Identificator* identificator);
 	void AssertIdentificatorNameNotExists(const std::string& identificatorName);
-	static void AssertIdentificatorIsVariable(IIdentificator* identificatorType);
+	static void AssertIdentificatorIsVariable(Identificator* identificatorType);
 	IdentificatorRepository m_identificatorRepository;
 };

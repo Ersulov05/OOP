@@ -18,8 +18,8 @@ MAIN_SRCS := \
 	Controller/CalculatorController.cpp \
 	Calculator/Service/IdentificatorService.cpp \
 	Calculator/Repository/IdentificatorRepository.cpp \
-	Calculator/Entity/FunctionIdentificator.cpp \
-	Calculator/Entity/VariableIdentificator.cpp \
+	Calculator/Entity/Function.cpp \
+	Calculator/Entity/Variable.cpp \
 
 # Тестовые файлы
 TEST_SRCS := \

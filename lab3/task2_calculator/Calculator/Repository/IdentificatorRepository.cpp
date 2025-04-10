@@ -1,6 +1,6 @@
 #include "./IdentificatorRepository.h"
-#include "../Entity/FunctionIdentificator.h"
-#include "../Entity/VariableIdentificator.h"
+#include "../Entity/Function.h"
+#include "../Entity/Variable.h"
 
 IdentificatorRepository::~IdentificatorRepository()
 {
@@ -11,12 +11,12 @@ IdentificatorRepository::~IdentificatorRepository()
 	m_identificators.clear();
 }
 
-void IdentificatorRepository::StoreIdentificator(IIdentificator* identificator)
+void IdentificatorRepository::StoreIdentificator(Identificator* identificator)
 {
 	m_identificators[identificator->GetName()] = identificator;
 }
 
-IIdentificator* IdentificatorRepository::GetIdentificatorByName(const std::string& name)
+Identificator* IdentificatorRepository::GetIdentificatorByName(const std::string& name)
 {
 	auto it = m_identificators.find(name);
 	if (it == m_identificators.end())
@@ -26,12 +26,12 @@ IIdentificator* IdentificatorRepository::GetIdentificatorByName(const std::strin
 	return it->second;
 }
 
-std::vector<IIdentificator*> IdentificatorRepository::GetVariables()
+std::vector<Identificator*> IdentificatorRepository::GetVariables()
 {
-	std::vector<IIdentificator*> variables;
+	std::vector<Identificator*> variables;
 	for (const auto& [name, identificator] : m_identificators)
 	{
-		if (dynamic_cast<VariableIdentificator*>(identificator))
+		if (dynamic_cast<Variable*>(identificator))
 		{
 			variables.push_back(identificator);
 		}
@@ -39,12 +39,12 @@ std::vector<IIdentificator*> IdentificatorRepository::GetVariables()
 	return variables;
 }
 
-std::vector<IIdentificator*> IdentificatorRepository::GetFunctions()
+std::vector<Identificator*> IdentificatorRepository::GetFunctions()
 {
-	std::vector<IIdentificator*> functions;
+	std::vector<Identificator*> functions;
 	for (const auto& [name, identificator] : m_identificators)
 	{
-		if (dynamic_cast<FunctionIdentificator*>(identificator))
+		if (dynamic_cast<Function*>(identificator))
 		{
 			functions.push_back(identificator);
 		}

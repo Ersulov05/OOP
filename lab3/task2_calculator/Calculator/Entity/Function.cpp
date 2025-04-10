@@ -1,28 +1,29 @@
-#include "./FunctionIdentificator.h"
+#include "./Function.h"
 #include <stack>
 
-FunctionIdentificator::FunctionIdentificator(const std::string& name, const std::string& operation,
-	IIdentificator* left,
-	IIdentificator* right)
+Function::Function(const std::string& name,
+	Identificator* left,
+	const std::string& operation,
+	Identificator* right)
 	: m_name(name)
 	, m_operation(ParseOperation(operation))
 	, m_left(left)
 	, m_right(right)
 {
-	ValidateIdentifier(name);
+	ValidateName(name);
 	AddDependent(this);
 }
 
-FunctionIdentificator::FunctionIdentificator(const std::string& name,
-	IIdentificator* target)
+Function::Function(const std::string& name,
+	Identificator* target)
 	: m_name(name)
 	, m_left(target)
 {
-	ValidateIdentifier(name);
+	ValidateName(name);
 	AddDependent(this);
 }
 
-void FunctionIdentificator::AddDependent(IIdentificator* dependent)
+void Function::AddDependent(Identificator* dependent)
 {
 	auto leftSubscribes = m_left->GetSubscribes();
 	m_subscribes.insert(leftSubscribes.begin(), leftSubscribes.end());
@@ -38,23 +39,23 @@ void FunctionIdentificator::AddDependent(IIdentificator* dependent)
 	}
 }
 
-std::unordered_set<IIdentificator*> FunctionIdentificator::GetSubscribes()
+std::unordered_set<Identificator*> Function::GetSubscribes()
 {
 	return m_subscribes;
 }
 
-bool FunctionIdentificator::IsCacheValid()
+bool Function::IsCacheValid()
 {
 	return m_cacheValid;
 }
 
-double FunctionIdentificator::GetValue()
+double Function::GetValue()
 {
 	if (m_cacheValid)
 	{
 		return m_cachedValue;
 	}
-	std::stack<IIdentificator*> stack;
+	std::stack<Identificator*> stack;
 	stack.push(this);
 
 	while (!stack.empty())
@@ -67,7 +68,7 @@ double FunctionIdentificator::GetValue()
 			continue;
 		}
 
-		auto func = dynamic_cast<FunctionIdentificator*>(current);
+		auto func = dynamic_cast<Function*>(current);
 		func->m_operation.has_value()
 			? CalculateBinaryFunction(stack, func)
 			: CalculateFunction(stack, func);
@@ -76,23 +77,23 @@ double FunctionIdentificator::GetValue()
 	return m_cachedValue;
 }
 
-void FunctionIdentificator::SetCache(double value)
+void Function::SetCache(double value)
 {
 	m_cachedValue = value;
 	m_cacheValid = true;
 }
 
-std::string FunctionIdentificator::GetName() const
+std::string Function::GetName() const
 {
 	return m_name;
 }
 
-void FunctionIdentificator::ResetCache()
+void Function::ResetCache()
 {
 	m_cacheValid = false;
 }
 
-Operation FunctionIdentificator::ParseOperation(const std::string& operation)
+Operation Function::ParseOperation(const std::string& operation)
 {
 	if (operation == "+")
 		return Operation::PLUS;
@@ -105,7 +106,7 @@ Operation FunctionIdentificator::ParseOperation(const std::string& operation)
 	throw std::invalid_argument("Invalid operation: " + operation);
 }
 
-double FunctionIdentificator::ExecuteOperation(Operation operation, double a, double b)
+double Function::ExecuteOperation(Operation operation, double a, double b)
 {
 	switch (operation)
 	{
@@ -124,7 +125,7 @@ double FunctionIdentificator::ExecuteOperation(Operation operation, double a, do
 	}
 }
 
-void FunctionIdentificator::CalculateFunction(std::stack<IIdentificator*>& stack, FunctionIdentificator* func)
+void Function::CalculateFunction(std::stack<Identificator*>& stack, Function* func)
 {
 	if (func->m_left->IsCacheValid())
 	{
@@ -138,7 +139,7 @@ void FunctionIdentificator::CalculateFunction(std::stack<IIdentificator*>& stack
 	return;
 }
 
-void FunctionIdentificator::CalculateBinaryFunction(std::stack<IIdentificator*>& stack, FunctionIdentificator* func)
+void Function::CalculateBinaryFunction(std::stack<Identificator*>& stack, Function* func)
 {
 	bool leftReady = func->m_left->IsCacheValid();
 	bool rightReady = func->m_right->IsCacheValid();
@@ -150,7 +151,7 @@ void FunctionIdentificator::CalculateBinaryFunction(std::stack<IIdentificator*>&
 
 	if (leftReady && rightReady)
 	{
-		double result = FunctionIdentificator::ExecuteOperation(
+		double result = Function::ExecuteOperation(
 			*func->m_operation,
 			func->m_left->GetValue(),
 			func->m_right->GetValue());
