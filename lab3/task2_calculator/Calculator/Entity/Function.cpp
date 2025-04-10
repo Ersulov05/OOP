@@ -55,7 +55,7 @@ double Function::GetValue()
 	{
 		return m_cachedValue;
 	}
-	std::stack<Identificator*> stack;
+	std::stack<Identificator*> stack; // TODO: Хранить либо по ссылке либо по умному указателю
 	stack.push(this);
 
 	while (!stack.empty())
@@ -68,7 +68,7 @@ double Function::GetValue()
 			continue;
 		}
 
-		auto func = dynamic_cast<Function*>(current);
+		auto func = dynamic_cast<Function*>(current); // TODO: НЕ использовать dinamic_cast
 		func->m_operation.has_value()
 			? CalculateBinaryFunction(stack, func)
 			: CalculateFunction(stack, func);
