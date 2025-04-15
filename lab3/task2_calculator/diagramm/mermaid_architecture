@@ -35,29 +35,33 @@ direction TB
         }
         class FunctionIdentificatorInput {
             +string identificatorName;
-            +Operation operation;
             +string firstIdentificatorName;
+            +string operation;
             +string secondIdentificatorName;
         }
     }
 
     namespace Group_Identificator {
-        class IIdentificator {
-            +string name
-            +IdentificatorType type
-            +union data
+        class Identificator {
+            +GetValue() double
+            +GetName() string
+            +SetValue() void
+            +ResetCache() void
+            +AddDependent() void
+            +IsCacheValid() bool
+            +GetSubscribes() set<Identificator>
         }
 
-        class FunctionIdentificator {
-            +Operation operation
-            +string firstIdentificatorName
-            +string secondIdentificatorName
+        class Function {
+            -string name
+            -Identificator left
+            -Operation operation
+            -Identificator right
         }
 
-        class VariableIdentificator {
-            +Operation operation
-            +string firstIdentificatorName
-            +string secondIdentificatorName
+        class Variable {
+            -string name
+            -double value
         }
     }
 
@@ -69,10 +73,12 @@ direction TB
     CalculatorController ..> CalculatorCommand
     CalculatorController *-- IdentificatorService
     IdentificatorService *-- IdentificatorRepository
-    IdentificatorRepository *-- IIdentificator
+    IdentificatorRepository *-- Identificator
     IdentificatorValueData <.. IdentificatorService
     FunctionIdentificatorInput <.. CalculatorController 
     FunctionIdentificatorInput <.. IdentificatorService 
     
-    IIdentificator --|> FunctionIdentificator
-    IIdentificator --|> VariableIdentificator
+    Identificator --|> Function
+    Identificator --|> Variable
+    %% IdentificatorService ..> FunctionIdentificator
+    %% IdentificatorService ..> VariableIdentificator
