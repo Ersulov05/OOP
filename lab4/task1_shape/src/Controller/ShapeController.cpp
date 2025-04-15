@@ -174,7 +174,7 @@ void ShapeController::PrintShape(std::ostream& output, const IShape* shape)
 	output << std::fixed << std::setprecision(PRECISION);
 	if (shape)
 	{
-		output << "Area: " << shape->GetArea() << " Perimeter: " << shape->GetPerimeter() << " " << shape->ToString(PRECISION) << std::endl;
+		output << shape->ToString(PRECISION) << std::endl;
 	}
 }
 

@@ -5,10 +5,9 @@
 #include <sstream>
 
 CCircle::CCircle(CPoint center, double radius, u_int32_t outlineColor, u_int32_t fillColor)
-	: m_center(center)
+	: // ISolidShape::ISolidShape(outlineColor, fillColor)
+	m_center(center)
 	, m_radius(radius)
-	, m_outlineColor(outlineColor)
-	, m_fillColor(fillColor)
 {
 	ValidateCircle();
 }
@@ -23,28 +22,32 @@ double CCircle::GetPerimeter() const
 	return M_PI * m_radius * 2;
 }
 
+// std::string CCircle::ToString(std::optional<int> precision) const
+// {
+// 	std::ostringstream oss;
+// 	if (precision.has_value())
+// 	{
+// 		oss << std::fixed << std::setprecision(precision.value());
+// 	}
+// 	oss << "center: " << PointToString(GetCenter(), precision)
+// 		<< " radius: " << GetRadius()
+// 		<< " type: circle";
+
+// 	return oss.str();
+// }
+
 std::string CCircle::ToString(std::optional<int> precision) const
 {
 	std::ostringstream oss;
-	if (precision.has_value())
+	if (precision)
 	{
-		oss << std::fixed << std::setprecision(precision.value());
+		oss << std::fixed << std::setprecision(*precision);
 	}
-	oss << "center: " << PointToString(GetCenter(), precision)
-		<< " radius: " << GetRadius()
-		<< " type: circle";
-
+	oss << "Type: circle"
+		<< " Center: " << PointToString(GetCenter(), precision)
+		<< " Radius: " << m_radius
+		<< " " << ISolidShape::ToString(precision);
 	return oss.str();
-}
-
-u_int32_t CCircle::GetOutlineColor() const
-{
-	return m_outlineColor;
-}
-
-u_int32_t CCircle::GetFillColor() const
-{
-	return m_outlineColor;
 }
 
 CPoint CCircle::GetCenter() const

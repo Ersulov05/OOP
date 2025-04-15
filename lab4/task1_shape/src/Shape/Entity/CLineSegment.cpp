@@ -4,9 +4,9 @@
 #include <optional>
 
 CLineSegment::CLineSegment(CPoint startPoint, CPoint endPoint, u_int32_t outlineColor)
-	: m_startPoint(startPoint)
+	: IShape::IShape(outlineColor)
+	, m_startPoint(startPoint)
 	, m_endPoint(endPoint)
-	, m_outlineColor(outlineColor)
 {
 }
 
@@ -22,10 +22,14 @@ double CLineSegment::GetPerimeter() const
 
 std::string CLineSegment::ToString(std::optional<int> precision) const
 {
-	return "type: line";
-}
-
-u_int32_t CLineSegment::GetOutlineColor() const
-{
-	return m_outlineColor;
+	std::ostringstream oss;
+	if (precision)
+	{
+		oss << std::fixed << std::setprecision(*precision);
+	}
+	oss << "Type: line"
+		<< " StartPoint: " << PointToString(m_startPoint, precision)
+		<< " EndPoint: " << PointToString(m_startPoint, precision)
+		<< " " << IShape::ToString(precision);
+	return oss.str();
 }

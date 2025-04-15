@@ -2,10 +2,9 @@
 #include "../Exception/InvalidRectangleSizeException.h"
 
 CRectangle::CRectangle(CPoint leftTop, CPoint rightBottom, u_int32_t outlineColor, u_int32_t fillColor)
-	: m_leftTop(leftTop)
+	: ISolidShape::ISolidShape(outlineColor, fillColor)
+	, m_leftTop(leftTop)
 	, m_rightBottom(rightBottom)
-	, m_outlineColor(outlineColor)
-	, m_fillColor(fillColor)
 {
 	ValidateRectangle();
 }
@@ -23,27 +22,17 @@ double CRectangle::GetPerimeter() const
 std::string CRectangle::ToString(std::optional<int> precision) const
 {
 	std::ostringstream oss;
-	if (precision.has_value())
+	if (precision)
 	{
-		oss << std::fixed << std::setprecision(precision.value());
+		oss << std::fixed << std::setprecision(*precision);
 	}
-	oss << "leftTopPoint: " << PointToString(m_leftTop, precision)
-		<< " rightBottom: " << PointToString(m_rightBottom, precision)
-		<< " width: " << std::to_string(GetWidth())
-		<< " height: " << std::to_string(GetHeight())
-		<< " type: rectangle";
-
+	oss << "Type: rectangle"
+		<< " LeftTopPoint: " << PointToString(m_leftTop, precision)
+		<< " RightBottom: " << PointToString(m_rightBottom, precision)
+		<< " Width: " << std::to_string(GetWidth())
+		<< " Height: " << std::to_string(GetHeight())
+		<< " " << ISolidShape::ToString(precision);
 	return oss.str();
-}
-
-u_int32_t CRectangle::GetOutlineColor() const
-{
-	return m_outlineColor;
-}
-
-u_int32_t CRectangle::GetFillColor() const
-{
-	return m_outlineColor;
 }
 
 CPoint CRectangle::GetLeftTop() const

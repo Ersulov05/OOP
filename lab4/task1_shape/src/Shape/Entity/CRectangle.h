@@ -9,8 +9,6 @@ public:
 	double GetArea() const override;
 	double GetPerimeter() const override;
 	std::string ToString(std::optional<int> precision = std::nullopt) const override;
-	u_int32_t GetOutlineColor() const override;
-	u_int32_t GetFillColor() const override;
 	CPoint GetLeftTop() const;
 	CPoint GetRightBottom() const;
 	double GetWidth() const;
@@ -21,6 +19,4 @@ private:
 
 	CPoint m_leftTop;
 	CPoint m_rightBottom;
-	u_int32_t m_outlineColor;
-	u_int32_t m_fillColor;
 };

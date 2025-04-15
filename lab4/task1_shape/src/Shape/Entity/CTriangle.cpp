@@ -2,11 +2,10 @@
 #include "../Exception/InvalidTriangleException.h"
 
 CTriangle::CTriangle(CPoint vertex1, CPoint vertex2, CPoint vertex3, u_int32_t outlineColor, u_int32_t fillColor)
-	: m_vertex1(vertex1)
+	: ISolidShape::ISolidShape(outlineColor, fillColor)
+	, m_vertex1(vertex1)
 	, m_vertex2(vertex2)
 	, m_vertex3(vertex3)
-	, m_outlineColor(outlineColor)
-	, m_fillColor(fillColor)
 {
 	ValidateTriangle();
 }
@@ -25,26 +24,16 @@ double CTriangle::GetPerimeter() const
 std::string CTriangle::ToString(std::optional<int> precision) const
 {
 	std::ostringstream oss;
-	if (precision.has_value())
+	if (precision)
 	{
-		oss << std::fixed << std::setprecision(precision.value());
+		oss << std::fixed << std::setprecision(*precision);
 	}
-	oss << "vertex1: " << PointToString(GetVertex1(), precision)
-		<< " vertex2: " << PointToString(GetVertex2(), precision)
-		<< " vertex3: " << PointToString(GetVertex3(), precision)
-		<< " type: triangle";
-
+	oss << "Type: triangle"
+		<< " Vertex1: " << PointToString(GetVertex1(), precision)
+		<< " Vertex2: " << PointToString(GetVertex2(), precision)
+		<< " Vertex3: " << PointToString(GetVertex3(), precision)
+		<< " " << ISolidShape::ToString(precision);
 	return oss.str();
-}
-
-u_int32_t CTriangle::GetOutlineColor() const
-{
-	return m_outlineColor;
-}
-
-u_int32_t CTriangle::GetFillColor() const
-{
-	return m_outlineColor;
 }
 
 CPoint CTriangle::GetVertex1() const
@@ -66,6 +55,6 @@ void CTriangle::ValidateTriangle()
 {
 	if (GetArea() == 0)
 	{
-		throw InvalidTriangleException();
+		// throw InvalidTriangleException();
 	}
 }

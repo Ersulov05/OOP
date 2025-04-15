@@ -10,10 +10,8 @@ public:
 	double GetArea() const override;
 	double GetPerimeter() const override;
 	std::string ToString(std::optional<int> precision = std::nullopt) const override;
-	u_int32_t GetOutlineColor() const override;
 
 private:
 	CPoint m_startPoint;
 	CPoint m_endPoint;
-	u_int32_t m_outlineColor;
 };
