@@ -1,12 +1,13 @@
 #pragma once
+#include "../../Canvas/ICanvasDrawable.h"
 #include <optional>
 #include <string>
 
-class IShape
+class IShape : public ICanvasDrawable
 {
 public:
 	virtual ~IShape() = default;
-	IShape(u_int32_t outlineColor = 0)
+	IShape(u_int32_t outlineColor = 0xffffffff)
 		: m_outlineColor(outlineColor){};
 	virtual double GetArea() const = 0;
 	virtual double GetPerimeter() const = 0;
@@ -34,6 +35,6 @@ public:
 		return oss.str();
 	}
 
-private:
+protected:
 	u_int32_t m_outlineColor;
 };

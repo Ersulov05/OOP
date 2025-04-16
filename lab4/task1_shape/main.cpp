@@ -1,4 +1,5 @@
 #include "./AppCommand.h"
+#include "./src/Canvas/CCanvas.h"
 #include "./src/Controller/ShapeCommand.h"
 #include "./src/Controller/ShapeController.h"
 #include <iostream>
@@ -20,6 +21,7 @@ void Process(std::istream& input, std::ostream& output)
 		ShapeCommand shapeCommand = CreateShapeCommand(appCommand);
 		shapeController.HandleShapeCommand(shapeCommand, output);
 	}
+	shapeController.RunWindow();
 	shapeController.PrintShapeWithMaxArea(output);
 	shapeController.PrintShapeWithMinPerimeter(output);
 }
@@ -27,6 +29,5 @@ void Process(std::istream& input, std::ostream& output)
 int main()
 {
 	Process(std::cin, std::cout);
-
 	return 0;
 }

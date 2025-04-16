@@ -5,7 +5,7 @@ class ISolidShape : public IShape
 {
 public:
 	virtual ~ISolidShape() = default;
-	ISolidShape(u_int32_t outlineColor = 0, u_int32_t fillColor = 0)
+	ISolidShape(u_int32_t outlineColor = 0xffffffff, u_int32_t fillColor = 0xffffffff)
 		: IShape::IShape(outlineColor)
 		, m_fillColor(fillColor){};
 
@@ -23,6 +23,6 @@ public:
 		return oss.str();
 	}
 
-private:
+protected:
 	u_int32_t m_fillColor;
 };

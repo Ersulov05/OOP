@@ -33,3 +33,8 @@ std::string CLineSegment::ToString(std::optional<int> precision) const
 		<< " " << IShape::ToString(precision);
 	return oss.str();
 }
+
+void CLineSegment::Draw(ICanvas& canvas)
+{
+	canvas.DrawLine(m_startPoint, m_endPoint, m_outlineColor);
+}

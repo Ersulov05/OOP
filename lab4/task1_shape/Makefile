@@ -1,7 +1,7 @@
 # Компилятор и флаги
 CXX := g++
 CXXFLAGS := -std=c++20 -Wall -Wextra -Iinclude -Wno-unused-parameter
-LDFLAGS := 
+LDFLAGS := -lsfml-graphics -lsfml-window -lsfml-system
 
 # Директории
 SRC_DIR := src
@@ -20,7 +20,8 @@ MAIN_SRCS := \
 	$(SRC_DIR)/Shape/Entity/CCircle.cpp \
 	$(SRC_DIR)/Shape/Entity/CRectangle.cpp \
 	$(SRC_DIR)/Shape/Entity/CTriangle.cpp \
-	$(SRC_DIR)/Shape/Entity/CLineSegment.cpp
+	$(SRC_DIR)/Shape/Entity/CLineSegment.cpp \
+	$(SRC_DIR)/Canvas/CCanvas.cpp \
 
 # Тестовые файлы
 TEST_SRCS := \
@@ -70,31 +71,6 @@ test: $(TEST_TARGETS)
 
 # Очистка
 clean:
-	rm -rf $(BUILD_DIR) $(BIN_DIR)
+	rm -rf ./$(BUILD_DIR) ./$(BIN_DIR)
 
 .PHONY: all test clean
-
-# # make:
-# # 	g++ \
-# # 		main.cpp \
-# # 		AppCommand.cpp \
-# # 		src/Controller/ShapeCommand.cpp \
-# # 		src/Controller/ShapeController.cpp \
-# # 		src/Shape/Repository/ShapeRepository.cpp \
-# # 		src/Shape/Entity/CCircle.cpp \
-# # 		src/Shape/Entity/CRectangle.cpp \
-# # 		src/Shape/Entity/CTriangle.cpp \
-# # 		src/Shape/Entity/CLineSegment.cpp \
-# # 	-o main -std=c++20
-
-# unit_test:
-# 	g++ \
-# 		Unit/Entity/CCircleTest.cpp \
-# 		src/Shape/Entity/CCircle.cpp \
-# 	-o CCircle_test -std=c++20
-# 	g++ \
-# 		Unit/Entity/CRectangleTest.cpp \
-# 		src/Shape/Entity/CRectangle.cpp \
-# 	-o CRectangle_test -std=c++20
-# 	./CCircle_test
-# 	./CRectangle_test

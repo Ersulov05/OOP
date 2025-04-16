@@ -16,6 +16,8 @@ ShapeCommandType GetShapeCommandTypeByString(const std::string& string)
 		return ShapeCommandType::SHAPE_WITH_MAX_AREA;
 	if (string == "minPerimeter")
 		return ShapeCommandType::SHAPE_WITH_MIN_PERIMETER;
+	if (string == "runWindow")
+		return ShapeCommandType::RUN_WINDOW;
 	return ShapeCommandType::NONE;
 }
 

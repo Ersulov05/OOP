@@ -58,3 +58,14 @@ void CTriangle::ValidateTriangle()
 		// throw InvalidTriangleException();
 	}
 }
+
+void CTriangle::Draw(ICanvas& canvas)
+{
+	std::vector<CPoint> points = {
+		m_vertex1, m_vertex2, m_vertex3
+	};
+	canvas.FillPolygon(points, m_fillColor);
+	canvas.DrawLine(m_vertex1, m_vertex2, m_outlineColor);
+	canvas.DrawLine(m_vertex2, m_vertex3, m_outlineColor);
+	canvas.DrawLine(m_vertex3, m_vertex1, m_outlineColor);
+}

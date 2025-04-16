@@ -1,3 +1,4 @@
+#include "../Canvas/CCanvas.h"
 #include "../Shape/Exception/InvalidCircleRadiusException.h"
 #include "../Shape/Exception/InvalidRectangleSizeException.h"
 #include "../Shape/Exception/InvalidTriangleException.h"
@@ -79,6 +80,25 @@ void ShapeController::PrintShapeWithMinPerimeter(std::ostream& output)
 	}
 }
 
+void ShapeController::RunWindow()
+{
+	auto shapes = m_shapeRepository.GetAllShapes();
+	CCanvas canvas(800, 600);
+	while (canvas.IsOpen())
+	{
+		canvas.ProcessEvents();
+
+		canvas.Clear(0x000000ff);
+
+		for (auto shape : shapes)
+		{
+			shape->Draw(canvas);
+		}
+
+		canvas.Display();
+	}
+}
+
 void ShapeController::ExecuteShapeCommand(const ShapeCommand& shapeCommand, std::ostream& output)
 {
 	switch (shapeCommand.type)
@@ -104,6 +124,9 @@ void ShapeController::ExecuteShapeCommand(const ShapeCommand& shapeCommand, std:
 	case ShapeCommandType::PRINT_ALL:
 		PrintAllShapes(output);
 		break;
+	case ShapeCommandType::RUN_WINDOW:
+		RunWindow();
+		break;
 	default:
 		throw UnknownShapeCommandException();
 	}
@@ -111,60 +134,69 @@ void ShapeController::ExecuteShapeCommand(const ShapeCommand& shapeCommand, std:
 
 void ShapeController::CreateLine(const ShapeCommand& shapeCommand)
 {
-	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 4, 5);
-	double x1 = GetValueByString(shapeCommand.stringArgs[0]);
-	double y1 = GetValueByString(shapeCommand.stringArgs[1]);
-	double x2 = GetValueByString(shapeCommand.stringArgs[2]);
-	double y2 = GetValueByString(shapeCommand.stringArgs[3]);
+	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 5);
+	double x1 = GetDoubleValueByString(shapeCommand.stringArgs[0]);
+	double y1 = GetDoubleValueByString(shapeCommand.stringArgs[1]);
+	double x2 = GetDoubleValueByString(shapeCommand.stringArgs[2]);
+	double y2 = GetDoubleValueByString(shapeCommand.stringArgs[3]);
+	u_int32_t outlineColor = GetUIntValueByString(shapeCommand.stringArgs[4]);
 
-	CLineSegment* line = new CLineSegment(
-		CPoint(x1, y1),
-		CPoint(x2, y2));
+	CLineSegment* line = new CLineSegment(CPoint(x1, y1), CPoint(x2, y2), outlineColor);
 
 	m_shapeRepository.StoreShape(line);
 }
 
 void ShapeController::CreateRectangle(const ShapeCommand& shapeCommand)
 {
-	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 4, 6);
-	double x1 = GetValueByString(shapeCommand.stringArgs[0]);
-	double y1 = GetValueByString(shapeCommand.stringArgs[1]);
-	double x2 = GetValueByString(shapeCommand.stringArgs[2]);
-	double y2 = GetValueByString(shapeCommand.stringArgs[3]);
+	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 6);
+	double x1 = GetDoubleValueByString(shapeCommand.stringArgs[0]);
+	double y1 = GetDoubleValueByString(shapeCommand.stringArgs[1]);
+	double x2 = GetDoubleValueByString(shapeCommand.stringArgs[2]);
+	double y2 = GetDoubleValueByString(shapeCommand.stringArgs[3]);
+	u_int32_t outlineColor = GetUIntValueByString(shapeCommand.stringArgs[4]);
+	u_int32_t fillColor = GetUIntValueByString(shapeCommand.stringArgs[5]);
 
-	CRectangle* rectangle = new CRectangle(CPoint(x1, y1), CPoint(x2, y2));
+	CRectangle* rectangle = new CRectangle(CPoint(x1, y1), CPoint(x2, y2), outlineColor, fillColor);
 
 	m_shapeRepository.StoreShape(rectangle);
 }
 
 void ShapeController::CreateTriangle(const ShapeCommand& shapeCommand)
 {
-	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 6, 8);
-	double x1 = GetValueByString(shapeCommand.stringArgs[0]);
-	double y1 = GetValueByString(shapeCommand.stringArgs[1]);
-	double x2 = GetValueByString(shapeCommand.stringArgs[2]);
-	double y2 = GetValueByString(shapeCommand.stringArgs[3]);
-	double x3 = GetValueByString(shapeCommand.stringArgs[4]);
-	double y3 = GetValueByString(shapeCommand.stringArgs[5]);
+	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 8);
+	double x1 = GetDoubleValueByString(shapeCommand.stringArgs[0]);
+	double y1 = GetDoubleValueByString(shapeCommand.stringArgs[1]);
+	double x2 = GetDoubleValueByString(shapeCommand.stringArgs[2]);
+	double y2 = GetDoubleValueByString(shapeCommand.stringArgs[3]);
+	double x3 = GetDoubleValueByString(shapeCommand.stringArgs[4]);
+	double y3 = GetDoubleValueByString(shapeCommand.stringArgs[5]);
+	u_int32_t outlineColor = GetUIntValueByString(shapeCommand.stringArgs[6]);
+	u_int32_t fillColor = GetUIntValueByString(shapeCommand.stringArgs[7]);
 
 	CTriangle* triangle = new CTriangle(
 		CPoint(x1, y1),
 		CPoint(x2, y2),
-		CPoint(x3, y3));
+		CPoint(x3, y3),
+		outlineColor,
+		fillColor);
 
 	m_shapeRepository.StoreShape(triangle);
 }
 
 void ShapeController::CreateCircle(const ShapeCommand& shapeCommand)
 {
-	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 3, 5);
-	double x1 = GetValueByString(shapeCommand.stringArgs[0]);
-	double y1 = GetValueByString(shapeCommand.stringArgs[1]);
-	double radius = GetValueByString(shapeCommand.stringArgs[2]);
+	ShapeController::AssertCorrectCountArguments(shapeCommand.stringArgs.size(), 5);
+	double x1 = GetDoubleValueByString(shapeCommand.stringArgs[0]);
+	double y1 = GetDoubleValueByString(shapeCommand.stringArgs[1]);
+	double radius = GetDoubleValueByString(shapeCommand.stringArgs[2]);
+	u_int32_t outlineColor = GetUIntValueByString(shapeCommand.stringArgs[3]);
+	u_int32_t fillColor = GetUIntValueByString(shapeCommand.stringArgs[4]);
 
 	CCircle* circle = new CCircle(
 		CPoint(x1, y1),
-		radius);
+		radius,
+		outlineColor,
+		fillColor);
 
 	m_shapeRepository.StoreShape(circle);
 }
@@ -178,9 +210,9 @@ void ShapeController::PrintShape(std::ostream& output, const IShape* shape)
 	}
 }
 
-void ShapeController::AssertCorrectCountArguments(int countArguments, int min, int max)
+void ShapeController::AssertCorrectCountArguments(int countArguments, int expected)
 {
-	if (countArguments < min || countArguments > max)
+	if (countArguments != expected)
 	{
 		throw InvalidCountArgumentsException();
 	}

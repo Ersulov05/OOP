@@ -12,6 +12,7 @@ enum class ShapeCommandType
 	PRINT_ALL,
 	SHAPE_WITH_MAX_AREA,
 	SHAPE_WITH_MIN_PERIMETER,
+	RUN_WINDOW,
 	NONE
 };
 

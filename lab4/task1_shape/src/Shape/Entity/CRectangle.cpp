@@ -62,3 +62,17 @@ void CRectangle::ValidateRectangle()
 		throw InvalidRectangleSizeException();
 	}
 }
+
+void CRectangle::Draw(ICanvas& canvas)
+{
+	CPoint rightTop(m_rightBottom.x, m_leftTop.y);
+	CPoint leftBottom(m_leftTop.x, m_rightBottom.y);
+	std::vector<CPoint> points = {
+		m_leftTop, rightTop, m_rightBottom, leftBottom
+	};
+	canvas.FillPolygon(points, m_fillColor);
+	canvas.DrawLine(m_leftTop, rightTop, m_outlineColor);
+	canvas.DrawLine(rightTop, m_rightBottom, m_outlineColor);
+	canvas.DrawLine(m_rightBottom, leftBottom, m_outlineColor);
+	canvas.DrawLine(leftBottom, m_leftTop, m_outlineColor);
+}

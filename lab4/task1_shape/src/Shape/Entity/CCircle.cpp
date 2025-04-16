@@ -5,8 +5,8 @@
 #include <sstream>
 
 CCircle::CCircle(CPoint center, double radius, u_int32_t outlineColor, u_int32_t fillColor)
-	: // ISolidShape::ISolidShape(outlineColor, fillColor)
-	m_center(center)
+	: ISolidShape::ISolidShape(outlineColor, fillColor)
+	, m_center(center)
 	, m_radius(radius)
 {
 	ValidateCircle();
@@ -22,19 +22,11 @@ double CCircle::GetPerimeter() const
 	return M_PI * m_radius * 2;
 }
 
-// std::string CCircle::ToString(std::optional<int> precision) const
-// {
-// 	std::ostringstream oss;
-// 	if (precision.has_value())
-// 	{
-// 		oss << std::fixed << std::setprecision(precision.value());
-// 	}
-// 	oss << "center: " << PointToString(GetCenter(), precision)
-// 		<< " radius: " << GetRadius()
-// 		<< " type: circle";
-
-// 	return oss.str();
-// }
+void CCircle::Draw(ICanvas& canvas)
+{
+	canvas.FillCircle(m_center, m_radius, m_fillColor);
+	canvas.DrawCircle(m_center, m_radius, m_outlineColor);
+}
 
 std::string CCircle::ToString(std::optional<int> precision) const
 {

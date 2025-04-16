@@ -11,6 +11,7 @@ public:
 	void PrintAllShapes(std::ostream& output);
 	void PrintShapeWithMaxArea(std::ostream& output);
 	void PrintShapeWithMinPerimeter(std::ostream& output);
+	void RunWindow();
 
 private:
 	void ExecuteShapeCommand(const ShapeCommand& shapeCommand, std::ostream& output);
@@ -19,6 +20,6 @@ private:
 	void CreateTriangle(const ShapeCommand& shapeCommand);
 	void CreateCircle(const ShapeCommand& shapeCommand);
 	static void PrintShape(std::ostream& output, const IShape* shape);
-	static void AssertCorrectCountArguments(int countArguments, int min, int max);
+	static void AssertCorrectCountArguments(int countArguments, int expected);
 	ShapeRepository m_shapeRepository;
 };
