@@ -18,7 +18,7 @@ public:
 	{
 		std::ostringstream oss;
 		oss << IShape::ToString(precision)
-			<< " FillColor: " << std::hex << std::setw(6) << std::setfill('0')
+			<< " FillColor: " << std::hex << std::setw(8) << std::setfill('0')
 			<< GetFillColor();
 		return oss.str();
 	}

@@ -30,7 +30,7 @@ public:
 			oss << std::fixed << std::setprecision(*precision);
 		}
 		oss << "Area: " << GetArea() << " Perimeter: " << GetPerimeter()
-			<< " OutlineColor: " << std::hex << std::setw(6) << std::setfill('0')
+			<< " OutlineColor: " << std::hex << std::setw(8) << std::setfill('0')
 			<< GetOutlineColor();
 		return oss.str();
 	}

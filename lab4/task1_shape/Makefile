@@ -22,11 +22,14 @@ MAIN_SRCS := \
 	$(SRC_DIR)/Shape/Entity/CTriangle.cpp \
 	$(SRC_DIR)/Shape/Entity/CLineSegment.cpp \
 	$(SRC_DIR)/Canvas/CCanvas.cpp \
+	$(TEST_DIR)/Components/CCanvasTest.cpp \
 
 # Тестовые файлы
 TEST_SRCS := \
+	$(TEST_DIR)/Shape/Entity/CLineSegmentTest.cpp \
 	$(TEST_DIR)/Shape/Entity/CCircleTest.cpp \
 	$(TEST_DIR)/Shape/Entity/CRectangleTest.cpp \
+	$(TEST_DIR)/Shape/Entity/CTriangleTest.cpp \
 	$(TEST_DIR)/Shape/Repository/ShapeRepositoryTest.cpp
 
 # Объектные файлы для основной программы

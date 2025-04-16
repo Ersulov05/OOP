@@ -3,6 +3,7 @@
 #include "../../../../../catch/catch.hpp"
 #include "../../../src/Shape/Entity/CRectangle.h"
 #include "../../../src/Shape/Exception/InvalidRectangleSizeException.h"
+#include "../../Components/CCanvasTest.h"
 
 bool DoubleEquals(double a, double b)
 {
@@ -12,14 +13,26 @@ bool DoubleEquals(double a, double b)
 
 TEST_CASE("TestCreateRectangle")
 {
-	// double radius = 10;
-	// CPoint leftTopPoint(0, 0);
-	// CCircle circle = CCircle(CPoint(0, 0), 10);
+	CRectangle rectangle = CRectangle(CPoint(0, 0), CPoint(10, 10), 0xff00ff00, 0xffffffff);
 
-	// REQUIRE(DoubleEquals(circle.GetArea(), M_PI * radius * radius));
-	// REQUIRE(circle.GetCenter() == center);
-	// REQUIRE(DoubleEquals(circle.GetPerimeter(), M_PI * radius * 2));
-	// REQUIRE(DoubleEquals(circle.GetRadius(), radius));
+	REQUIRE(DoubleEquals(rectangle.GetArea(), 100));
+	REQUIRE(DoubleEquals(rectangle.GetPerimeter(), 40));
+	REQUIRE(DoubleEquals(rectangle.GetOutlineColor(), 0xff00ff00));
+	REQUIRE(DoubleEquals(rectangle.GetFillColor(), 0xffffffff));
 
+	REQUIRE_THROWS_AS(CRectangle(CPoint(0, 0), CPoint(10, 0)), InvalidRectangleSizeException);
+	REQUIRE_THROWS_AS(CRectangle(CPoint(0, 0), CPoint(0, 10)), InvalidRectangleSizeException);
+	REQUIRE_THROWS_AS(CRectangle(CPoint(10, 0), CPoint(0, 0)), InvalidRectangleSizeException);
+	REQUIRE_THROWS_AS(CRectangle(CPoint(0, 10), CPoint(0, 0)), InvalidRectangleSizeException);
 	REQUIRE_THROWS_AS(CRectangle(CPoint(0, 0), CPoint(0, 0)), InvalidRectangleSizeException);
+
+	std::stringstream output;
+	CCanvasTest canvas(output);
+	rectangle.Draw(canvas);
+	std::string outputString = "the polygon is filled in by points (0, 0) (10, 0) (10, 10) (0, 10)\n"
+							   "line is drawn from (0, 0) to (10, 0)\n"
+							   "line is drawn from (10, 0) to (10, 10)\n"
+							   "line is drawn from (10, 10) to (0, 10)\n"
+							   "line is drawn from (0, 10) to (0, 0)\n";
+	REQUIRE(output.str() == outputString);
 }

@@ -13,7 +13,7 @@ CTriangle::CTriangle(CPoint vertex1, CPoint vertex2, CPoint vertex3, u_int32_t o
 // formula: (1/2) |x 1 (y 2 − y 3 ) + x 2 (y 3 − y 1 ) + x 3 (y 1 − y 2 )|
 double CTriangle::GetArea() const
 {
-	return abs(m_vertex1.x * (m_vertex2.y - m_vertex3.y) + m_vertex2.x * (m_vertex3.y - m_vertex1.y) + m_vertex3.x * (m_vertex1.y - m_vertex2.y)) / 2;
+	return std::abs(m_vertex1.x * (m_vertex2.y - m_vertex3.y) + m_vertex2.x * (m_vertex3.y - m_vertex1.y) + m_vertex3.x * (m_vertex1.y - m_vertex2.y)) / 2;
 }
 
 double CTriangle::GetPerimeter() const
@@ -55,7 +55,7 @@ void CTriangle::ValidateTriangle()
 {
 	if (GetArea() == 0)
 	{
-		// throw InvalidTriangleException();
+		throw InvalidTriangleException();
 	}
 }
 
