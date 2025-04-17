@@ -1,18 +1,17 @@
+#include "./ShapeController.h"
 #include "../Canvas/CCanvas.h"
+#include "../Shape/Entity/CCircle.h"
+#include "../Shape/Entity/CLineSegment.h"
+#include "../Shape/Entity/CRectangle.h"
+#include "../Shape/Entity/CTriangle.h"
 #include "../Shape/Exception/InvalidCircleRadiusException.h"
 #include "../Shape/Exception/InvalidRectangleSizeException.h"
 #include "../Shape/Exception/InvalidTriangleException.h"
 #include "../Utils/Exception/InvalidConvertStringToValueException.h"
 #include "../Utils/Exception/ValueOutOfRangeException.h"
+#include "../Utils/StringUtils.h"
 #include "./Exception/InvalidCountArgumentsException.h"
 #include "./Exception/UnknownShapeCommandException.h"
-
-#include "../Shape/Entity/CCircle.h"
-#include "../Shape/Entity/CLineSegment.h"
-#include "../Shape/Entity/CRectangle.h"
-#include "../Shape/Entity/CTriangle.h"
-#include "../Utils/StringUtils.h"
-#include "./ShapeController.h"
 
 void ShapeController::HandleShapeCommand(const ShapeCommand& shapeCommand, std::ostream& output)
 {
