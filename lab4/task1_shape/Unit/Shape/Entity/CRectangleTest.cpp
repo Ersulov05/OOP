@@ -36,3 +36,5 @@ TEST_CASE("TestCreateRectangle")
 							   "line is drawn from (0, 10) to (0, 0)\n";
 	REQUIRE(output.str() == outputString);
 }
+
+// TODO: разделить негативные тесты

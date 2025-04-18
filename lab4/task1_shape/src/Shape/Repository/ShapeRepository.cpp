@@ -3,7 +3,7 @@
 
 ShapeRepository::~ShapeRepository()
 {
-	m_shapes.clear();
+	m_shapes.clear(); // Очистка памяти
 }
 
 void ShapeRepository::StoreShape(IShape* shape)

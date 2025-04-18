@@ -47,12 +47,12 @@ CPoint CRectangle::GetRightBottom() const
 
 double CRectangle::GetWidth() const
 {
-	return abs(m_rightBottom.x - m_leftTop.x);
+	return m_rightBottom.x - m_leftTop.x;
 }
 
 double CRectangle::GetHeight() const
 {
-	return abs(m_leftTop.y - m_rightBottom.y);
+	return m_rightBottom.y - m_leftTop.y;
 }
 
 void CRectangle::ValidateRectangle()

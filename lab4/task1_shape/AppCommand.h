@@ -5,7 +5,7 @@
 
 struct AppCommand
 {
-	std::string stringCommand;
+	std::string stringCommand; // TODO: Подумать над именованием
 	std::vector<std::string> stringArgs;
 };
 

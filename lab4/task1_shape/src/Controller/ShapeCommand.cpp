@@ -1,6 +1,6 @@
 #include "./ShapeCommand.h"
 
-ShapeCommandType GetShapeCommandTypeByString(const std::string& string)
+ShapeCommandType GetShapeCommandTypeByString(const std::string& string) // TODO: Сделать через мапу
 {
 	if (string == "rectangle")
 		return ShapeCommandType::RECTANGLE;
