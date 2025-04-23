@@ -1,7 +1,7 @@
 # Компилятор и флаги
 CXX := g++
-CXXFLAGS := -std=c++20 -Wall -Wextra -Iinclude -Wno-unused-parameter
-LDFLAGS := -lsfml-graphics -lsfml-window -lsfml-system
+CXXFLAGS := -std=c++20 -Wall -Iinclude -Wno-unused-parameter
+LDFLAGS := 
 
 # Директории
 SRC_DIR := src

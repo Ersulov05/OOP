@@ -15,74 +15,65 @@ CDate& CDate::operator=(const CDate& other)
 
 CDate& CDate::operator++()
 {
-	AssertValidAddition(1);
-	++m_timestamp;
+	AddDays(1);
 	return *this;
 }
 
 CDate& CDate::operator--()
 {
-	AssertValidSubstraction(1);
-	--m_timestamp;
+	SubDays(1);
 	return *this;
 }
 
 CDate CDate::operator++(int)
 {
-	AssertValidAddition(1);
 	CDate copy = *this;
-	++m_timestamp;
+	AddDays(1);
 	return copy;
 }
 
 CDate CDate::operator--(int)
 {
-	AssertValidSubstraction(1);
 	CDate copy = *this;
-	--m_timestamp;
+	SubDays(1);
 	return copy;
 }
 
 CDate CDate::operator+(int days)
 {
-	AssertValidAddition(days);
 	CDate copy = *this;
-	copy += days;
+	copy.AddDays(days);
 	return copy;
 }
 
-CDate operator+(int days, CDate date)
+CDate operator+(int days, const CDate& date)
 {
-	date.AssertValidAddition(days);
 	CDate copy = date;
-	copy += days;
+	copy.AddDays(days);
 	return copy;
 }
 
 CDate CDate::operator-(int days)
 {
-	AssertValidSubstraction(days);
 	CDate copy = *this;
-	copy -= days;
+	copy.SubDays(days);
 	return copy;
 }
 
-int operator-(CDate firstDate, CDate secondDate)
+int operator-(const CDate& firstDate, const CDate& secondDate)
 {
 	return (int)firstDate.m_timestamp - (int)secondDate.m_timestamp;
 }
 
 CDate& CDate::operator+=(int days)
 {
-	AssertValidAddition(days);
-	m_timestamp += days;
+	AddDays(days);
 	return *this;
 }
 
 CDate& CDate::operator-=(int days)
 {
-	AssertValidSubstraction(days);
-	m_timestamp -= days;
+	SubDays(days);
 	return *this;
 }
 
@@ -103,7 +94,6 @@ std::istream& operator>>(std::istream& is, CDate& date)
 	{
 		if (sep1 == CDate::DATE_SEPARATOR && sep2 == CDate::DATE_SEPARATOR && CDate::IsValidDate(day, month, year))
 		{
-			std::cout << "day: " << day;
 			date = CDate(day, static_cast<Month>(month), year);
 			return is;
 		}
@@ -198,7 +188,7 @@ unsigned CDate::GetYear() const
 
 WeekDay CDate::GetWeekDay() const
 {
-	return static_cast<WeekDay>((m_timestamp + static_cast<unsigned>(WeekDay::THURSDAY)) % 7);
+	return static_cast<WeekDay>((m_timestamp + static_cast<unsigned>(WeekDay::THURSDAY)) % DAYS_PER_WEEK);
 }
 
 void CDate::AssertValidDate(unsigned day, Month month, unsigned year) const
@@ -276,7 +266,7 @@ unsigned CDate::ConvertDateToTimestamp(unsigned day, Month month, unsigned year)
 	return GetCountDaysBeforeDate(day, month, year) - NUMBER_DAYS_BEFORE_START_YEAR;
 }
 
-void CDate::AssertValidAddition(unsigned delta)
+void CDate::AssertValidAddition(unsigned delta) const
 {
 	if (delta > MAX_TIMESTAMP - m_timestamp)
 	{
@@ -284,10 +274,22 @@ void CDate::AssertValidAddition(unsigned delta)
 	}
 }
 
-void CDate::AssertValidSubstraction(unsigned delta)
+void CDate::AssertValidSubstraction(unsigned delta) const
 {
 	if (delta > m_timestamp)
 	{
 		throw DateOutOfRangeException();
 	}
+}
+
+void CDate::AddDays(unsigned days)
+{
+	AssertValidAddition(days);
+	m_timestamp += days;
+}
+
+void CDate::SubDays(unsigned days)
+{
+	AssertValidSubstraction(days);
+	m_timestamp -= days;
 }

@@ -36,9 +36,9 @@ public:
 	CDate operator++(int);
 	CDate operator--(int);
 	CDate operator+(int);
-	friend CDate operator+(int days, CDate date);
+	friend CDate operator+(int days, const CDate& date);
 	CDate operator-(int);
-	friend int operator-(CDate firstDate, CDate secondDate);
+	friend int operator-(const CDate& firstDate, const CDate& secondDate);
 	CDate& operator+=(int);
 	CDate& operator-=(int);
 	friend std::ostream& operator<<(std::ostream& os, const CDate& date);
@@ -58,9 +58,11 @@ public:
 	Month GetMonth() const;
 	unsigned GetYear() const;
 	WeekDay GetWeekDay() const;
+	static bool IsValidDate(unsigned day, unsigned month, unsigned year);
+	void AddDays(unsigned days);
+	void SubDays(unsigned days);
 
 	inline static const char DATE_SEPARATOR = '-';
-	static bool IsValidDate(unsigned day, unsigned month, unsigned year);
 
 private:
 	inline static const std::map<Month, unsigned> DAYS_PER_MONTH_MAP = {
@@ -94,17 +96,15 @@ private:
 
 	void AssertValidDate(unsigned day, Month month, unsigned year) const;
 	void AssertValidTimestamp(unsigned timestamp) const;
+	void AssertValidAddition(unsigned delta) const;
+	void AssertValidSubstraction(unsigned delta) const;
 	unsigned GetCountLeapYears(unsigned year) const;
-
 	unsigned GetCountDaysBeforeDate(unsigned day, Month month, unsigned year) const;
 	unsigned ConvertDateToTimestamp(unsigned day, Month month, unsigned year) const;
-	static unsigned IsLeapYear(unsigned year);
-	static unsigned GetDaysInMonth(Month month, unsigned year);
 	unsigned GetDaysBeforeMonth(Month month, unsigned year) const;
 	unsigned GetCountDaysBeforeYear(unsigned year) const;
-
-	void AssertValidAddition(unsigned delta);
-	void AssertValidSubstraction(unsigned delta);
+	static unsigned IsLeapYear(unsigned year);
+	static unsigned GetDaysInMonth(Month month, unsigned year);
 
 	static const unsigned START_YEAR = 1970;
 	static const unsigned MAX_YEAR = 9999;
@@ -113,6 +113,7 @@ private:
 	const unsigned DAYS_PER_YEAR = 365;
 	const unsigned MONTH_PER_YEAR = 12;
 	const unsigned DAYS_PER_MONTH = 30;
+	const unsigned DAYS_PER_WEEK = 7;
 	const unsigned NUMBER_DAYS_BEFORE_START_YEAR = GetCountDaysBeforeYear(START_YEAR);
 	const unsigned NUMBER_OF_LEAP_YEARS_BEFORE_START_YEAR = GetCountLeapYears(START_YEAR);
 	const unsigned MAX_TIMESTAMP = GetCountDaysBeforeDate(31, Month::DECEMBER, MAX_YEAR) - NUMBER_DAYS_BEFORE_START_YEAR;
