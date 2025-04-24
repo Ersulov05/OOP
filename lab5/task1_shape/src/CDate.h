@@ -65,6 +65,18 @@ public:
 	inline static const char DATE_SEPARATOR = '-';
 
 private:
+	void AssertValidDate(unsigned day, Month month, unsigned year) const;
+	void AssertValidTimestamp(unsigned timestamp) const;
+	void AssertValidAddition(unsigned delta) const;
+	void AssertValidSubstraction(unsigned delta) const;
+	unsigned GetCountLeapYears(unsigned year) const;
+	unsigned GetCountDaysBeforeDate(unsigned day, Month month, unsigned year) const;
+	unsigned ConvertDateToTimestamp(unsigned day, Month month, unsigned year) const;
+	unsigned GetDaysBeforeMonth(Month month, unsigned year) const;
+	unsigned GetCountDaysBeforeYear(unsigned year) const;
+	static unsigned IsLeapYear(unsigned year);
+	static unsigned GetDaysInMonth(Month month, unsigned year);
+
 	inline static const std::map<Month, unsigned> DAYS_PER_MONTH_MAP = {
 		{ Month::JANUARY, 31 },
 		{ Month::FEBRUARY, 28 },
@@ -94,18 +106,6 @@ private:
 		{ Month::DECEMBER, 334 }
 	};
 
-	void AssertValidDate(unsigned day, Month month, unsigned year) const;
-	void AssertValidTimestamp(unsigned timestamp) const;
-	void AssertValidAddition(unsigned delta) const;
-	void AssertValidSubstraction(unsigned delta) const;
-	unsigned GetCountLeapYears(unsigned year) const;
-	unsigned GetCountDaysBeforeDate(unsigned day, Month month, unsigned year) const;
-	unsigned ConvertDateToTimestamp(unsigned day, Month month, unsigned year) const;
-	unsigned GetDaysBeforeMonth(Month month, unsigned year) const;
-	unsigned GetCountDaysBeforeYear(unsigned year) const;
-	static unsigned IsLeapYear(unsigned year);
-	static unsigned GetDaysInMonth(Month month, unsigned year);
-
 	static const unsigned START_YEAR = 1970;
 	static const unsigned MAX_YEAR = 9999;
 	static const unsigned MIN_MONTH = 1;
@@ -116,7 +116,7 @@ private:
 	const unsigned DAYS_PER_WEEK = 7;
 	const unsigned NUMBER_DAYS_BEFORE_START_YEAR = GetCountDaysBeforeYear(START_YEAR);
 	const unsigned NUMBER_OF_LEAP_YEARS_BEFORE_START_YEAR = GetCountLeapYears(START_YEAR);
-	const unsigned MAX_TIMESTAMP = GetCountDaysBeforeDate(31, Month::DECEMBER, MAX_YEAR) - NUMBER_DAYS_BEFORE_START_YEAR;
+	const unsigned MAX_TIMESTAMP = ConvertDateToTimestamp(31, Month::DECEMBER, MAX_YEAR);
 
 	unsigned m_timestamp;
 };
