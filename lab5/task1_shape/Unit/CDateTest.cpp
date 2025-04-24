@@ -274,16 +274,24 @@ TEST_CASE("TestDateInputOutputSuccess")
 	REQUIRE(output.str() == "01-01-2023");
 
 	input.clear();
+	input.str("1-1-1975");
+	input >> date;
+	REQUIRE(input.fail() == false);
+	REQUIRE(date.GetDay() == 1);
+	REQUIRE(date.GetMonth() == Month::JANUARY);
+	REQUIRE(date.GetYear() == 1975);
+
+	output.str("");
+	output << date;
+	REQUIRE(output.str() == "01-01-1975");
+
+	input.clear();
 	input.str("12-12-9999");
 	input >> date;
 	REQUIRE(input.fail() == false);
 	REQUIRE(date.GetDay() == 12);
 	REQUIRE(date.GetMonth() == Month::DECEMBER);
 	REQUIRE(date.GetYear() == 9999);
-
-	output.str("");
-	output << date;
-	REQUIRE(output.str() == "12-12-9999");
 }
 
 TEST_CASE("TestDateInputOutputFailed")
@@ -316,7 +324,16 @@ TEST_CASE("TestDateInputOutputFailed")
 	REQUIRE(input.fail() == true);
 
 	input.clear();
-	input.str("12-12-0");
+	input.str("12-1.2-2025");
+	input >> date;
+	REQUIRE(input.fail() == true);
+
+	input.clear();
+	input.str("1.2-12-2025");
+	input >> date;
+	REQUIRE(input.fail() == true);
+
+	input.clear();
 	input >> date;
 	REQUIRE(input.fail() == true);
 
