@@ -53,12 +53,12 @@ CMyString::~CMyString()
 	}
 }
 
-size_t CMyString::GetLength() const
+size_t CMyString::GetLength() const noexcept
 {
 	return m_length;
 }
 
-const char* CMyString::GetStringData() const
+const char* CMyString::GetStringData() const noexcept
 {
 	return m_string;
 }
@@ -67,7 +67,7 @@ CMyString CMyString::SubString(size_t start, size_t length) const
 {
 	if (start >= m_length)
 	{
-		throw std::out_of_range("Start position out of string length");
+		return CMyString();
 	}
 
 	if ((start + length) > m_length)
@@ -89,7 +89,7 @@ void CMyString::Clear()
 	}
 }
 
-size_t CMyString::GetCapacity()
+size_t CMyString::GetCapacity() const noexcept
 {
 	return m_capacity;
 }
@@ -200,7 +200,7 @@ CMyString operator+(const char* firstString, const CMyString& secondString)
 	return CMyString(firstString) + secondString;
 }
 
-bool operator==(const CMyString& firstString, const CMyString& secondString)
+bool operator==(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	if (firstString.m_length != secondString.m_length)
 		return false;
@@ -208,12 +208,12 @@ bool operator==(const CMyString& firstString, const CMyString& secondString)
 	return std::memcmp(firstString.m_string, secondString.m_string, firstString.m_length) == 0;
 }
 
-bool operator!=(const CMyString& firstString, const CMyString& secondString)
+bool operator!=(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	return !(firstString == secondString);
 }
 
-bool operator<(const CMyString& firstString, const CMyString& secondString)
+bool operator<(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	size_t minLength = std::min(firstString.m_length, secondString.m_length);
 	int cmp = std::memcmp(firstString.m_string, secondString.m_string, minLength);
@@ -226,7 +226,7 @@ bool operator<(const CMyString& firstString, const CMyString& secondString)
 	return cmp < 0;
 }
 
-bool operator>(const CMyString& firstString, const CMyString& secondString)
+bool operator>(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	size_t minLength = std::min(firstString.m_length, secondString.m_length);
 	int cmp = std::memcmp(firstString.m_string, secondString.m_string, minLength);
@@ -239,12 +239,12 @@ bool operator>(const CMyString& firstString, const CMyString& secondString)
 	return cmp > 0;
 }
 
-bool operator>=(const CMyString& firstString, const CMyString& secondString)
+bool operator>=(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	return !(firstString < secondString);
 }
 
-bool operator<=(const CMyString& firstString, const CMyString& secondString)
+bool operator<=(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	return !(firstString > secondString);
 }
@@ -268,7 +268,7 @@ std::istream& operator>>(std::istream& is, CMyString& string)
 			}
 			string.m_string = new_buffer;
 		}
-
+		std::cout << ch;
 		string.m_string[string.m_length++] = ch;
 	}
 
@@ -278,4 +278,54 @@ std::istream& operator>>(std::istream& is, CMyString& string)
 	}
 
 	return is;
+}
+
+char* CMyString::begin() noexcept
+{
+	return m_string;
+}
+
+const char* CMyString::begin() const noexcept
+{
+	return m_string;
+}
+
+char* CMyString::end() noexcept
+{
+	return m_string + m_length;
+}
+
+const char* CMyString::end() const noexcept
+{
+	return m_string + m_length;
+}
+
+const char* CMyString::cbegin() const noexcept
+{
+	return m_string;
+}
+
+const char* CMyString::cend() const noexcept
+{
+	return m_string + m_length;
+}
+
+std::reverse_iterator<char*> CMyString::rbegin()
+{
+	return std::reverse_iterator<char*>(end());
+}
+
+std::reverse_iterator<char*> CMyString::rend()
+{
+	return std::reverse_iterator<char*>(begin());
+}
+
+std::reverse_iterator<const char*> CMyString::rbegin() const
+{
+	return std::reverse_iterator<const char*>(end());
+}
+
+std::reverse_iterator<const char*> CMyString::rend() const
+{
+	return std::reverse_iterator<const char*>(begin());
 }

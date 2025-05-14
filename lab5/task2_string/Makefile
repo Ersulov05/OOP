@@ -1,6 +1,6 @@
 # Компилятор и флаги
 CXX := g++
-CXXFLAGS := -std=c++20 -Wall -Iinclude -Wno-unused-parameter
+CXXFLAGS := -std=c++20 -Iinclude -Wno-unused-parameter
 LDFLAGS := 
 
 # Директории

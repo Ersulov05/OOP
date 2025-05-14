@@ -28,21 +28,21 @@ public:
 	~CMyString();
 
 	// возвращает длину строки (без учета завершающего нулевого символа)
-	size_t GetLength() const;
+	[[nodiscard]] size_t GetLength() const noexcept;
 
 	// возвращает указатель на массив символов строки.
 	// В конце массива обязательно должен быть завершающий нулевой символ
 	// даже если строка пустая
-	const char* GetStringData() const;
+	[[nodiscard]] const char* GetStringData() const noexcept;
 
 	// возвращает подстроку с заданной позиции длиной не больше length символов
-	CMyString SubString(size_t start, size_t length) const; // length = SIZE_MAX
+	[[nodiscard]] CMyString SubString(size_t start, size_t length = __SIZE_MAX__) const;
 
 	// очистка строки (строка становится снова нулевой длины)
 	void Clear();
 
 	// Возвращает вместимость строки
-	size_t GetCapacity();
+	[[nodiscard]] size_t GetCapacity() const noexcept;
 
 	CMyString& operator=(CMyString const& other);
 	CMyString& operator=(CMyString&& other) noexcept;
@@ -56,17 +56,28 @@ public:
 	friend CMyString operator+(char const* firstString, CMyString const& secondString);
 	friend CMyString operator+(CMyString const& firstString, char const* secondString);
 
-	friend bool operator==(CMyString const& firstString, CMyString const& secondString);
-	friend bool operator!=(CMyString const& firstString, CMyString const& secondString);
-	friend bool operator>(CMyString const& firstString, CMyString const& secondString);
-	friend bool operator<(CMyString const& firstString, CMyString const& secondString);
-	friend bool operator>=(CMyString const& firstString, CMyString const& secondString);
-	friend bool operator<=(CMyString const& firstString, CMyString const& secondString);
+	friend bool operator==(CMyString const& firstString, CMyString const& secondString) noexcept;
+	friend bool operator!=(CMyString const& firstString, CMyString const& secondString) noexcept;
+	friend bool operator>(CMyString const& firstString, CMyString const& secondString) noexcept;
+	friend bool operator<(CMyString const& firstString, CMyString const& secondString) noexcept;
+	friend bool operator>=(CMyString const& firstString, CMyString const& secondString) noexcept;
+	friend bool operator<=(CMyString const& firstString, CMyString const& secondString) noexcept;
 	friend std::ostream& operator<<(std::ostream& os, const CMyString& string);
 	friend std::istream& operator>>(std::istream& is, CMyString& string);
 
+	char* begin() noexcept;
+	const char* begin() const noexcept;
+	char* end() noexcept;
+	const char* end() const noexcept;
+	const char* cbegin() const noexcept;
+	const char* cend() const noexcept;
+	std::reverse_iterator<char*> rbegin();
+	std::reverse_iterator<char*> rend();
+	std::reverse_iterator<const char*> rbegin() const;
+	std::reverse_iterator<const char*> rend() const;
+
 private:
-	constexpr static const char END_OF_STRING = '\0';
+	const static char END_OF_STRING = '\0';
 	static char EMPTY_STRING[1];
 	size_t m_length;
 	size_t m_capacity;

@@ -12,5 +12,6 @@ int main()
 	auto a = x + string;
 	std::cout << string << " " << x << x[1] << std::endl;
 	std::cout << a;
+
 	return 0;
 }
