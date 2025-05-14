@@ -4,64 +4,36 @@ class CMyString
 {
 public:
 	CMyString();
-
-	// конструктор, инициализирующий строку данными строки
-	// с завершающим нулевым символом
 	CMyString(const char* pString);
-
-	// конструктор, инициализирующий строку данными из
-	// символьного массива заданной длины
 	CMyString(const char* pString, size_t length);
-
-	// конструктор копирования
 	CMyString(CMyString const& other);
-
-	// перемещающий конструктор
-	//  реализуется совместно с перемещающим оператором присваивания
 	CMyString(CMyString&& other) noexcept;
-
-	// конструктор, инициализирующий строку данными из
-	// строки стандартной библиотеки C++
 	CMyString(std::string const& stlString);
-
-	// деструктор класса - освобождает память, занимаемую символами строки
 	~CMyString();
-
-	// возвращает длину строки (без учета завершающего нулевого символа)
 	[[nodiscard]] size_t GetLength() const noexcept;
-
-	// возвращает указатель на массив символов строки.
-	// В конце массива обязательно должен быть завершающий нулевой символ
-	// даже если строка пустая
 	[[nodiscard]] const char* GetStringData() const noexcept;
-
-	// возвращает подстроку с заданной позиции длиной не больше length символов
 	[[nodiscard]] CMyString SubString(size_t start, size_t length = __SIZE_MAX__) const;
-
-	// очистка строки (строка становится снова нулевой длины)
+	[[nodiscard]] size_t GetCapacity() const noexcept;
 	void Clear();
 
-	// Возвращает вместимость строки
-	[[nodiscard]] size_t GetCapacity() const noexcept;
-
 	CMyString& operator=(CMyString const& other);
-	CMyString& operator=(CMyString&& other) noexcept;
+	CMyString& operator=(CMyString&& other);
 	CMyString& operator+=(CMyString const& other);
 	const char& operator[](size_t index) const;
 	char& operator[](size_t index);
 
-	friend CMyString operator+(CMyString const& firstString, CMyString const& secondString);
-	friend CMyString operator+(std::string const& firstString, CMyString const& secondString);
-	friend CMyString operator+(CMyString const& firstString, std::string const& secondString);
-	friend CMyString operator+(char const* firstString, CMyString const& secondString);
-	friend CMyString operator+(CMyString const& firstString, char const* secondString);
+	friend CMyString operator+(const CMyString& firstString, const CMyString& secondString);
+	friend CMyString operator+(const std::string& firstString, const CMyString& secondString);
+	friend CMyString operator+(const CMyString& firstString, const std::string& secondString);
+	friend CMyString operator+(const char* firstString, const CMyString& secondString);
+	friend CMyString operator+(const CMyString& firstString, const char* secondString);
 
-	friend bool operator==(CMyString const& firstString, CMyString const& secondString) noexcept;
-	friend bool operator!=(CMyString const& firstString, CMyString const& secondString) noexcept;
-	friend bool operator>(CMyString const& firstString, CMyString const& secondString) noexcept;
-	friend bool operator<(CMyString const& firstString, CMyString const& secondString) noexcept;
-	friend bool operator>=(CMyString const& firstString, CMyString const& secondString) noexcept;
-	friend bool operator<=(CMyString const& firstString, CMyString const& secondString) noexcept;
+	friend bool operator==(const CMyString& firstString, const CMyString& secondString) noexcept;
+	friend bool operator!=(const CMyString& firstString, const CMyString& secondString) noexcept;
+	friend bool operator>(const CMyString& firstString, const CMyString& secondString) noexcept;
+	friend bool operator<(const CMyString& firstString, const CMyString& secondString) noexcept;
+	friend bool operator>=(const CMyString& firstString, const CMyString& secondString) noexcept;
+	friend bool operator<=(const CMyString& firstString, const CMyString& secondString) noexcept;
 	friend std::ostream& operator<<(std::ostream& os, const CMyString& string);
 	friend std::istream& operator>>(std::istream& is, CMyString& string);
 

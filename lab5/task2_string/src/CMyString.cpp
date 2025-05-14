@@ -171,7 +171,7 @@ char& CMyString::operator[](size_t index)
 	return m_string[index];
 }
 
-CMyString operator+(CMyString const& firstString, CMyString const& secondString)
+CMyString operator+(const CMyString& firstString, const CMyString& secondString)
 {
 	CMyString result;
 	result += firstString;
@@ -216,27 +216,27 @@ bool operator!=(const CMyString& firstString, const CMyString& secondString) noe
 bool operator<(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	size_t minLength = std::min(firstString.m_length, secondString.m_length);
-	int cmp = std::memcmp(firstString.m_string, secondString.m_string, minLength);
+	int comparison = std::memcmp(firstString.m_string, secondString.m_string, minLength);
 
-	if (cmp == 0)
+	if (comparison == 0)
 	{
 		return firstString.m_length < secondString.m_length;
 	}
 
-	return cmp < 0;
+	return comparison < 0;
 }
 
 bool operator>(const CMyString& firstString, const CMyString& secondString) noexcept
 {
 	size_t minLength = std::min(firstString.m_length, secondString.m_length);
-	int cmp = std::memcmp(firstString.m_string, secondString.m_string, minLength);
+	int comparison = std::memcmp(firstString.m_string, secondString.m_string, minLength);
 
-	if (cmp == 0)
+	if (comparison == 0)
 	{
 		return firstString.m_length > secondString.m_length;
 	}
 
-	return cmp > 0;
+	return comparison > 0;
 }
 
 bool operator>=(const CMyString& firstString, const CMyString& secondString) noexcept
