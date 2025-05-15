@@ -2,8 +2,6 @@
 #include "./Exception/IndexOutOfRangeException.h"
 #include <cstring>
 
-char CMyString::EMPTY_STRING[1] = { '\0' };
-
 CMyString::CMyString(const char* pString, size_t length)
 	: m_length(length)
 	, m_capacity(length + 1)
@@ -20,7 +18,7 @@ CMyString::CMyString(const char* pString, size_t length)
 }
 
 CMyString::CMyString()
-	: CMyString(EMPTY_STRING, 0)
+	: CMyString("", 0)
 {
 }
 
@@ -47,10 +45,7 @@ CMyString::CMyString(const std::string& stlString)
 
 CMyString::~CMyString()
 {
-	if (m_string != EMPTY_STRING)
-	{
-		delete[] m_string;
-	}
+	delete[] m_string;
 }
 
 size_t CMyString::GetLength() const noexcept
@@ -80,12 +75,13 @@ CMyString CMyString::SubString(size_t start, size_t length) const
 
 void CMyString::Clear()
 {
-	if (m_string != EMPTY_STRING)
+	if (m_length > 0)
 	{
-		delete[] m_string;
-		m_string = EMPTY_STRING;
 		m_length = 0;
 		m_capacity = 1;
+		delete[] m_string;
+		m_string = new char[m_capacity];
+		m_string[0] = CMyString::END_OF_STRING;
 	}
 }
 
@@ -113,7 +109,7 @@ CMyString& CMyString::operator=(const CMyString& other)
 	return *this;
 }
 
-CMyString& CMyString::operator=(CMyString&& other) noexcept
+CMyString& CMyString::operator=(CMyString&& other)
 {
 	if (this != &other)
 	{
@@ -137,16 +133,13 @@ CMyString& CMyString::operator+=(CMyString const& other)
 		m_capacity = (newLength + 1) * 2;
 		char* newString = new char[m_capacity];
 		std::memcpy(newString, m_string, m_length);
-		if (m_string != EMPTY_STRING)
-		{
-			delete[] m_string;
-		}
+		delete[] m_string;
 		m_string = newString;
 	}
 
 	std::memcpy(m_string + m_length, other.m_string, other.m_length);
 	m_length = newLength;
-	m_string[m_length] = EMPTY_STRING[0];
+	m_string[m_length] = END_OF_STRING;
 
 	return *this;
 }
@@ -261,14 +254,10 @@ std::istream& operator>>(std::istream& is, CMyString& string)
 		{
 			string.m_capacity *= 2;
 			char* new_buffer = new char[string.m_capacity];
-			if (string.m_string != CMyString::EMPTY_STRING)
-			{
-				std::memcpy(new_buffer, string.m_string, string.m_length);
-				delete[] string.m_string;
-			}
+			std::memcpy(new_buffer, string.m_string, string.m_length);
+			delete[] string.m_string;
 			string.m_string = new_buffer;
 		}
-		std::cout << ch;
 		string.m_string[string.m_length++] = ch;
 	}
 
