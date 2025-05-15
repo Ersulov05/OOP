@@ -1,10 +1,25 @@
 #include "./src/CHttpUrl.h"
 #include <iostream>
 
+void UrlHandler(const std::string& stringUrl, std::ostream& output)
+{
+	try
+	{
+		CHttpUrl url(stringUrl);
+		output << url.GetURLInfo() << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		output << e.what() << std::endl;
+	}
+}
+
 int main()
 {
-	CHttpUrl url = CHttpUrl("Http://ersulov.ru/index.php");
-	std::cout << url.GetURL() << std::endl;
-	std::cout << url.GetDocument() << std::endl;
+	std::string line;
+	while (getline(std::cin, line))
+	{
+		UrlHandler(line, std::cout);
+	}
 	return 0;
 }

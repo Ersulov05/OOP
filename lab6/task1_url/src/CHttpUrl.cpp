@@ -9,10 +9,8 @@
 
 CHttpUrl::CHttpUrl(std::string const& url)
 {
-	std::regex urlRegex(R"(^(http|https)://([^/:]+)(?::([^/]*))?(/.*)?$)", std::regex_constants::icase);
 	std::smatch match;
-
-	if (!std::regex_match(url, match, urlRegex))
+	if (!std::regex_match(url, match, CHttpUrl::URL_REGEX))
 	{
 		throw CUrlParsingError();
 	}
@@ -95,6 +93,15 @@ unsigned short CHttpUrl::GetPort() const
 	return m_port;
 }
 
+std::string CHttpUrl::GetURLInfo() const
+{
+	return "----------\nProtocol: " + CHttpUrl::ConvertProtocolToString(m_protocol)
+		+ "\nDomain: " + m_domain
+		+ "\nPort: " + std::to_string(m_port)
+		+ "\nDocument: " + m_document
+		+ "\n----------";
+}
+
 Protocol CHttpUrl::ConvertStringToProtocol(const std::string& string) const
 {
 	std::string lowerCaseString = GetLowerCase(string);
@@ -106,14 +113,14 @@ Protocol CHttpUrl::ConvertStringToProtocol(const std::string& string) const
 	throw InvalidProtocolException(string);
 }
 
-std::string CHttpUrl::ConvertProtocolToString(const Protocol protocol) const
+std::string CHttpUrl::ConvertProtocolToString(const Protocol protocol)
 {
 	auto it = PROTOCOL_TO_STRING_MAP.find(protocol);
 	if (it != PROTOCOL_TO_STRING_MAP.end())
 	{
 		return it->second;
 	}
-	throw InvalidProtocolException("");
+	throw InvalidProtocolException();
 }
 
 unsigned short CHttpUrl::ConvertStringToPort(const std::string& string) const

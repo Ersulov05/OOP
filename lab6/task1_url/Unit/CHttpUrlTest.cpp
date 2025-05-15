@@ -65,7 +65,8 @@ TEST_CASE("test CreateURL")
 TEST_CASE("test CreateURLFailed")
 {
 	REQUIRE_THROWS_AS(CHttpUrl("", "", Protocol::HTTPS), InvalidDomainException);
-	REQUIRE_THROWS_AS(CHttpUrl("", "", Protocol::HTTPS), InvalidDomainException);
+	REQUIRE_THROWS_AS(CHttpUrl("example..com", "", Protocol::HTTPS), InvalidDomainException);
+	REQUIRE_THROWS_AS(CHttpUrl("quiz.ru ", "", Protocol::HTTPS), InvalidDomainException);
 	REQUIRE_THROWS_AS(CHttpUrl("xqz.com", "", Protocol::HTTPS, 0), PortOutOfRangeException);
 	REQUIRE_THROWS_AS(CHttpUrl("xqz.com", "", Protocol::HTTPS, 65536), PortOutOfRangeException);
 }
@@ -75,6 +76,8 @@ TEST_CASE("test ParseURLFailed")
 	REQUIRE_THROWS_AS(CHttpUrl(""), CUrlParsingError);
 	REQUIRE_THROWS_AS(CHttpUrl("ftp://ers"), CUrlParsingError);
 	REQUIRE_THROWS_AS(CHttpUrl("http:///"), CUrlParsingError);
+	REQUIRE_THROWS_AS(CHttpUrl("http://example..com:20/index.php"), CUrlParsingError);
+	REQUIRE_THROWS_AS(CHttpUrl("http://example com:20/index.php"), CUrlParsingError);
 	REQUIRE_THROWS_AS(CHttpUrl("http://ersulov.ru:0/index.php"), PortOutOfRangeException);
 	REQUIRE_THROWS_AS(CHttpUrl("http://ersulov.ru:65536/index.php"), PortOutOfRangeException);
 	REQUIRE_THROWS_AS(CHttpUrl("http://ersulov.ru:-65536/index.php"), PortOutOfRangeException);

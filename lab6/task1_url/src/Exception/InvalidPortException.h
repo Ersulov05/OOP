@@ -1,8 +1,8 @@
 #include <iostream>
 
-class InvalidPortException : public std::runtime_error
+class InvalidPortException : public std::invalid_argument
 {
 public:
 	InvalidPortException(const std::string& port)
-		: std::runtime_error("Invalid port \"" + port + "\""){};
+		: std::invalid_argument("Invalid port \"" + port + "\""){};
 };
