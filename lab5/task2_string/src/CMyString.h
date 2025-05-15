@@ -34,7 +34,7 @@ public:
 	friend bool operator<(const CMyString& firstString, const CMyString& secondString) noexcept;
 	friend bool operator>=(const CMyString& firstString, const CMyString& secondString) noexcept;
 	friend bool operator<=(const CMyString& firstString, const CMyString& secondString) noexcept;
-	// TODO: Разобраться со <=>
+
 	friend std::ostream& operator<<(std::ostream& os, const CMyString& string);
 	friend std::istream& operator>>(std::istream& is, CMyString& string);
 
@@ -50,7 +50,6 @@ public:
 	std::reverse_iterator<const char*> rend() const;
 
 private:
-	const static char END_OF_STRING = '\0';
 	// static char EMPTY_STRING[1]; // TODO избавиться
 	size_t m_length;
 	size_t m_capacity;

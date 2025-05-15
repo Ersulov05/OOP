@@ -2,6 +2,8 @@
 #include "./Exception/IndexOutOfRangeException.h"
 #include <cstring>
 
+const char END_OF_STRING = '\0';
+
 CMyString::CMyString(const char* pString, size_t length)
 	: m_length(length)
 	, m_capacity(length + 1)
@@ -81,7 +83,7 @@ void CMyString::Clear()
 		m_capacity = 1;
 		delete[] m_string;
 		m_string = new char[m_capacity];
-		m_string[0] = CMyString::END_OF_STRING;
+		m_string[0] = END_OF_STRING;
 	}
 }
 
@@ -263,7 +265,7 @@ std::istream& operator>>(std::istream& is, CMyString& string)
 
 	if (string.m_capacity > 1)
 	{
-		string.m_string[string.m_length] = CMyString::END_OF_STRING;
+		string.m_string[string.m_length] = END_OF_STRING;
 	}
 
 	return is;
