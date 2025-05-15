@@ -7,10 +7,18 @@
 #include "./Exception/PortOutOfRangeException.h"
 #include <regex>
 
+const std::regex DOMAIN_REGEX = std::regex(
+	R"(^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$)",
+	std::regex_constants::icase);
+
+const std::regex URL_REGEX = std::regex(
+	R"(^(http|https)://((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(?::([^/]*))?(/.*)?$)",
+	std::regex_constants::icase);
+
 CHttpUrl::CHttpUrl(std::string const& url)
 {
 	std::smatch match;
-	if (!std::regex_match(url, match, CHttpUrl::URL_REGEX))
+	if (!std::regex_match(url, match, URL_REGEX))
 	{
 		throw CUrlParsingError();
 	}
@@ -41,19 +49,6 @@ CHttpUrl& CHttpUrl::operator=(const CHttpUrl& other)
 CHttpUrl::CHttpUrl(
 	std::string const& domain,
 	std::string const& document,
-	Protocol protocol)
-	: m_protocol(protocol)
-	, m_domain(domain)
-	, m_port(static_cast<unsigned short>(protocol))
-	, m_document(document)
-{
-	AssertValidDomain(m_domain);
-	CorrectDocumentPath();
-}
-
-CHttpUrl::CHttpUrl(
-	std::string const& domain,
-	std::string const& document,
 	Protocol protocol,
 	unsigned short port)
 	: m_protocol(protocol)
@@ -64,6 +59,14 @@ CHttpUrl::CHttpUrl(
 	AssertValidPort(m_port);
 	AssertValidDomain(m_domain);
 	CorrectDocumentPath();
+}
+
+CHttpUrl::CHttpUrl( // TODO: Через верхний коструктор можно выразить
+	std::string const& domain,
+	std::string const& document,
+	Protocol protocol)
+	: CHttpUrl(domain, document, protocol, static_cast<unsigned short>(protocol))
+{
 }
 
 std::string CHttpUrl::GetURL() const

@@ -51,13 +51,6 @@ private:
 		{ Protocol::HTTPS, "https" }
 	};
 
-	inline static const std::regex DOMAIN_REGEX = std::regex(
-		R"(^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$)",
-		std::regex_constants::icase);
-	inline static const std::regex URL_REGEX = std::regex(
-		R"(^(http|https)://((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(?::([^/]*))?(/.*)?$)",
-		std::regex_constants::icase);
-
 	Protocol ConvertStringToProtocol(const std::string& string) const;
 	unsigned short ConvertStringToPort(const std::string& string) const;
 	void CorrectDocumentPath();
