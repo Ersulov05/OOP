@@ -5,63 +5,148 @@
 #include "../src/Exception/IndexOutOfRangeException.h"
 #include <sstream>
 
-TEST_CASE("TestCreateStringSuccess")
+TEST_CASE("TestCreateStringSuccess") // TODO Разделить по тесту на каждый конструктор
 {
 	CMyString string;
 
 	REQUIRE(string.GetLength() == 0);
 	REQUIRE(string.GetCapacity() == 1);
+}
 
-	string = "999";
+TEST_CASE("TestCreateStringByCharString")
+{
+	CMyString string = "999";
+
 	REQUIRE(string.GetLength() == 3);
 	REQUIRE(string.GetCapacity() == 4);
+}
 
+TEST_CASE("TestCreateStringByStlString")
+{
+	CMyString string;
 	std::string str = "string";
 	string = str;
+
 	REQUIRE(string.GetLength() == 6);
 	REQUIRE(string.GetCapacity() == 7);
+}
 
+TEST_CASE("TestCopyString")
+{
+	CMyString string = "string";
 	CMyString copyString = string;
+
 	REQUIRE(string.GetLength() == 6);
 	REQUIRE(string.GetCapacity() == 7);
 	REQUIRE(copyString.GetLength() == 6);
 	REQUIRE(copyString.GetCapacity() == 7);
-
-	CMyString moveString = std::move(string);
-	REQUIRE(moveString.GetLength() == 6);
-	REQUIRE(moveString.GetCapacity() == 7);
-	REQUIRE(string.GetLength() == 0);
-	REQUIRE(string.GetCapacity() == 1);
 }
 
-TEST_CASE("TestCMyStringComparisonOperationsSuccess")
+TEST_CASE("TestMoveCMyString")
+{
+	CMyString string = "xxx";
+	CMyString str = std::move(string);
+
+	REQUIRE(string.GetCapacity() == 1);
+	REQUIRE(string.GetLength() == 0);
+	REQUIRE(string == "");
+	REQUIRE(str.GetLength() == 3);
+	REQUIRE(str.GetCapacity() == 4);
+	REQUIRE(str == "xxx");
+}
+
+TEST_CASE("TestMoveEmptyCMyString")
+{
+	CMyString emptyString;
+	CMyString str = std::move(emptyString);
+
+	REQUIRE(emptyString.GetCapacity() == 1);
+	REQUIRE(emptyString.GetLength() == 0);
+	REQUIRE(emptyString == "");
+	REQUIRE(str.GetLength() == 0);
+	REQUIRE(str.GetCapacity() == 1);
+	REQUIRE(str == "");
+}
+
+TEST_CASE("TestCMyStringEqualsOperation") // TODO: Разделить
 {
 	CMyString firstString = "111";
-	CMyString secondString = "222";
-	REQUIRE(firstString == "111");
-	REQUIRE(secondString == "222");
-	REQUIRE(firstString < secondString);
-	REQUIRE(firstString <= secondString);
-	REQUIRE(firstString != secondString);
-	REQUIRE_FALSE(firstString > secondString);
-	REQUIRE_FALSE(firstString >= secondString);
-	REQUIRE_FALSE(firstString == secondString);
+	CMyString equalsString = "111";
+	CMyString notEqualsString = "222";
 
-	firstString = secondString;
-	REQUIRE(firstString == secondString);
-	REQUIRE(firstString >= secondString);
-	REQUIRE(firstString <= secondString);
-	REQUIRE_FALSE(firstString < secondString);
-	REQUIRE_FALSE(secondString < firstString);
-	REQUIRE_FALSE(firstString != secondString);
+	REQUIRE(firstString == "111");
+	REQUIRE(firstString == equalsString);
+	REQUIRE_FALSE(firstString == notEqualsString);
 }
 
-TEST_CASE("TestCMyStringPlusOperationsSuccess")
+TEST_CASE("TestCMyStringNotEqualsOperation")
+{
+	CMyString firstString = "111";
+	CMyString equalsString = "111";
+	CMyString notEqualsString = "222";
+
+	REQUIRE(firstString != "222");
+	REQUIRE(firstString != notEqualsString);
+	REQUIRE_FALSE(firstString != equalsString);
+}
+
+TEST_CASE("TestCMyStringLessOperation")
+{
+	CMyString string = "111";
+
+	REQUIRE(string < "222");
+	REQUIRE(string < "2");
+	REQUIRE(string < "1111");
+	REQUIRE_FALSE(string < "00000");
+	REQUIRE_FALSE(string < "111");
+	REQUIRE_FALSE(string < "1");
+}
+
+TEST_CASE("TestCMyStringGreetOperation")
+{
+	CMyString string = "111";
+
+	REQUIRE_FALSE(string > "222");
+	REQUIRE_FALSE(string > "2");
+	REQUIRE_FALSE(string > "1111");
+	REQUIRE_FALSE(string > "111");
+	REQUIRE(string > "00000");
+	REQUIRE(string > "0");
+	REQUIRE(string > "1");
+}
+
+TEST_CASE("TestCMyStringLessEqualsOperations")
+{
+	CMyString string = "111";
+
+	REQUIRE(string <= "222");
+	REQUIRE(string <= "2");
+	REQUIRE(string <= "1111");
+	REQUIRE(string <= "111");
+	REQUIRE_FALSE(string <= "00000");
+	REQUIRE_FALSE(string <= "1");
+}
+
+TEST_CASE("TestCMyStringGreatEqualsOperations")
+{
+	CMyString string = "111";
+
+	REQUIRE_FALSE(string >= "222");
+	REQUIRE_FALSE(string >= "2");
+	REQUIRE_FALSE(string >= "1111");
+	REQUIRE(string >= "111");
+	REQUIRE(string >= "00000");
+	REQUIRE(string >= "0");
+	REQUIRE(string >= "1");
+}
+
+TEST_CASE("TestCMyStringPlusOperation")
 {
 	CMyString firstString = "111";
 	CMyString secondString = "222";
 	CMyString emptyString;
 	std::string str = "000";
+
 	REQUIRE(firstString + secondString == "111222");
 	REQUIRE(secondString + firstString == "222111");
 	REQUIRE(firstString + emptyString == "111");
@@ -70,6 +155,14 @@ TEST_CASE("TestCMyStringPlusOperationsSuccess")
 	REQUIRE(firstString + "999" == "111999");
 	REQUIRE(str + firstString == "000111");
 	REQUIRE(firstString + str == "111000");
+}
+
+TEST_CASE("TestCMyStringPlusEqualsOperation")
+{
+	CMyString firstString = "111";
+	CMyString secondString = "222";
+	CMyString emptyString;
+	std::string str = "000";
 
 	firstString += secondString;
 	REQUIRE(firstString == "111222");
@@ -84,18 +177,26 @@ TEST_CASE("TestCMyStringPlusOperationsSuccess")
 	REQUIRE(firstString == "111222999000");
 }
 
-TEST_CASE("TestCMyStringGetAndChangeSumbol")
+TEST_CASE("TestCMyStringGetSymbolByIndex")
 {
 	CMyString string = "12345";
 	const CMyString constString = "12345";
 
-	string[0] = '0';
-	REQUIRE(string[0] == '0');
+	REQUIRE(string[0] == '1');
 	REQUIRE(string[1] == '2');
 	REQUIRE(constString[0] == '1');
 	REQUIRE(constString[1] == '2');
 	char x = string[1];
 	x = '8';
+	REQUIRE(string[1] == '2');
+}
+
+TEST_CASE("TestCMyStringChangeSymbolByIndex")
+{
+	CMyString string = "12345";
+
+	string[0] = '0';
+	REQUIRE(string[0] == '0');
 	REQUIRE(string[1] == '2');
 }
 
@@ -135,27 +236,6 @@ TEST_CASE("TestCMyStringSubStringSuccess")
 
 	REQUIRE(string.SubString(0, string.GetLength()) == "12345");
 	REQUIRE(constString.SubString(0, constString.GetLength()) == "12345");
-}
-
-TEST_CASE("TestMoveCMyString")
-{
-	CMyString string = "xxx";
-	CMyString emptyString;
-	CMyString str = std::move(string);
-	REQUIRE(string.GetCapacity() == 1);
-	REQUIRE(string.GetLength() == 0);
-	REQUIRE(string == "");
-	REQUIRE(str.GetLength() == 3);
-	REQUIRE(str.GetCapacity() == 4);
-	REQUIRE(str == "xxx");
-
-	str = std::move(emptyString);
-	REQUIRE(emptyString.GetCapacity() == 1);
-	REQUIRE(emptyString.GetLength() == 0);
-	REQUIRE(emptyString == "");
-	REQUIRE(str.GetLength() == 0);
-	REQUIRE(str.GetCapacity() == 1);
-	REQUIRE(str == "");
 }
 
 TEST_CASE("TestInputCMyString")
@@ -256,6 +336,19 @@ TEST_CASE("TestRangeFor")
 		string += *it;
 	}
 	REQUIRE(string == "123");
+
+	std::string reversed;
+	for (auto it = str.rbegin(); it != str.rend(); ++it)
+	{
+		reversed += *it;
+	}
+	REQUIRE(reversed == "321");
+}
+
+TEST_CASE("TestReverseFor")
+{
+	CMyString str = CMyString("123");
+	std::string string;
 
 	std::string reversed;
 	for (auto it = str.rbegin(); it != str.rend(); ++it)
