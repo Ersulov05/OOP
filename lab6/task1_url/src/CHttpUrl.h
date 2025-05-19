@@ -41,16 +41,6 @@ private:
 	std::string m_document;
 	unsigned short m_port;
 
-	inline static const std::map<std::string, Protocol> STRING_TO_PROTOCOL_MAP = {
-		{ "http", Protocol::HTTP },
-		{ "https", Protocol::HTTPS }
-	};
-
-	inline static const std::map<Protocol, std::string> PROTOCOL_TO_STRING_MAP = {
-		{ Protocol::HTTP, "http" },
-		{ Protocol::HTTPS, "https" }
-	};
-
 	Protocol ConvertStringToProtocol(const std::string& string) const;
 	unsigned short ConvertStringToPort(const std::string& string) const;
 	void CorrectDocumentPath();

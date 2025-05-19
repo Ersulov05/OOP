@@ -15,6 +15,16 @@ const std::regex URL_REGEX = std::regex(
 	R"(^(http|https)://((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(?::([^/]*))?(/.*)?$)",
 	std::regex_constants::icase);
 
+const std::map<std::string, Protocol> STRING_TO_PROTOCOL_MAP = {
+	{ "http", Protocol::HTTP },
+	{ "https", Protocol::HTTPS }
+};
+
+const std::map<Protocol, std::string> PROTOCOL_TO_STRING_MAP = {
+	{ Protocol::HTTP, "http" },
+	{ Protocol::HTTPS, "https" }
+};
+
 CHttpUrl::CHttpUrl(std::string const& url)
 {
 	std::smatch match;
