@@ -13,12 +13,11 @@ TESTS_BIN_DIR := $(BIN_DIR)/tests
 # Основные исходные файлы
 MAIN_SRCS := \
 	main.cpp \
-	$(SRC_DIR)/CHttpUrl.cpp \
-	Utils/StringUtils.cpp
+	$(SRC_DIR)/FindMaxEx.cpp
 
 # Тестовые файлы
 TEST_SRCS := \
-	$(TEST_DIR)/CHttpUrlTest.cpp
+	$(TEST_DIR)/FindMaxExTest.cpp
 
 # Объектные файлы для основной программы
 MAIN_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(MAIN_SRCS))
