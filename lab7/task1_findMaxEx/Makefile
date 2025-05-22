@@ -12,8 +12,7 @@ TESTS_BIN_DIR := $(BIN_DIR)/tests
 
 # Основные исходные файлы
 MAIN_SRCS := \
-	main.cpp \
-	$(SRC_DIR)/FindMaxEx.cpp
+	main.cpp
 
 # Тестовые файлы
 TEST_SRCS := \
