@@ -13,8 +13,8 @@ CStringList::CStringList()
 CStringList::~CStringList()
 {
 	Clear();
-	// m_begin->next = nullptr;
-	// m_end->prev = nullptr;
+	m_begin->next = nullptr;
+	m_end->prev = nullptr;
 }
 
 CStringList::CStringList(const CStringList& other)
