@@ -65,7 +65,7 @@ template <typename T>
 CMyArray<T>::CMyArray(CMyArray<T>&& other)
 	: CMyArray()
 {
-	Swap(this, other);
+	Swap(*this, other);
 }
 
 template <typename T>
@@ -151,14 +151,14 @@ template <typename T>
 CMyArray<T>& CMyArray<T>::operator=(CMyArray<T> const& other)
 {
 	CMyArray temp(other);
-	Swap(this, temp);
+	Swap(*this, temp);
 }
 
 template <typename T>
 CMyArray<T>& CMyArray<T>::operator=(CMyArray<T>&& other) noexcept
 {
 	Clear();
-	Swap(this, other);
+	Swap(*this, other);
 }
 
 template <typename T>
