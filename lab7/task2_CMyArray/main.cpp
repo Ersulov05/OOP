@@ -21,6 +21,6 @@ int main()
 	{
 		std::cout << value << std::endl;
 	}
-	std::cout << intArray[10] << std::endl;
+	// std::cout << intArray[10] << std::endl;
 	return 0;
 }

@@ -1,265 +1,433 @@
 #define CATCH_CONFIG_FAST_COMPILE
 #define CATCH_CONFIG_MAIN
 #include "../../../catch/catch.hpp"
-#include "../src/CStringList.h"
-#include "../src/Exception/EraseEndIteratorException.h"
+#include "../src/CMyArray.h"
 #include "../src/Exception/IndexOutOfRangeException.h"
 #include <sstream>
 
-TEST_CASE("TestCreateStringListSuccess")
+TEST_CASE("TestCreateCMyArray")
 {
-	CStringList stringList;
+	CMyArray<int> intArr;
+	CMyArray<double> doubleArr;
+	CMyArray<std::string> stringArr;
 
-	REQUIRE(stringList.Size() == 0);
-	REQUIRE(stringList.IsEmpty());
+	REQUIRE(intArr.Size() == 0);
+	REQUIRE(intArr.Capacity() == 0);
+
+	REQUIRE(doubleArr.Size() == 0);
+	REQUIRE(doubleArr.Capacity() == 0);
+
+	REQUIRE(stringArr.Size() == 0);
+	REQUIRE(stringArr.Capacity() == 0);
 }
 
-TEST_CASE("TestStringListBegin")
+TEST_CASE("TestAddIntElementInCMyArray")
 {
-	CStringList stringList;
+	CMyArray<int> arr;
 
-	auto begin = stringList.begin();
-	REQUIRE(begin.GetNode()->data == "");
+	arr.Add(1);
 
-	stringList.PushBack("str");
-	begin = stringList.begin();
-	REQUIRE(begin.GetNode()->data == "str");
+	REQUIRE(arr.Size() == 1);
+	REQUIRE(arr.Capacity() == 1);
+	REQUIRE(arr[0] == 1);
 
-	stringList.PushBack("1");
-	begin = stringList.begin();
-	REQUIRE(begin.GetNode()->data == "str");
+	arr.Add(3);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 2);
+	REQUIRE(arr[0] == 1);
+	REQUIRE(arr[1] == 3);
 
-	stringList.PushFront("2");
-	begin = stringList.begin();
-	REQUIRE(begin.GetNode()->data == "2");
+	arr.Add(7);
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1);
+	REQUIRE(arr[1] == 3);
+	REQUIRE(arr[2] == 7);
 }
 
-TEST_CASE("TestStringListEnd")
+TEST_CASE("TestAddDoubleElementInCMyArray")
 {
-	CStringList stringList;
+	CMyArray<double> arr;
 
-	auto end = stringList.end();
-	REQUIRE(end.GetNode()->data == "");
+	arr.Add(1.5);
 
-	stringList.PushBack("str");
-	end = stringList.end();
-	REQUIRE(end.GetNode()->data == "");
+	REQUIRE(arr.Size() == 1);
+	REQUIRE(arr.Capacity() == 1);
+	REQUIRE(arr[0] == 1.5);
 
-	stringList.PushFront("2");
-	end = stringList.end();
-	REQUIRE(end.GetNode()->data == "");
+	arr.Add(3.89);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 2);
+	REQUIRE(arr[0] == 1.5);
+	REQUIRE(arr[1] == 3.89);
+
+	arr.Add(-0.008);
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1.5);
+	REQUIRE(arr[1] == 3.89);
+	REQUIRE(arr[2] == -0.008);
 }
 
-TEST_CASE("TestStringListPushBack")
+TEST_CASE("TestAddStringElementInCMyArray")
 {
-	CStringList stringList;
+	CMyArray<std::string> arr;
 
-	stringList.PushBack("hello");
-	REQUIRE(stringList.Size() == 1);
-	REQUIRE(stringList[0] == "hello");
+	arr.Add("hello");
 
-	stringList.PushBack("world");
-	REQUIRE(stringList.Size() == 2);
-	REQUIRE(stringList[1] == "world");
+	REQUIRE(arr.Size() == 1);
+	REQUIRE(arr.Capacity() == 1);
+	REQUIRE(arr[0] == "hello");
 
-	stringList.PushBack("!");
-	REQUIRE(stringList.Size() == 3);
-	REQUIRE(stringList[2] == "!");
+	arr.Add("world");
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 2);
+	REQUIRE(arr[0] == "hello");
+	REQUIRE(arr[1] == "world");
+
+	arr.Add("!");
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == "hello");
+	REQUIRE(arr[1] == "world");
+	REQUIRE(arr[2] == "!");
 }
 
-TEST_CASE("TestStringListPushFront")
+TEST_CASE("TestClearEmptyCMyArray")
 {
-	CStringList stringList;
+	CMyArray<int> intArr;
+	CMyArray<double> doubleArr;
+	CMyArray<std::string> stringArr;
 
-	stringList.PushFront("hello");
-	REQUIRE(stringList.Size() == 1);
-	REQUIRE(stringList[0] == "hello");
+	intArr.Clear();
+	doubleArr.Clear();
+	stringArr.Clear();
 
-	stringList.PushFront("world");
-	REQUIRE(stringList.Size() == 2);
-	REQUIRE(stringList[1] == "hello");
-	REQUIRE(stringList[0] == "world");
+	REQUIRE(intArr.Size() == 0);
+	REQUIRE(intArr.Capacity() == 0);
 
-	stringList.PushFront("!");
-	REQUIRE(stringList.Size() == 3);
-	REQUIRE(stringList[2] == "hello");
-	REQUIRE(stringList[0] == "!");
+	REQUIRE(doubleArr.Size() == 0);
+	REQUIRE(doubleArr.Capacity() == 0);
+
+	REQUIRE(stringArr.Size() == 0);
+	REQUIRE(stringArr.Capacity() == 0);
 }
 
-TEST_CASE("TestStringListInsert")
+TEST_CASE("TestClearIntCMyArray")
 {
-	CStringList stringList;
+	CMyArray<int> arr;
+	arr.Add(1);
+	arr.Add(3);
+	arr.Add(7);
 
-	stringList.Insert(stringList.begin(), "hello");
-	REQUIRE(stringList.Size() == 1);
-	REQUIRE(stringList[0] == "hello");
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
 
-	stringList.Insert(stringList.begin() + 1, "world");
-	REQUIRE(stringList.Size() == 2);
-	REQUIRE(stringList[1] == "world");
-
-	stringList.Insert(stringList.end(), "!");
-	REQUIRE(stringList.Size() == 3);
-	REQUIRE(stringList[2] == "!");
+	arr.Clear();
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(arr.Capacity() == 0);
 }
 
-TEST_CASE("TestStringListErase")
+TEST_CASE("TestClearDoubleCMyArray")
 {
-	CStringList stringList;
+	CMyArray<double> arr;
+	arr.Add(1.5);
+	arr.Add(3.89);
+	arr.Add(-0.008);
 
-	stringList.PushBack("hello");
-	stringList.PushBack("world");
-	stringList.PushBack("!");
-	REQUIRE(stringList.Size() == 3);
-	REQUIRE(stringList[0] == "hello");
-	REQUIRE(stringList[2] == "!");
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
 
-	stringList.Erase(stringList.begin());
-	REQUIRE(stringList.Size() == 2);
-	REQUIRE(stringList[0] == "world");
-	REQUIRE(stringList[1] == "!");
-
-	stringList.Erase(stringList.end() - 1);
-	REQUIRE(stringList.Size() == 1);
-	REQUIRE(stringList[0] == "world");
-
-	stringList.Erase(stringList.end() - 1);
-	REQUIRE(stringList.Size() == 0);
+	arr.Clear();
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(arr.Capacity() == 0);
 }
 
-TEST_CASE("TestStringListClear")
+TEST_CASE("TestClearStringCMyArray")
 {
-	CStringList stringList;
+	CMyArray<std::string> arr;
+	arr.Add("hello");
+	arr.Add("world");
+	arr.Add("!");
 
-	stringList.Clear();
-	REQUIRE(stringList.Size() == 0);
-	REQUIRE(stringList.begin() == stringList.end());
-	REQUIRE(*stringList.end() == "");
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
 
-	stringList.PushBack("str");
-	REQUIRE(stringList.Size() == 1);
-
-	stringList.Clear();
-	REQUIRE(stringList.Size() == 0);
-	REQUIRE(stringList.begin() == stringList.end());
-	REQUIRE(*stringList.end() == "");
+	arr.Clear();
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(arr.Capacity() == 0);
 }
 
-TEST_CASE("TestStringListEraseFailed")
+TEST_CASE("TestResizeEmptyIntCMyArray")
 {
-	CStringList stringList;
+	CMyArray<int> arr;
 
-	REQUIRE_THROWS_AS(stringList.Erase(stringList.end()), EraseEndIteratorException);
-	REQUIRE_THROWS_AS(stringList.Erase(stringList.begin()), EraseEndIteratorException);
-	REQUIRE_THROWS_AS(stringList.Erase(stringList.rend()), EraseEndIteratorException);
+	arr.Resize(0);
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(arr.Capacity() == 0);
 
-	stringList.PushFront("hello");
-	REQUIRE_THROWS_AS(stringList.Erase(stringList.end()), EraseEndIteratorException);
-	REQUIRE_THROWS_AS(stringList.Erase(stringList.rend()), EraseEndIteratorException);
+	arr.Resize(2);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 2);
+	REQUIRE(arr[0] == 0);
+	REQUIRE(arr[1] == 0);
 }
 
-TEST_CASE("TestStringListIndexesAccess")
+TEST_CASE("TestResizeEmptyDoubleCMyArray")
 {
-	CStringList stringList;
+	CMyArray<double> arr;
 
-	stringList.PushBack("1");
-	REQUIRE(stringList[0] == "1");
+	arr.Resize(0);
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(arr.Capacity() == 0);
 
-	stringList[0] = "2";
-	REQUIRE(stringList[0] == "2");
+	arr.Resize(2);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 2);
+	REQUIRE(arr[0] == 0);
+	REQUIRE(arr[1] == 0);
 }
 
-TEST_CASE("TestStringListIndexesAccessFailed")
+TEST_CASE("TestResizeEmptyStringCMyArray")
 {
-	CStringList stringList;
-	REQUIRE_THROWS_AS(stringList[0], IndexOutOfRangeException);
+	CMyArray<std::string> arr;
 
-	stringList.PushBack("1");
-	REQUIRE_THROWS_AS(stringList[1], IndexOutOfRangeException);
+	arr.Resize(0);
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(arr.Capacity() == 0);
+
+	arr.Resize(2);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 2);
+	REQUIRE(arr[0] == "");
+	REQUIRE(arr[1] == "");
 }
 
-TEST_CASE("TestCreateStringListByCopySuccess")
+TEST_CASE("TestResizeIntCMyArray")
 {
-	CStringList stringList;
-	stringList.PushBack("str");
+	CMyArray<int> arr;
+	arr.Add(1);
+	arr.Add(3);
+	arr.Add(7);
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1);
+	REQUIRE(arr[1] == 3);
+	REQUIRE(arr[2] == 7);
 
-	CStringList copyStringList(stringList);
+	arr.Resize(2);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1);
+	REQUIRE(arr[1] == 3);
 
-	REQUIRE(stringList.Size() == copyStringList.Size());
-	REQUIRE(stringList[0] == copyStringList[0]);
+	arr.Resize(4);
+	REQUIRE(arr.Size() == 4);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1);
+	REQUIRE(arr[1] == 3);
+	REQUIRE(arr[2] == 0);
+	REQUIRE(arr[3] == 0);
 }
 
-TEST_CASE("TestCreateStringListByMove")
+TEST_CASE("TestResizeDoubleCMyArray")
 {
-	CStringList stringList;
-	stringList.PushBack("str");
-	REQUIRE(stringList.Size() == 1);
+	CMyArray<double> arr;
+	arr.Add(1.5);
+	arr.Add(3.89);
+	arr.Add(-0.008);
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1.5);
+	REQUIRE(arr[1] == 3.89);
+	REQUIRE(arr[2] == -0.008);
 
-	CStringList moveStringList(std::move(stringList));
+	arr.Resize(2);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1.5);
+	REQUIRE(arr[1] == 3.89);
 
-	REQUIRE(stringList.Size() == 0);
-	REQUIRE(moveStringList.Size() == 1);
-	REQUIRE(moveStringList[0] == "str");
+	arr.Resize(4);
+	REQUIRE(arr.Size() == 4);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == 1.5);
+	REQUIRE(arr[1] == 3.89);
+	REQUIRE(arr[2] == 0);
+	REQUIRE(arr[3] == 0);
 }
 
-TEST_CASE("TestStringListCopyOperator")
+TEST_CASE("TestResizeStringCMyArray")
 {
-	CStringList stringList;
-	stringList.PushBack("str");
+	CMyArray<std::string> arr;
+	arr.Add("hello");
+	arr.Add("world");
+	arr.Add("!");
+	REQUIRE(arr.Size() == 3);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == "hello");
+	REQUIRE(arr[1] == "world");
+	REQUIRE(arr[2] == "!");
 
-	CStringList copyStringList = stringList;
+	arr.Resize(2);
+	REQUIRE(arr.Size() == 2);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == "hello");
+	REQUIRE(arr[1] == "world");
 
-	REQUIRE(stringList.Size() == copyStringList.Size());
-	REQUIRE(stringList[0] == copyStringList[0]);
+	arr.Resize(4);
+	REQUIRE(arr.Size() == 4);
+	REQUIRE(arr.Capacity() == 4);
+	REQUIRE(arr[0] == "hello");
+	REQUIRE(arr[1] == "world");
+	REQUIRE(arr[2] == "");
+	REQUIRE(arr[3] == "");
 }
 
-TEST_CASE("TestStringListMoveOperator")
+TEST_CASE("TestIdexesAccessCMyArraySuccess")
 {
-	CStringList stringList;
+	CMyArray<int> arr;
+	arr.Add(1);
+	arr.Add(3);
+	arr.Add(7);
 
-	stringList.PushBack("str");
-	REQUIRE(stringList.Size() == 1);
+	REQUIRE(arr[0] == 1);
+	REQUIRE(arr[1] == 3);
+	REQUIRE(arr[2] == 7);
 
-	CStringList moveStringList = std::move(stringList);
+	arr[0] = 99;
+	arr[2] = 999;
 
-	REQUIRE(stringList.Size() == 0);
-	REQUIRE(moveStringList.Size() == 1);
-	REQUIRE(moveStringList[0] == "str");
+	REQUIRE(arr[0] == 99);
+	REQUIRE(arr[1] == 3);
+	REQUIRE(arr[2] == 999);
 }
 
-TEST_CASE("TestRangeFor")
+TEST_CASE("TestIdexesAccessCMyArrayFailed")
 {
-	CStringList stringList;
-	stringList.PushBack("hello");
-	stringList.PushBack("world");
-	stringList.PushBack("!");
-	stringList.PushBack("goodbie");
+	CMyArray<int> arr;
+
+	REQUIRE_THROWS_AS(arr[0], IndexOutOfRangeException);
+	REQUIRE_THROWS_AS(arr[2], IndexOutOfRangeException);
+
+	arr.Add(1);
+	arr.Add(3);
+	arr.Add(7);
+
+	REQUIRE_THROWS_AS(arr[3], IndexOutOfRangeException);
+}
+
+TEST_CASE("TestRangeForIntCMyArray")
+{
+	CMyArray<int> intArr;
+	intArr.Add(1);
+	intArr.Add(3);
+	intArr.Add(5);
+	intArr.Add(7);
+
+	std::vector<int> intVector;
+	for (const auto& num : intArr)
+	{
+		intVector.push_back(num);
+	}
+	REQUIRE(intVector == std::vector<int>({ 1, 3, 5, 7 }));
+
+	intVector.clear();
+	for (auto it = intArr.begin(); it != intArr.end(); ++it)
+	{
+		intVector.push_back(*it);
+	}
+	REQUIRE(intVector == std::vector<int>({ 1, 3, 5, 7 }));
+}
+
+TEST_CASE("TestRangeForDoubleCMyArray")
+{
+	CMyArray<double> doubleArr;
+	doubleArr.Add(1.5);
+	doubleArr.Add(3.89);
+	doubleArr.Add(5.67777);
+	doubleArr.Add(0.0000009);
+
+	std::vector<double> doubleVector;
+	for (const auto& value : doubleArr)
+	{
+		doubleVector.push_back(value);
+	}
+	REQUIRE(doubleVector == std::vector<double>({ 1.5, 3.89, 5.67777, 0.0000009 }));
+
+	doubleVector.clear();
+	for (auto it = doubleArr.begin(); it != doubleArr.end(); ++it)
+	{
+		doubleVector.push_back(*it);
+	}
+	REQUIRE(doubleVector == std::vector<double>({ 1.5, 3.89, 5.67777, 0.0000009 }));
+}
+
+TEST_CASE("TestRangeForStringCMyArray")
+{
+	CMyArray<std::string> stringArr;
+	stringArr.Add("hello");
+	stringArr.Add("world");
+	stringArr.Add("!");
+	stringArr.Add("goodbie");
 
 	std::vector<std::string> stringVector;
-	for (const auto& string : stringList)
+	for (const auto& string : stringArr)
 	{
 		stringVector.push_back(string);
 	}
 	REQUIRE(stringVector == std::vector<std::string>({ "hello", "world", "!", "goodbie" }));
 
 	stringVector.clear();
-	for (auto it = stringList.begin(); it != stringList.end(); ++it)
+	for (auto it = stringArr.begin(); it != stringArr.end(); ++it)
 	{
 		stringVector.push_back(*it);
 	}
 	REQUIRE(stringVector == std::vector<std::string>({ "hello", "world", "!", "goodbie" }));
 }
 
-TEST_CASE("TestReverseFor")
+TEST_CASE("TestReverseForIntCMyArray")
 {
-	CStringList stringList;
-	stringList.PushBack("hello");
-	stringList.PushBack("world");
-	stringList.PushBack("!");
-	stringList.PushBack("goodbie");
+	CMyArray<int> intArr;
+	intArr.Add(1);
+	intArr.Add(3);
+	intArr.Add(5);
+	intArr.Add(7);
+
+	std::vector<int> reversedVector;
+	for (auto it = intArr.rbegin(); it != intArr.rend(); ++it)
+	{
+		reversedVector.push_back(*it);
+	}
+	REQUIRE(reversedVector == std::vector<int>({ 7, 5, 3, 1 }));
+}
+
+TEST_CASE("TestReverseForDoubleCMyArray")
+{
+	CMyArray<double> doubleArr;
+	doubleArr.Add(1.5);
+	doubleArr.Add(3.89);
+	doubleArr.Add(5.67777);
+	doubleArr.Add(0.0000009);
+
+	std::vector<double> reversedVector;
+	for (auto it = doubleArr.rbegin(); it != doubleArr.rend(); ++it)
+	{
+		reversedVector.push_back(*it);
+	}
+	REQUIRE(reversedVector == std::vector<double>({ 0.0000009, 5.67777, 3.89, 1.5 }));
+}
+
+TEST_CASE("TestReverseForStringCMyArray")
+{
+	CMyArray<std::string> stringArr;
+	stringArr.Add("hello");
+	stringArr.Add("world");
+	stringArr.Add("!");
+	stringArr.Add("goodbie");
 
 	std::vector<std::string> reversedVector;
-	for (auto it = stringList.rbegin(); it != stringList.rend(); ++it)
+	for (auto it = stringArr.rbegin(); it != stringArr.rend(); ++it)
 	{
 		reversedVector.push_back(*it);
 	}
