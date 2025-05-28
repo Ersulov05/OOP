@@ -433,3 +433,59 @@ TEST_CASE("TestReverseForStringCMyArray")
 	}
 	REQUIRE(reversedVector == std::vector<std::string>({ "goodbie", "!", "world", "hello" }));
 }
+
+TEST_CASE("TestCreateCMyArrayByCopy")
+{
+	CMyArray<int> arr;
+	arr.Add(1);
+	arr.Add(2);
+
+	CMyArray<int> copyArr(arr);
+
+	REQUIRE(arr.Size() == copyArr.Size());
+	REQUIRE(arr[0] == copyArr[0]);
+	REQUIRE(arr[1] == copyArr[1]);
+}
+
+TEST_CASE("TestCreateCMyArrayByMove")
+{
+	CMyArray<int> arr;
+	arr.Add(1);
+	arr.Add(2);
+	REQUIRE(arr.Size() == 2);
+
+	CMyArray<int> moveArr(std::move(arr));
+
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(moveArr.Size() == 2);
+	REQUIRE(moveArr[0] == 1);
+	REQUIRE(moveArr[1] == 2);
+}
+
+TEST_CASE("TestCMyArrayCopyOperator")
+{
+	CMyArray<int> arr;
+	arr.Add(1);
+	arr.Add(2);
+
+	CMyArray<int> copyArr = arr;
+
+	REQUIRE(arr.Size() == copyArr.Size());
+	REQUIRE(arr[0] == copyArr[0]);
+	REQUIRE(arr[1] == copyArr[1]);
+}
+
+TEST_CASE("TestCMyArrayMoveOperator")
+{
+	CMyArray<int> arr;
+	arr.Add(1);
+	arr.Add(2);
+	REQUIRE(arr.Size() == 2);
+
+	CMyArray<int> moveArr = std::move(arr);
+
+	REQUIRE(arr.Size() == 0);
+	REQUIRE(moveArr.Size() == 2);
+	REQUIRE(moveArr[0] == 1);
+	REQUIRE(moveArr[1] == 2);
+}
