@@ -16,22 +16,22 @@ public:
 	void Add(const T& value);
 	void Clear();
 
-	size_t Size() const;
-	size_t Capacity() const;
+	[[nodiscard]] size_t Size() const;
+	[[nodiscard]] size_t Capacity() const;
 
 	const T& operator[](size_t index) const;
 	T& operator[](size_t index);
 	CMyArray<T>& operator=(CMyArray<T> const& other);
 	CMyArray<T>& operator=(CMyArray<T>&& other) noexcept;
 
-	T* begin();
-	T* end();
-	std::reverse_iterator<T*> rbegin();
-	std::reverse_iterator<T*> rend();
-	const T* begin() const;
-	const T* end() const;
-	const std::reverse_iterator<T*> rend() const;
-	const std::reverse_iterator<T*> rbegin() const;
+	T* begin() noexcept;
+	T* end() noexcept;
+	std::reverse_iterator<T*> rbegin() noexcept;
+	std::reverse_iterator<T*> rend() noexcept;
+	const T* begin() const noexcept;
+	const T* end() const noexcept;
+	const std::reverse_iterator<T*> rend() const noexcept;
+	const std::reverse_iterator<T*> rbegin() const noexcept;
 
 private:
 	T* Allocate(size_t size);
@@ -162,49 +162,49 @@ CMyArray<T>& CMyArray<T>::operator=(CMyArray<T>&& other) noexcept
 }
 
 template <typename T>
-T* CMyArray<T>::begin()
+T* CMyArray<T>::begin() noexcept
 {
 	return m_data;
 }
 
 template <typename T>
-T* CMyArray<T>::end()
+T* CMyArray<T>::end() noexcept
 {
 	return m_data + m_size;
 }
 
 template <typename T>
-std::reverse_iterator<T*> CMyArray<T>::rbegin()
+std::reverse_iterator<T*> CMyArray<T>::rbegin() noexcept
 {
 	return std::reverse_iterator(end());
 }
 
 template <typename T>
-std::reverse_iterator<T*> CMyArray<T>::rend()
+std::reverse_iterator<T*> CMyArray<T>::rend() noexcept
 {
 	return std::reverse_iterator(begin());
 }
 
 template <typename T>
-const T* CMyArray<T>::begin() const
+const T* CMyArray<T>::begin() const noexcept
 {
 	return m_data;
 }
 
 template <typename T>
-const T* CMyArray<T>::end() const
+const T* CMyArray<T>::end() const noexcept
 {
 	return m_data + m_size;
 }
 
 template <typename T>
-const std::reverse_iterator<T*> CMyArray<T>::rend() const
+const std::reverse_iterator<T*> CMyArray<T>::rend() const noexcept
 {
 	return std::reverse_iterator(begin());
 }
 
 template <typename T>
-const std::reverse_iterator<T*> CMyArray<T>::rbegin() const
+const std::reverse_iterator<T*> CMyArray<T>::rbegin() const noexcept
 {
 	return std::reverse_iterator(end());
 }
@@ -226,7 +226,7 @@ T* CMyArray<T>::Allocate(size_t size)
 }
 
 template <typename T>
-void CMyArray<T>::Swap(CMyArray<T>& firstArr, CMyArray<T>& secondArr)
+void CMyArray<T>::Swap(CMyArray<T>& firstArr, CMyArray<T>& secondArr) noexcept
 {
 	std::swap(firstArr.m_data, secondArr.m_data);
 	std::swap(firstArr.m_size, secondArr.m_size);
