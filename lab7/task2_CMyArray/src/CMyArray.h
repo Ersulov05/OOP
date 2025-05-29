@@ -16,8 +16,8 @@ public:
 	void Add(const T& value);
 	void Clear();
 
-	[[nodiscard]] size_t Size() const;
-	[[nodiscard]] size_t Capacity() const;
+	[[nodiscard]] size_t Size() const noexcept;
+	[[nodiscard]] size_t Capacity() const noexcept;
 
 	const T& operator[](size_t index) const;
 	T& operator[](size_t index);
@@ -116,13 +116,13 @@ void CMyArray<T>::Clear()
 }
 
 template <typename T>
-size_t CMyArray<T>::Size() const
+size_t CMyArray<T>::Size() const noexcept
 {
 	return m_size;
 }
 
 template <typename T>
-size_t CMyArray<T>::Capacity() const
+size_t CMyArray<T>::Capacity() const noexcept
 {
 	return m_capacity;
 }
